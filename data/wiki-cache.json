@@ -1,0 +1,2349 @@
+{
+ "source": "https://wakfu.wiki.gg",
+ "license": "CC BY-SA",
+ "fetchedAt": "2026-11-02T19:54:56.038Z",
+ "states": {
+  "751": {
+   "name": "Flaming",
+   "cumulative": true,
+   "max_level": 500,
+   "effects": [
+    "{{gui|lock}} {{se|base=0|scale=0.4}} Lock",
+    "At start of turn, around the caster:",
+    "{{gui|arrow}} On {{gui|enemy}}: {{gui|light}} Damage: {{se|base=1|scale=1}} {{gui|area circlering}}",
+    "If the target dies:",
+    "{{gui|arrow}} On {{gui|enemy}}: {{gui|light}} Damage: {{se|base=1|scale=1}} {{gui|area circlering}}"
+   ]
+  },
+  "756": {
+   "name": "Incurable",
+   "cumulative": false,
+   "max_level": 10,
+   "effects": [
+    "{{se|base=-10|scale=-10}}% Heals received"
+   ]
+  },
+  "862": {
+   "name": "Stabilized",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "Stabilized"
+   ]
+  },
+  "3462": {
+   "name": "Preparation",
+   "cumulative": true,
+   "max_level": 60,
+   "effects": [
+    "{{se|base=1|scale=1}}% damage inflicted on next damage spell"
+   ]
+  },
+  "5073": {
+   "name": "Inflexible",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''10 AP or less:'''",
+    "{{gui|arrow}} 15% damage inflicted",
+    "{{gui|arrow}} 10 Force of Will (if the character is at level 100 or greater)"
+   ]
+  },
+  "5074": {
+   "name": "Constant",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''10% Critical Hit or less:'''",
+    "{{gui|arrow}} 20% damage inflicted",
+    "{{gui|arrow}} 50 Critical Resistance"
+   ]
+  },
+  "5075": {
+   "name": "Measure",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''40% Block or greater:'''",
+    "{{gui|arrow}} 10% Critical Hit",
+    "{{gui|arrow}} 10% damage inflicted on critical hit"
+   ]
+  },
+  "5076": {
+   "name": "Precise",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''1 Range or less:'''",
+    "20% heals performed",
+    "15% Armor given and received"
+   ]
+  },
+  "5077": {
+   "name": "Unraveling",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "Converts 100% of Critical Mastery to Elemental Mastery at the start of combat if the state bearer has at least 40% Critical Hit."
+   ]
+  },
+  "5078": {
+   "name": "Smashmouth",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "The first spell that inflicts damage this turn removes 30% Armor from the target."
+   ]
+  },
+  "5079": {
+   "name": "Alternation",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "If the bearer only used one element to inflict damage during their turn, they gain +20% Damage inflicted and Heals performed in the other elements."
+   ]
+  },
+  "5080": {
+   "name": "Trust",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "30% Block if the bearer didn't receive healing the previous turn"
+   ]
+  },
+  "5081": {
+   "name": "Brazier",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "When a spell is cast: 10% extra damage inflicted for each condition met (conditions vary each turn).",
+    "When the bearer inflicts melee damage:",
+    "Turn 1: The bearer is in melee or the spell is single-target",
+    "Turn 2: The bearer is at a distance or the spell is single-target",
+    "Turn 3: The bearer is at a distance or the spell is area-of-effect",
+    "Turn 4: The bearer is in melee or the spell is area-of-effect",
+    "The cycle starts over every 4 turns."
+   ]
+  },
+  "5082": {
+   "name": "Robust",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "100% of level in Barrier against long-range damage (permanent)."
+   ]
+  },
+  "5158": {
+   "name": "Wield type: two-handed",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''a two-handed weapon equipped''' (maximum 12 AP before the sublimation's effect):",
+    "{{gui|arrow}} {{gui|mp}} -2 max MP",
+    "{{gui|arrow}} {{gui|ap}} 2 AP max"
+   ]
+  },
+  "5174": {
+   "name": "Alternation II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "If the bearer inflicts damage in an lement, they gain +15% Damage nflicted and Heals performed in the ther elements for the next spell.",
+    "Only the first line of damage caused by the spell is taken into account."
+   ]
+  },
+  "5175": {
+   "name": "Breeze",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "25% to area-of-effect spell damage on the spell's direct target.",
+    "-25% to area-of-effect spell damage on other targets."
+   ]
+  },
+  "5216": {
+   "name": "Directives",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "15% damage inflicted by area-of-effect spells on targets in line with the state bearer"
+   ]
+  },
+  "5248": {
+   "name": "Wield type: Shield",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''a Shield equipped:'''",
+    "{{gui|arrow}} 1 max MP",
+    "{{gui|arrow}} Positive Range is set at 0"
+   ]
+  },
+  "5249": {
+   "name": "Wield type: Dagger",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''a Dagger equipped:'''",
+    "{{gui|arrow}} 15% from the side",
+    "{{gui|arrow}} -30% from behind"
+   ]
+  },
+  "5250": {
+   "name": "Excess",
+   "cumulative": false,
+   "max_level": null,
+   "effects": []
+  },
+  "5252": {
+   "name": "Heartbreaking Blood",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "In an odd round:",
+    "The bearer inflicts 25% more damage, and suffers 15% of the damage they inflict."
+   ]
+  },
+  "5253": {
+   "name": "Yeah",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "Even Turn: After using a WP-based spell, the state bearer regains 2 AP (max of 1/turn).",
+    "Odd Turn: After using a WP-based spell, the state bearer loses 2 AP (max 1/turn)."
+   ]
+  },
+  "5370": {
+   "name": "Wakfu Pact",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''8 WP or greater:'''",
+    "{{gui|arrow}} 10 Force of Will",
+    "{{gui|arrow}} 15% Block"
+   ]
+  },
+  "5443": {
+   "name": "Robust Health",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, for the state bearer:",
+    "{{gui|arrow}} -30% HP (penalty to the HP modifier)",
+    "{{gui|arrow}} 30% Heals and Armor from {{gui|ally}} received"
+   ]
+  },
+  "5444": {
+   "name": "Positioning Knowledge",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "{{gui|resistance}} 50 Elemental Resistance, {{gui|rearresist}} -200 Rear Resistance for the bearer at the start of combat."
+   ]
+  },
+  "5445": {
+   "name": "Anatomy",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the highest Elemental Mastery is greater than the Rear Mastery:",
+    "{{gui|arrow}} {{gui|di}} -20% Damage inflicted",
+    "{{gui|arrow}} {{gui|di}} 40% Damage inflicted from behind"
+   ]
+  },
+  "5446": {
+   "name": "Brutality",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the bearer has exactly 0 Range:",
+    "{{gui|arrow}} +20% damage inflicted in melee and area of effect simultaneously"
+   ]
+  },
+  "5448": {
+   "name": "Herculean Strength",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''an odd number of AP:'''",
+    "{{gui|arrow}} 250% of level as Lock and Dodge"
+   ]
+  },
+  "5449": {
+   "name": "Elemental Concentration",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At start of combat, 20% damage inflicted and heals performed, -30% Elemental Mastery in the 3 weakest elements"
+   ]
+  },
+  "5450": {
+   "name": "Stasification",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "The state bearer increases their damage inflicted by 2% per turn (permanent) (max 20)"
+   ]
+  },
+  "5452": {
+   "name": "Flame Aura",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "{{st|751}} (+15 Lvls.) (stackable) for the state bearer, for each damage spell received in melee.",
+    "100% of level as {{st|751}} at start of turn if no enemies are adjacent."
+   ]
+  },
+  "5453": {
+   "name": "Guard Up",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "-30% damage suffered on their own turn"
+   ]
+  },
+  "5976": {
+   "name": "Light Weapon",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "Damage caused by the bearer's weapon is reduced by 20% and applies a poison ({{st|5977}}) for three turns (second hand excluded) based on the number of AP used by the weapon."
+   ]
+  },
+  "5977": {
+   "name": "Light Weapon",
+   "cumulative": false,
+   "max_level": 6,
+   "effects": [
+    "At start of turn:",
+    "{{gui|arrow}} {{gui|light}} Damage: {{se|base=10|scale=10}}"
+   ]
+  },
+  "5980": {
+   "name": "Ruin",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=5|scale=5}}''' indirect damage"
+   ]
+  },
+  "5981": {
+   "name": "Devastation",
+   "cumulative": true,
+   "max_level": 3,
+   "effects": [
+    "{{gui|wp}} 1 WP",
+    "{{gui|fow}} {{se|base=-30|scale=-10}} Force of Will"
+   ]
+  },
+  "5982": {
+   "name": "Devastate",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "At start of fight:",
+    "All Masteries: '''{{se|base=5|scale=5}}%''' of level",
+    "All Resistances: '''{{se|base=3|scale=3}}'''"
+   ]
+  },
+  "5983": {
+   "name": "Carnage",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When HP are above 90%:",
+    "{{gui|arrow}} '''{{se|base=15|scale=15}}%''' of level in Elemental Mastery"
+   ]
+  },
+  "5984": {
+   "name": "Healing",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=5|scale=5}}%''' health points (bonus on HP modifier)"
+   ]
+  },
+  "5985": {
+   "name": "Ambush",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=2|scale=2}}'''% Damage Inflicted on targets in close combat"
+   ]
+  },
+  "5986": {
+   "name": "Escape",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At start of fight:",
+    "{{gui|block}} '''{{se|base=5|scale=5}}% Block''' (1 turn)"
+   ]
+  },
+  "5987": {
+   "name": "Determination",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=-7|scale=-7}}%''' indirect damage received"
+   ]
+  },
+  "5988": {
+   "name": "Tenacity",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "At end of turn, if the state bearer has 2 or more AP:",
+    "{{gui|resistance}} '''{{se|base=12.5|scale=12.5}} Elemental Resistance (1 turn)'''"
+   ]
+  },
+  "5989": {
+   "name": "Solidity",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "Reduces direct damage received greater than 20% of max HP by '''{{se|base=200|scale=200}}%''' of level (once per round)"
+   ]
+  },
+  "5990": {
+   "name": "Resolute",
+   "cumulative": true,
+   "max_level": 3,
+   "effects": [
+    "After suffering a loss of 3 AP:",
+    "{{gui|fow}} '''{{se|base=10|scale=10}} Force of Will''' (3 turns)"
+   ]
+  },
+  "5991": {
+   "name": "Lightness",
+   "cumulative": true,
+   "max_level": 3,
+   "effects": [
+    "After suffering a loss of 3 MP:",
+    "{{gui|fow}} '''{{se|base=10|scale=10}} Force of Will''' (3 turns)"
+   ]
+  },
+  "5992": {
+   "name": "Topology",
+   "cumulative": true,
+   "max_level": 3,
+   "effects": [
+    "At the start of combat:",
+    "{{he|Any Dodge by the state bearer is converted into Armor.|hide=2}}{{he|All of the state bearer's Dodge is converted into Armor at a ratio of 1 for {{se|base=2|scale=1}}.|hidden=2}}",
+    "Converted Dodge is lost."
+   ]
+  },
+  "5993": {
+   "name": "Condemnation",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "{{gui|fow}} -20 Force of Will",
+    "{{he|Reduces the next AP loss suffered by 1|hide=4}}{{he|Reduces the '''{{se|base=2|scale=0.5}}''' next AP losses suffered by 1|hidden=4}}",
+    "The effect is reapplied every turn"
+   ]
+  },
+  "5994": {
+   "name": "Frenzy",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|di}} '''-20% damage inflicted'''",
+    "At start of turn:",
+    "10% Damage inflicted per enemy hit in the previous turn."
+   ]
+  },
+  "5999": {
+   "name": "Dimensionality",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "On the state bearer's first turn:",
+    "{{gui|wp}} '''1 WP''' (non-regenerable)"
+   ]
+  },
+  "6000": {
+   "name": "Theory of Matter",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{se|base=50|scale=50}}% Critical Hit",
+    "-50% Damage and Heals"
+   ]
+  },
+  "6001": {
+   "name": "AP Return",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "Recovers '''{{se|base=0.5|scale=0.5}}''' AP on killing an enemy (2 activations per turn)"
+   ]
+  },
+  "6002": {
+   "name": "Endurance",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=-5|scale=-5}}''' to characteristic penalties received.",
+    "Affects all characteristic penalties (Mastery, Resistances, Armor, Critical Hits, etc.) received in combat and cast by an entity other than the state bearer.",
+    "The value is always rounded down."
+   ]
+  },
+  "6004": {
+   "name": "Moon Scales",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=3|scale=3}}''' Armor received"
+   ]
+  },
+  "6005": {
+   "name": "Swiftness",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|mp}} 1 MP",
+    "{{gui|di}} {{se|base=-20|scale=10}}% damage inflicted"
+   ]
+  },
+  "6006": {
+   "name": "Save",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At end of turn:",
+    "{{gui|arrow}} Unused AP are carried over to the next turn",
+    "Max '''{{se|base=0.5|scale=0.5}}''' PA:"
+   ]
+  },
+  "6008": {
+   "name": "Vivacity",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|ap}} 1 AP",
+    "{{gui|resistance}} {{se|base=-150|scale=75}} Elemental Resistance"
+   ]
+  },
+  "6009": {
+   "name": "Berserk Critical",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When HP are at less than 50%:",
+    "{{gui|arrow}} {{gui|crit}} '''{{se|base=5|scale=5}}% Critical Hit'''"
+   ]
+  },
+  "6010": {
+   "name": "Visibility",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|range}} 1 Range",
+    "{{gui|lock}} {{se|base=-300|scale=-150}}",
+    "{{gui|dodge}} {{se|base=-300|scale=-150}}"
+   ]
+  },
+  "6011": {
+   "name": "Cyclical Ruin",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "'''{{se|base=10|scale=10}}%''' indirect damage in even rounds"
+   ]
+  },
+  "6012": {
+   "name": "Berserk Lock",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When HP are at less than 50%:",
+    "{{gui|arrow}} '''{{se|base=50|scale=50}}%''' of level as Lock"
+   ]
+  },
+  "6013": {
+   "name": "Secondary Devastation",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At start of fight:",
+    "'''{{gui|crit}} 1-9% Critical Hit, {{gui|block}} 1-9% Block, {{gui|fow}} 1-9 Force of Will'''"
+   ]
+  },
+  "6014": {
+   "name": "Slow Escape",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''1-6%''' Blocks per turn (max 40)"
+   ]
+  },
+  "6016": {
+   "name": "Distant Ambush",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=4|scale=4}}'''% Damage Inflicted on targets 2 cells away (1 cell between the state bearer and the target)"
+   ]
+  },
+  "6017": {
+   "name": "Spines",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "Performing a Block gives {{st|3462}} (+{{se|base=1|scale=1}} Lvl.)"
+   ]
+  },
+  "6018": {
+   "name": "Berserk Dodge",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When HP are at less than 50%:",
+    "{{gui|arrow}} '''{{se|base=50|scale=50}}%''' of level as Dodge"
+   ]
+  },
+  "6019": {
+   "name": "Distance Barrier",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "Reduces Ranged Damage suffered by 50% of level, '''{{se|base=2|scale=2}}''' times per turn"
+   ]
+  },
+  "6020": {
+   "name": "Melee Barrier",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "Reduces Melee Damage suffered by 50% of level, {{se|base=2|scale=2}} times per turn"
+   ]
+  },
+  "6021": {
+   "name": "Persistence",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "At end of turn, if the state bearer has 6 or more AP:",
+    "{{gui|resistance}}''' 60 Elemental Resistance''' (2 turns)"
+   ]
+  },
+  "6022": {
+   "name": "Obstinacy",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "After suffering a loss of 2 AP:",
+    "{{gui|fow}} {{se|base=5|scale=5}} '''Force of Will''' (3 turns)"
+   ]
+  },
+  "6023": {
+   "name": "Poise",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "After suffering a loss of 2 MP:",
+    "{{gui|fow}} '''{{se|base=5|scale=5}} Force of Will''' (3 turns)"
+   ]
+  },
+  "6024": {
+   "name": "Berserk Block",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When HP are at less than 50%:",
+    "{{gui|arrow}} {{gui|block}} '''{{se|base=5|scale=5}}% Block'''"
+   ]
+  },
+  "6025": {
+   "name": "Vitality Well",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "Increases Health Steals performed by '''{{se|base=5|scale=5}}%'''"
+   ]
+  },
+  "6026": {
+   "name": "Influence",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=3|scale=3}}% Critical Hit'''"
+   ]
+  },
+  "6027": {
+   "name": "Fury",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|di}} '''-15% damage inflicted'''",
+    "At start of turn:",
+    "5% Damage inflicted per entity hit in the previous turn."
+   ]
+  },
+  "6029": {
+   "name": "Wall",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "At start of fight, '''{{se|base=150|scale=150}}%''' of level as Armor"
+   ]
+  },
+  "6030": {
+   "name": "Cyclothymia",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "Even turns: {{gui|fow}} '''{{se|base=10|scale=10}} Force of Will'''",
+    "Odd turns: {{gui|fow}} '''{{se|base=-10|scale=-10}} Force of Will'''"
+   ]
+  },
+  "6031": {
+   "name": "MP Return",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "Recovers '''{{se|base=0|scale=1}}''' MP on killing an enemy (2 activations per turn)"
+   ]
+  },
+  "6032": {
+   "name": "Prosperity",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=3|scale=3}}%''' to characteristic bonuses received.",
+    "Affects all characteristic bonuses (Masteries, Resistances, Armor) received in combat and cast by an entity other than the state bearer.",
+    "The value is always rounded down."
+   ]
+  },
+  "6033": {
+   "name": "Clamor",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "{{gui|fow}} -20 Force of Will",
+    "{{he|Reduces the next MP loss suffered by 1|hide=4}}{{he|Reduces the '''{{se|base=2|scale=0.5}}''' next MP losses suffered by 1|hidden=4}}",
+    "The effect is reapplied every turn"
+   ]
+  },
+  "6034": {
+   "name": "Focalization",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|di}} '''-15% damage inflicted'''",
+    "At start of turn:",
+    "{{gui|di}} '''25% damage inflicted''' if a single enemy was hit the previous turn"
+   ]
+  },
+  "6036": {
+   "name": "Length",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=2|scale=2}}'''% Damage Inflicted on targets in a straight line and 2 or more cells away from the state bearer"
+   ]
+  },
+  "6037": {
+   "name": "Blocking Expert",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|resistance}} -50 Elemental Resistance",
+    "'''{{se|base=7.5|scale=7.5}}%''' damage received during a Block"
+   ]
+  },
+  "6038": {
+   "name": "Rocky Envelope",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=3|scale=3}}''' Armor given"
+   ]
+  },
+  "6039": {
+   "name": "Slow Influence",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=1|scale=1}}%''' Critical Hits per turn (max 30)"
+   ]
+  },
+  "6041": {
+   "name": "Critical Hit Expert",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "At end of turn, if a critical hit was performed:",
+    "{{gui|arrow}} {{gui|eps}} '''Healing: {{se|base=2|scale=2}}% of HP lost of the caster''' {{gui|fixed}}"
+   ]
+  },
+  "6042": {
+   "name": "Stupefaction",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "At start of fight:",
+    "{{gui|crit}} '''{{se|base=5|scale=5}}% Critical Hit''' (1 turn)",
+    "'''{{se|base=5|scale=5}}%''' of level as Critical Mastery (1 turn)"
+   ]
+  },
+  "6328": {
+   "name": "Integrity",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "When healing an ally, if the ally has less than 15% HP:",
+    "{{gui|arrow}} {{gui|eps}} '''Healing: {{se|base=7|scale=7}}% of HP max of the target''' {{gui|fixed}}"
+   ]
+  },
+  "6329": {
+   "name": "Lone Wolf",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "If there are no allies 1 to 4 cells from the bearer:",
+    "{{gui|arrow}} '''{{se|base=2|scale=2}}'''% damage inflicted"
+   ]
+  },
+  "6330": {
+   "name": "Secret of Life",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "At start of fight:",
+    "{{gui|arrow}} Reduces Healing Mastery to O",
+    "{{gui|arrow}} {{gui|hp%}} '''{{se|base=5|scale=5}}% heals performed'''"
+   ]
+  },
+  "6331": {
+   "name": "Tolerance",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "At end of turn:",
+    "{{gui|arrow}} 50% of unused MP are carried over to the next turn",
+    "{{gui|arrow}} Max '''{{se|base=1|scale=1}}''' MP"
+   ]
+  },
+  "6705": {
+   "name": "Outrage",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''less than 100% of their level as Dodge:'''",
+    "{{gui|arrow}} 15% damage inflicted as Berserk",
+    "{{gui|arrow}} 100% of level as Lock"
+   ]
+  },
+  "6706": {
+   "name": "Outrage II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''4 Range or greater:'''",
+    "{{gui|arrow}} 15% damage inflicted as Berserk and Ranged simultaneously",
+    "{{gui|arrow}} 1 Range"
+   ]
+  },
+  "6707": {
+   "name": "Pillar",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''50% Block or greater:'''",
+    "{{gui|arrow}} Bonus to HP modifier: +30%",
+    "{{gui|arrow}} -50% Armor received"
+   ]
+  },
+  "6708": {
+   "name": "Controlling Space",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer '''has exactly 1 Range:'''",
+    "{{gui|arrow}} 15% damage inflicted and heals performed on targets that are 2, 3, or a cells away from the caster"
+   ]
+  },
+  "6709": {
+   "name": "Longevity",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "When suffering damage from the front and in melee, once per round:",
+    "{{gui|arrow}} 10% of missing HP as Armor",
+    "{{gui|arrow}} 40% Armor given (1 turn)"
+   ]
+  },
+  "6710": {
+   "name": "Ancestral Energy - Bonus",
+   "cumulative": true,
+   "max_level": 3,
+   "effects": [
+    "{{gui|di}} {{se|base=4|scale=4}}% damage inflicted",
+    "{{gui|resistance}} {{se|base=15|scale=15}} Elemental Resistance"
+   ]
+  },
+  "6711": {
+   "name": "Ancestral Energy",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At start of turn, with 6 WP or greater:",
+    "{{gui|arrow}} {{st|6710}} (Max. level: 3)",
+    "{{gui|arrow}} The state is lost if the character starts their turn with less than 6 WP"
+   ]
+  },
+  "6712": {
+   "name": "Rebirth",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "-50 Elemental Resistance",
+    "Once per turn, when below 50% HP:",
+    "{{gui|arrow}} {{st|6713}}"
+   ]
+  },
+  "6713": {
+   "name": "Rebirth - Bonus",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "{{gui|mp}} 1 MP",
+    "{{gui|di}} 15% damage inflicted",
+    "{{gui|resistance}} 50 Elemental Resistance"
+   ]
+  },
+  "6714": {
+   "name": "Peaceful",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "For each movement, per MP used:",
+    "{{gui|arrow}} +3% Block (max. 18) (1 turn)",
+    "If the state bearer performs a Block when it's not their turn:",
+    "{{gui|arrow}} The bonus is transformed into Critical Hits on the next turn"
+   ]
+  },
+  "6811": {
+   "name": "Solid Weapon",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "When inflicting damage on an enemy with a weapon:",
+    "{{gui|arrow}} That enemy reduces their damage on the state bearer by '''{{se|base=-5|scale=-5}}%''' (1 turn, not stackable)",
+    "{{gui|arrow}} The state bearer must have a shield equipped"
+   ]
+  },
+  "6812": {
+   "name": "Raw Power",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "At start of fight:",
+    "{{gui|arrow}} {{gui|wp}} '''{{se|base=-1|scale=-1}} max WP'''",
+    "For each WP spent during the turn:",
+    "{{gui|arrow}} {{se|base=2|scale=2}}% damage inflicted (1 turn) (max 16)"
+   ]
+  },
+  "6813": {
+   "name": "Flaming Return",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "Gains '''{{se|base=50|scale=50}}%''' of level as {{st|751}} on killing an enemy (1 activation per turn)"
+   ]
+  },
+  "6814": {
+   "name": "Wakfu Influence",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "When the state bearer starts their turn with all their WP (or all their QB):",
+    "{{gui|arrow}} {{gui|crit}} '''{{se|base=10|scale=10}}$ Critical Hit''' (1 turn)"
+   ]
+  },
+  "6815": {
+   "name": "Berserk Wakfu",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "When the state bearer starts their turn with 50% or less WP (or QB):",
+    "{{gui|arrow}} '''{{se|base=3|scale=3}}%''' Critical Damage inflicted (1 turn)",
+    "'''{{se|base=100|scale=100}}%''' of level as Armor"
+   ]
+  },
+  "6816": {
+   "name": "Incurable Weapon",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "{{se|base=-5|scale=-5}}% damage inflicted with a weapon",
+    "{{gui|arrow}} {{st|756}} (level: AP cost of the weapon) on the enemy and state bearer"
+   ]
+  },
+  "6817": {
+   "name": "Lock Steal",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''-10%''' damage inflicted with a weapon",
+    "When inflicting damage on an enemy with a two-handed weapon:",
+    "{{gui|arrow}} Steals '''{{se|base=15|scale=15}}''' of level in Lock (1 turn, not stackable)"
+   ]
+  },
+  "6818": {
+   "name": "Dodge Steal",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "-10% damage inflicted with a weapon",
+    "When inflicting damage on an enemy with a two-handed weapon:",
+    "{{gui|arrow}} Steals '''{{se|base=15|scale=15}}%''' of level in Dodge (1 turn, not stackable)"
+   ]
+  },
+  "6819": {
+   "name": "Counterattack",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When the state bearer suffers direct close-combat damage, once per turn of the attacker:",
+    "{{gui|arrow}} The state bearer inflicts light damage on the attacker ({{se|base=10|scale=10}}% of level)"
+   ]
+  },
+  "6821": {
+   "name": "Light Weapons Expert",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "If no other shield, dagger or two-handed weapon is equipped, at start of fight:",
+    "{{gui|arrow}} '''{{se|base=25|scale=25}}%''' of level in Elemental Mastery",
+    "{{gui|arrow}} '''{{se|base=2|scale=2}}%''' of damage inflicted on a target with Armor"
+   ]
+  },
+  "6822": {
+   "name": "Arcana",
+   "cumulative": true,
+   "max_level": 5,
+   "effects": [
+    "If the state bearer does not have any armor at end of turn:",
+    "{{gui|arrow}} '''{{se|base=50|scale=50}}%''' of level as Armor"
+   ]
+  },
+  "6823": {
+   "name": "Social Relations",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=2|scale=2}}%''' damage from behind on even turns",
+    "'''{{se|base=2|scale=2}}%''' frontal damage on odd turns"
+   ]
+  },
+  "6824": {
+   "name": "Vital Return",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|eps}} '''Healing: {{se|base=10|scale=10}}% of HP lost of the caster''' {{gui|fixed}} {{gui|noreduce}} on killing an enemy (2 activations per turn)"
+   ]
+  },
+  "6825": {
+   "name": "Destruction",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=3|scale=3}}%''' damage from behind",
+    "'''{{se|base=-2|scale=-2}}%''' frontal and side damage"
+   ]
+  },
+  "6826": {
+   "name": "Sensitivity",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "If there are two or more allies 1 to 4 cells from the bearer:",
+    "{{gui|arrow}} '''{{se|base=2|scale=2}}'''% damage inflicted"
+   ]
+  },
+  "6827": {
+   "name": "Armor Length",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=2|scale=2}}%''' Armor given to an aligned ally at a distance"
+   ]
+  },
+  "6828": {
+   "name": "Altruism",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=2|scale=2}}%''' Heals performed on an aligned ally at a distance"
+   ]
+  },
+  "6829": {
+   "name": "Mania",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "Melee damage removes '''{{se|base=50|scale=50}}%''' of level in Armor from the target",
+    "'''{{se|base=-3|scale=-3}}%''' Armor received"
+   ]
+  },
+  "6830": {
+   "name": "Natural",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=2|scale=2}}%''' Heals performed on an ally adjacent to another ally"
+   ]
+  },
+  "6831": {
+   "name": "Last Breath",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When the bearer starts their turn below HP:",
+    "{{gui|arrow}} '''{{gui|di}} {{se|base=3|scale=3}}% damage inflicted''' (1 turn)",
+    "{{gui|arrow}} '''{{se|base=50|scale=50}}%';' of level as Armor"
+   ]
+  },
+  "6832": {
+   "name": "Strong Hand",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "Ending a turn adjacent to an enemy applies '''{{se|base=|5scale=5}}''' Armor received to it (1 turn)"
+   ]
+  },
+  "6833": {
+   "name": "Firm Foot",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "Ending a turn adjacent to an enemy applies '''{{se|base=-5|scale=-5}}%''' Heals performed to it (1 turn)"
+   ]
+  },
+  "6834": {
+   "name": "About-Turn",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "When the state bearer suffers direct close-combat damage, once per turn of the attacker:",
+    "{{gui|arrow}} The state bearer turns toward them"
+   ]
+  },
+  "6842": {
+   "name": "Courage",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=2|scale=2}}%''' non-critical damage and heals inflicted",
+    "'''{{se|base=-2|scale=-2}}%''' critical damage and heals inflicted"
+   ]
+  },
+  "6926": {
+   "name": "Reinvigoration",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "{{gui|hp%}} -10% heals performed",
+    "The state bearer is healed by '''{{se|base=4|scale=4}}%''' of heals performed on their allies"
+   ]
+  },
+  "6927": {
+   "name": "Precaution",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "When ending turn with less than 50%",
+    "{{gui|arrow}} {{gui|eps}} Heals: '''{{se|base=5|scale=5}}%''' of missing HP {{gui|fixed}}"
+   ]
+  },
+  "6928": {
+   "name": "Technical Critical",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "The first critical hit in the turn inflicts '''{{se|base=6|scale=6}}%''' additional damage",
+    "The following ones inflict '''{{se|base=-3|scale=-3}}%''' less damage"
+   ]
+  },
+  "6929": {
+   "name": "Offensive Block",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "When performing a block on a direct enemy attack:",
+    "{{gui|arrow}} '''{{se|base=2|scale=2}}%''' damage inflicted (1 turn)",
+    "{{gui|arrow}} -10% Block"
+   ]
+  },
+  "6930": {
+   "name": "Tactical Critical",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=3|scale=3}}%''' critical damage inflicted if the target has > 50% HP",
+    "'''{{se|base=-3|scale=-3}}%''' critical damage inflicted if the target has <= 50% HP"
+   ]
+  },
+  "6931": {
+   "name": "Neutrality",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "At the start of the first turn, if secondary masteries are 0:",
+    "{{gui|arrow}} {{se|base=8|scale=8}}% damage inflicted"
+   ]
+  },
+  "6932": {
+   "name": "Abandon",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At the start of the first turn, if secondary masteries are <= 0:",
+    "{{gui|arrow}} '''{{se|base=0.5|scale=0.5}}''' max WP and '''{{se|base=0.5|scale=0.5}}''' Range",
+    "{{gui|arrow}} '''{{se|base=-5|scale=-5}}%''' Armor given and received"
+   ]
+  },
+  "6933": {
+   "name": "Pretension",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At the start of the first turn, if secondary masteries are <= 0:",
+    "{{gui|arrow}} '''{{se|base=5|scale=5}}%''' Block"
+   ]
+  },
+  "7075": {
+   "name": "Brawling",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|range}} -1 Range",
+    "'''{{se|base=50|scale=50}}%''' of level as Lock and Dodge"
+   ]
+  },
+  "7076": {
+   "name": "Carapace",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|ap}} {{se|base=-2|scale=-1}} max AP",
+    "{{gui|resistance}} 75 Elemental Resistance"
+   ]
+  },
+  "7077": {
+   "name": "Heavy Armor",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "{{gui|mp}} -1 max MP",
+    "{{gui|di}} {{se|base=5|scale=5}}% damage inflicted"
+   ]
+  },
+  "7078": {
+   "name": "Delay",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "At start of turn, if no WP were used during the previous turn:",
+    "{{gui|arrow}} {{gui|di}} '''{{se|base=4|scale=4}}% damage inflicted'''",
+    "{{gui|arrow}} {{gui|hp%}} '''{{se|base=4|scale=4}}% heals performed'''"
+   ]
+  },
+  "7079": {
+   "name": "Critical Preparation",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "Each time a critical hit is performed (5 activations per turn):",
+    "{{gui|arrow}} {{st|3462}} (+{{se|base=2|scale=2}} Lvl.)"
+   ]
+  },
+  "7081": {
+   "name": "Locking",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=4|scale=4}}'''% Damage inflicted on targets without line of sight and 3 or more cells away from the state bearer"
+   ]
+  },
+  "7088": {
+   "name": "Featherweight",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "At the start of combat, per MP above 4:",
+    "{{gui|arrow}} {{gui|di}} {{se|base=2|scale=2}}% damage inflicted (max 24)"
+   ]
+  },
+  "7115": {
+   "name": "Ambition",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At the start of the first turn, if secondary masteries are <= O:",
+    "{{gui|arrow}} '''{{se|base=5|scale=5}}%''' Critical Hit"
+   ]
+  },
+  "7252": {
+   "name": "Excess II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "{{gui|di}} -10% damage inflicted",
+    "Every 5 spells cast, the state bearer gains 50% damage inflicted for the next spell.",
+    "{{gui|arrow}} Spells cast must cost at least 1 AP",
+    "{{gui|arrow}} Once the state is at level 5, the next spell gets the damage bonus"
+   ]
+  },
+  "7254": {
+   "name": "Lunatic",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "Even turns, at start of turn:",
+    "{{gui|arrow}} 25% Damage inflicted",
+    "{{gui|arrow}} -25% Heals performed and Armor given",
+    "Odd turns, at start of turn:",
+    "{{gui|arrow}} 25% Heals performed and Armor given",
+    "{{gui|arrow}} -25% Damage inflicted"
+   ]
+  },
+  "7255": {
+   "name": "Controlling Space II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''at least 3 Range:'''",
+    "{{gui|arrow}} 30% indirect damage inflicted"
+   ]
+  },
+  "7256": {
+   "name": "Inflexibility II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if secondary masteries are less than or equal to O:",
+    "{{gui|arrow}} {{gui|di}} 20% Damage inflicted",
+    "{{gui|arrow}} {{gui|hp%}} 20% Heals performed"
+   ]
+  },
+  "7257": {
+   "name": "Sentinel",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At start of turn:",
+    "{{gui|arrow}} 3 Range",
+    "{{gui|arrow}} 15% ranged damage inflicted",
+    "{{gui|arrow}} 15% Heals performed",
+    "The bonus is lost the first time the character moves (MP) or at end of turn"
+   ]
+  },
+  "7258": {
+   "name": "Assimilation",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "{{gui|resistance}} -150 Elemental Resistance",
+    "If the state bearer takes damage frm an enemy:",
+    "{{gui|arrow}} 100 Resistance in the damage element (1 turn)"
+   ]
+  },
+  "7711": {
+   "name": "Art of Concealment",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=-6|scale=-6}}%''' damage received when the bearer is not in line of sight",
+    "'''{{se|base=3|scale=3}}%''' damage received when the bearer is in line of sight"
+   ]
+  },
+  "7712": {
+   "name": "Madness",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=6|scale=6}}%''' damage inflicted in a diagonal line"
+   ]
+  },
+  "7713": {
+   "name": "Bashell",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=-6|scale=-6}}%''' damage inflicted on a target with armor"
+   ]
+  },
+  "7714": {
+   "name": "Recklessness",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "When the bearer removes all of a target's armor:",
+    "{{gui|arrow}} '''{{se|base=3|scale=3}}%''' damage inflicted for the rest of the turn",
+    "30% maximum"
+   ]
+  },
+  "7717": {
+   "name": "Vampiric Madness",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "-20% Heals received",
+    "When the bearer inflicts damage in a diagonal line:",
+    "{{gui|arrow}} Steals '''{{se|base=4|scale=4}}%''' of damage inflicted"
+   ]
+  },
+  "7719": {
+   "name": "Accumulation",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "-20% Heals performed",
+    "For each turn without performing heals:",
+    "{{gui|arrow}} '''{{se|base=5|scale=5}}%''' heals performed",
+    "{{gui|arrow}} Stackable up to 40%"
+   ]
+  },
+  "7722": {
+   "name": "Conservation",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "When HP are above 90%:",
+    "{{gui|arrow}} '''{{se|base=10|scale=10}}%''' Block"
+   ]
+  },
+  "7853": {
+   "name": "Blood Carapace",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At start of turn:",
+    "{{gui|arrow}} Converts '''{{se|base=10|scale=10}}%''' of current HP into Armor"
+   ]
+  },
+  "7855": {
+   "name": "Armor Return",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "Recovers '''{{se|base=2.5|scale=2.5}}%''' of max HP as Armor on killing an enemy (2 activations per turn)"
+   ]
+  },
+  "7856": {
+   "name": "Profit",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "Regains 1 AP by removing 1 AP or MP from an enemy '''({{se|base=0.5|scale=0.5}} max per turn)'''"
+   ]
+  },
+  "7859": {
+   "name": "Light Strength",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "As long as the bearer has no Armor:",
+    "{{gui|arrow}} {{gui|di}} '''3% damage inflicted'''"
+   ]
+  },
+  "7860": {
+   "name": "Vital Agility",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "At start of turn, if HP are above 90%:",
+    "{{gui|arrow}} {{gui|mp}} 1 MP"
+   ]
+  },
+  "7861": {
+   "name": "Vital Strength",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "At start of turn, if HP are above 90%:",
+    "{{gui|arrow}} {{gui|ap}} 1 AP"
+   ]
+  },
+  "7862": {
+   "name": "Vital Influence",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At start of turn, if HP are above 90%:",
+    "{{gui|arrow}} {{gui|crit}} '''{{se|base=4|scale=4}}% Critical Hit'''"
+   ]
+  },
+  "7863": {
+   "name": "Paradoxical Influence",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "If a non-critical hit is performed with an elemental spell:",
+    "{{gui|arrow}} '''{{se|base=5|scale=5}}% Critical Hit''' on the following turn"
+   ]
+  },
+  "7864": {
+   "name": "Evasion",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At start of fight:",
+    "{{gui|arrow}} '''{{se|base=50|scale=50}}%''' of level as Dodge"
+   ]
+  },
+  "7865": {
+   "name": "Interception",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At start of fight:",
+    "{{gui|arrow}} '''{{se|base=50|scale=50}}%''' of level as Lock"
+   ]
+  },
+  "7867": {
+   "name": "Flee",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "After dodging (with loss):",
+    "{{gui|arrow}} 1 MP '''({{se|base=0.5|scale=0.5}} max per turn)'''"
+   ]
+  },
+  "7868": {
+   "name": "Interposition",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "After locking an enemy:",
+    "{{gui|arrow}} '''{{se|base=50|scale=50}}%''' of level as Armor"
+   ]
+  },
+  "7870": {
+   "name": "Sparkle",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At start of turn, if the bearer has no Armor:",
+    "{{gui|arrow}} 20% damage inflicted (1 turn)",
+    "Otherwise:",
+    "{{gui|arrow}} -10% damage inflicted (1 turn)"
+   ]
+  },
+  "7872": {
+   "name": "Contact",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At end of turn, per adjacent enemy:",
+    "{{gui|arrow}} 5% of max HP as Armor"
+   ]
+  },
+  "7873": {
+   "name": "Face-to-Face",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At end of turn, if the bearer is facing an adjacent enemy:",
+    "{{gui|arrow}} 10% of max HP as Armor"
+   ]
+  },
+  "7874": {
+   "name": "Farsighted",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "30% damage inflicted on targets 7 or more cells away, otherwise -15%"
+   ]
+  },
+  "7875": {
+   "name": "Distribution",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "When the bearer heals an ally, 25% of the healing is converted into Armor and 25% is lost"
+   ]
+  },
+  "7876": {
+   "name": "Constant II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''10% Critical Hit or less:'''",
+    "{{gui|arrow}} 40% indirect damage"
+   ]
+  },
+  "7877": {
+   "name": "Elementalism",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has 3 equal elemental masteries:",
+    "{{gui|arrow}} 20% damage inflicted and heals performed"
+   ]
+  },
+  "7878": {
+   "name": "Chaos",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, elemental masteries are set to O",
+    "20% damage inflicted and heals performed"
+   ]
+  },
+  "7879": {
+   "name": "Abnegation",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the highest Elemental Mastery is greater than the Healing Mastery:",
+    "{{gui|arrow}} {{gui|di}} -15% Damage inflicted",
+    "{{gui|arrow}} {{gui|hp%}} 30% Heals performed"
+   ]
+  },
+  "7880": {
+   "name": "Engagement",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has 0 Healing Mastery or less:",
+    "{{gui|arrow}} 30% heals performed"
+   ]
+  },
+  "7881": {
+   "name": "Iron Will",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has 3 Range or less:",
+    "{{gui|arrow}} 20 Force of Will"
+   ]
+  },
+  "7882": {
+   "name": "Colossal",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has more Block than Critical Hit:",
+    "{{gui|arrow}} The Block is converted into Critical Hit"
+   ]
+  },
+  "8131": {
+   "name": "Allocentrism",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "If the bearer has no Armor:",
+    "{{gui|arrow}} {{gui|armor given}} {{se|base=5|scale=5}}% Armor given"
+   ]
+  },
+  "8132": {
+   "name": "Embellishment",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At end of turn, per enemy in close combat:",
+    "{{gui|arrow}} {{gui|di}} {{se|base=1|scale=1}}% damage inflicted for the following turn"
+   ]
+  },
+  "8366": {
+   "name": "Last Moment",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "When a spell is cast, if it costs 1 or more WP:",
+    "{{gui|arrow}} 5% damage inflicted for the spell per current WP on the bearer (max 30%)"
+   ]
+  },
+  "8367": {
+   "name": "Arrogance",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "-100 Elemental Resistance",
+    "When the bearer inflicts melee damage:",
+    "{{gui|arrow}} Steals '''25'''% of damage inflicted"
+   ]
+  },
+  "8368": {
+   "name": "Modularity",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "After suffering damage:",
+    "{{gui|arrow}} 50 Elemental Resistance in this element (1 turn) (not stackable)",
+    "A new element replaces the previous one"
+   ]
+  },
+  "8370": {
+   "name": "Calibration",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "If the bearer inflicted melee damage on an enemy during their turn:",
+    "{{gui|arrow}} 25% ranged damage inflicted for the following turn"
+   ]
+  },
+  "8372": {
+   "name": "Vehemence",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "Each turn, 50% health stolen with the first spell to inflict damage",
+    "{{gui|armorreceived}} -50% Armor received"
+   ]
+  },
+  "8374": {
+   "name": "Beyond the Barrier",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "When a spell is cast, if the spell costs 4 AP or more:",
+    "{{gui|arrow}} 15% critical damage for the spell",
+    "When a spell is cast, if the spell costs 1 WP or more:",
+    "{{gui|arrow}} 15% critical damage for the spell"
+   ]
+  },
+  "8375": {
+   "name": "Single Shared Armor",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "30% Armor given on targets with no Armor",
+    "Otherwise, -100% Armor given"
+   ]
+  },
+  "8376": {
+   "name": "Calibration II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "If the bearer inflicted melee damage on an enemy during their turn:",
+    "{{gui|arrow}} 10% ranged damage inflicted for the following turn (1 time per turn, stackable 5 times)"
+   ]
+  },
+  "8379": {
+   "name": "Lunatic II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "After inflicting damage on an enemy, for the following turn:",
+    "{{gui|arrow}} -30% Damage inflicted",
+    "{{gui|arrow}} 30% Heals performed",
+    "{{gui|arrow}} 30% Armor given",
+    "After healing or giving Armor to an ally, for the following turn:",
+    "{{gui|arrow}} 30% Damage inflicted",
+    "{{gui|arrow}} -30% Heals performed",
+    "{{gui|arrow}} -30% Armor given"
+   ]
+  },
+  "8380": {
+   "name": "Natural Poise",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "50 Elemental Resistance if the bearer has no Armor, otherwise -100 Elemental Resistance"
+   ]
+  },
+  "8381": {
+   "name": "Ebullience",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "If the bearer uses a spell to move:",
+    "{{gui|arrow}} 1 AP",
+    "{{gui|arrow}} 2 max per turn"
+   ]
+  },
+  "8382": {
+   "name": "Gusto",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "If the bearer uses a spell to move:",
+    "{{gui|arrow}} 1 MP",
+    "{{gui|arrow}} 2 max per turn"
+   ]
+  },
+  "8383": {
+   "name": "Involuntary Heaviness",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "If the bearer is moved outside of their turn:",
+    "{{gui|arrow}} Applies {{st|862}} at the end of their next turn"
+   ]
+  },
+  "8384": {
+   "name": "Pillar II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''50% Block or greater:'''",
+    "{{gui|arrow}} Bonus to HP modifier: -30%",
+    "{{gui|arrow}} 30% Armor given"
+   ]
+  },
+  "8385": {
+   "name": "Measure II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has '''50% Critical Hit or greater:'''",
+    "{{gui|arrow}} 20% Block",
+    "{{gui|arrow}} 10 Force of Will"
+   ]
+  },
+  "8386": {
+   "name": "Direct Force of Will",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "Outside the bearer's turn: '''{{se|base=-4|scale=-4}}''' Force of Will",
+    "During the bearer's turn: {{gui|fow}} '''{{se|base=3|scale=3}} Force of Will'''"
+   ]
+  },
+  "8387": {
+   "name": "Indirect Force of Will",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "Outside the bearer's turn: '''{{se|base=3|scale=3}}''' Force of Will",
+    "During the bearer's turn: {{gui|fow}} '''{{se|base=-4|scale=-4}} Force of Will'''"
+   ]
+  },
+  "8388": {
+   "name": "Scrupulosity",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=2|scale=2}}'''% Damage Inflicted on targets 5 cells or further away"
+   ]
+  },
+  "8389": {
+   "name": "Intermediate Vision",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=3|scale=3}}%''' Damage Inflicted on targets exactly 3 cells away"
+   ]
+  },
+  "8390": {
+   "name": "Constant Evasion",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=3|scale=3}}% Block''' "
+   ]
+  },
+  "8391": {
+   "name": "Critical Shield",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=5|scale=5}} Critical Resistance'''"
+   ]
+  },
+  "8392": {
+   "name": "Wakfu Conservation",
+   "cumulative": true,
+   "max_level": 2,
+   "effects": [
+    "-1 max WP",
+    "At end of turn, if the bearer has not spent any WP: +1 WP"
+   ]
+  },
+  "8393": {
+   "name": "Rear Shield",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "'''{{se|base=5|scale=5}} Rear Resistance'''"
+   ]
+  },
+  "8394": {
+   "name": "Propagation",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "When the state bearer inflicts direct damage, once per turn:",
+    "{{gui|arrow}} Inflicts '''{{se|base=10|scale=10}}'''% of level as Light damage on enemies aligned with the target"
+   ]
+  },
+  "8395": {
+   "name": "Added Value",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "Each time indirect damage is inflicted:",
+    "{{gui|arrow}} {{se|base=-2|scale=-2}}%''' direct damage",
+    "{{gui|arrow}} {{se|base=2|scale=2}}%''' indirect damage",
+    "{{gui|arrow}} Up to 40%, the bonus is lost at start of turn"
+   ]
+  },
+  "8397": {
+   "name": "Blood Stains",
+   "cumulative": true,
+   "max_level": 40,
+   "effects": [
+    "{{se|base=1|scale=1}}% damage received by the caster"
+   ]
+  },
+  "8398": {
+   "name": "Blood Stains",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "For each penalty or loss applied to an enemy:",
+    "{{gui|arrow}} {{st|8397}} (+{{se|base=2|scale=2}} Lvl.)"
+   ]
+  },
+  "8399": {
+   "name": "Reprisal",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "When the state bearer suffers ranged direct damage:",
+    "{{gui|arrow}} Inflicts {{se|base=6|scale=6}}% extra damage on the attacker",
+    "{{gui|arrow}} 1 turn, not stackable"
+   ]
+  },
+  "8400": {
+   "name": "Shell",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When the state bearer applies Armor on an ally, applies {{st|8401}} (Lvl {{se|base=1|scale=1}})"
+   ]
+  },
+  "8401": {
+   "name": "Shell",
+   "cumulative": false,
+   "max_level": 6,
+   "effects": [
+    "When the state bearer suffers direct damage:",
+    "{{gui|arrow}} Inflicts {{gui|light}} damage on the caster ('''{{se|base=5|scale=5}}'''% of level)",
+    "{{gui|arrow}} The state is removed"
+   ]
+  },
+  "8402": {
+   "name": "Violent Rupture",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "When the state bearer causes an enemy to lose Armor:",
+    "{{gui|arrow}} The state bearer inflicts light damage on the attacker ({{se|base=10|scale=10}}% of level) (2 activations per turn)"
+   ]
+  },
+  "8403": {
+   "name": "AP Rupture",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When the state bearer causes an enemy to lose Armor:",
+    "{{gui|arrow}} The state bearer recovers {{gui|ap}} {{se|base=0.5|scale=0.5}} AP",
+    " (2 activations per turn)"
+   ]
+  },
+  "8489": {
+   "name": "Single Shared Armor II",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "Each turn, {{gui|armorgiven}} 40% Armor given with the first Armor application; {{gui|armorgiven}} -50% Armor given with all others"
+   ]
+  },
+  "8490": {
+   "name": "Time Control",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "Every 3 spells cast: Critical Hit is set to 100."
+   ]
+  },
+  "8492": {
+   "name": "Measure III",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if the state bearer has ''' no more than 50% Critical Hit:'''",
+    "{{gui|arrow}} 20% damage inflicted on critical hit"
+   ]
+  },
+  "8493": {
+   "name": "Critical Scale",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "Each time a non-critical spell is cast:",
+    "{{gui|arrow}} '''{{se|base=2|scale=2}}''' Critical Hit",
+    "Bonus is lost on the next critical hit"
+   ]
+  },
+  "8494": {
+   "name": "Critical Consolation",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "Each time a non-critical spell is cast:",
+    "{{gui|arrow}} '''{{se|base=-2|scale=-2}}%''' Critical damage inflicted (stackable up to 40)",
+    "Bonus is lost on the next critical hit"
+   ]
+  },
+  "8496": {
+   "name": "Last Armor",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When below 20% of max HP (1 time per fight):",
+    "'''{{se|base=5|scale=5}}%''' of max HP as Armor"
+   ]
+  },
+  "8497": {
+   "name": "Last Heal",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When below 20% of max HP (1 time per fight):",
+    "Healing: '''{{se|base=5|scale=5}}%''' of max HP"
+   ]
+  },
+  "8498": {
+   "name": "Last Resistance",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When below 20% of max HP (1 time per fight):",
+    "'''{{se|base=20|scale=20}}%''' Elemental Resistance (1 turn)"
+   ]
+  },
+  "8499": {
+   "name": "Secondary Burn",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "On casting a {{gui|water}}, {{gui|earth}}, or {{gui|air}} spell:",
+    "{{gui|arrow}} '''{{se|base=2|scale=2}}% damage inflicted''' in the Fire element {{gui|fire}}",
+    "{{gui|arrow}} Stackable up to 30",
+    "Effect is consumed on next direct Fire damage {{gui|fire}}"
+   ]
+  },
+  "8502": {
+   "name": "Secondary Freezing",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "On casting a {{gui|fire}}, {{gui|earth}}, or {{gui|air}} spell:",
+    "{{gui|arrow}} '''{{se|base=2|scale=2}}% damage inflicted''' in the Fire element {{gui|water}}",
+    "{{gui|arrow}} Stackable up to 30",
+    "Effect is consumed on next direct Fire damage {{gui|water}}"
+   ]
+  },
+  "8505": {
+   "name": "Secondary Earthbound",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "On casting a {{gui|fire}}, {{gui|water}}, or {{gui|air}} spell:",
+    "{{gui|arrow}} '''{{se|base=2|scale=2}}% damage inflicted''' in the Fire element {{gui|earth}}",
+    "{{gui|arrow}} Stackable up to 30",
+    "Effect is consumed on next direct Fire damage {{gui|earth}}"
+   ]
+  },
+  "8508": {
+   "name": "Secondary Ventilation",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "On casting a {{gui|fire}}, {{gui|water}}, or {{gui|earth}} spell:",
+    "{{gui|arrow}} '''{{se|base=2|scale=2}}% damage inflicted''' in the Fire element {{gui|air}}",
+    "{{gui|arrow}} Stackable up to 30",
+    "Effect is consumed on next direct Fire damage {{gui|air}}"
+   ]
+  },
+  "8518": {
+   "name": "Burn",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=4|scale=4}}%''' damage inflicted in the Fire element {{gui|fire}}"
+   ]
+  },
+  "8519": {
+   "name": "Freezing",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=4|scale=4}}%''' damage inflicted in the Water element {{gui|water}}"
+   ]
+  },
+  "8520": {
+   "name": "Earthbound",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=4|scale=4}}%''' damage inflicted in the Earth element {{gui|earth}}"
+   ]
+  },
+  "8521": {
+   "name": "Ventilation",
+   "cumulative": true,
+   "max_level": 4,
+   "effects": [
+    "'''{{se|base=4|scale=4}}%''' 16% damage inflicted in the Air element {{gui|air}}"
+   ]
+  },
+  "9060": {
+   "name": "Secondary Embellishment",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At end of turn, if an enemy is adjacent",
+    "{{gui|arrow}} {{gui|di}} {{se|base=2|scale=2}}% damage inflicted for the following turn"
+   ]
+  },
+  "9062": {
+   "name": "Surge",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "If the bearer uses a spell to move:",
+    "{{gui|arrow}} {{st|3462}} (+30 Lvl.)"
+   ]
+  },
+  "9064": {
+   "name": "Judgment",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When inflicting single-target damage on an enemy:",
+    "{{gui|arrow}} {{se|base=3|scale=3}}% extra damage inflicted on this target on the next turn"
+   ]
+  },
+  "9066": {
+   "name": "Diagnosis",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "When single-target healing an ally:",
+    "{{gui|arrow}} {{se|base=2|scale=2}}% extra heals performed on this"
+   ]
+  },
+  "9067": {
+   "name": "Critical Save",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At end of turn:",
+    "{{gui|arrow}} Unused AP is carried over to the next turn as Critical Hit",
+    "{{gui|arrow}} 10% Critical Hit per AP",
+    "{{gui|arrow}} Max '''{{se|base=0.5|scale=0.5}}''' AP"
+   ]
+  },
+  "9070": {
+   "name": "Wakfu Seal",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "The state bearer increases their heals performed by 2% per turn (permanent) (max 20)"
+   ]
+  },
+  "9071": {
+   "name": "Single Block",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "When performing a Block:",
+    "{{gui|arrow}} '''-30%''' extra damage received",
+    "{{gui|arrow}} {{gui|block}} -100% Block"
+   ]
+  },
+  "9072": {
+   "name": "Absolution",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At start of turn, if there are at least 2 allies in melee:",
+    "{{gui|arrow}} {{gui|ap}} 1 AP (1 turn)",
+    "{{gui|arrow}} {{gui|mp}} 1 MP (1 turn)"
+   ]
+  },
+  "9073": {
+   "name": "Punishment",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At start of turn, if there are at least 2 enemies in melee:",
+    "{{gui|arrow}} {{gui|ap}} 1 AP",
+    "{{gui|arrow}} {{gui|mp}} 1 MP"
+   ]
+  },
+  "9074": {
+   "name": "Critical Secret",
+   "cumulative": false,
+   "max_level": null,
+   "effects": [
+    "At the start of combat, if Critical Mastery is less than or equal to O:",
+    "{{gui|arrow}} {{gui|crit}} 30% Critical Hit"
+   ]
+  }
+ },
+ "sources": {
+  "abandon": "Amakna rift",
+  "about-turn": "Frigost Ultimate Rift",
+  "accumulation": "Great Zomkin's Compost Dungeon (stele)",
+  "added value": "Great Zomkin's Compost Dungeon (stele)",
+  "allocentrism": "Tundrazor Dungeon (stele)",
+  "altruism": "Moon Rift",
+  "ambition": "Shustuft Crust Rift",
+  "ambush": "Mecha Factory Dungeon (stele)",
+  "ap return": "Iced-Over Crest Dungeon (stele)",
+  "ap rupture": "Treechnid Dungeon (stele)",
+  "arcana": "Astrub Rift",
+  "armor length": "Bonta Rift",
+  "armor return": "Srambad Dungeon (stele)",
+  "art of concealment": "Crabstacean Dungeon (stele)",
+  "bashell": "Sunsloth Dungeon (stele)",
+  "berserk block": "Badgeroxes' Lair Dungeon (stele)",
+  "berserk critical": "Pandala Tomb Dungeon (stele)",
+  "berserk dodge": "Kannivore Dungeon (stele)",
+  "berserk lock": "Crocodyl Dungeon (stele)",
+  "berserk wakfu": "Frigost Ultimate Rift",
+  "blocking expert": "Kanniball Dungeon (stele)",
+  "blood carapace": "Dirty Trouffe Estate (stele)",
+  "blood stains": "Sunsloth Dungeon (stele)",
+  "brawling": "Shustuft Crust Rift",
+  "burn": "Blopera Dungeon (stele)",
+  "carapace": "Shustuft Crust Ultimate Rift",
+  "carnage": "Iced-Over Crest Dungeon (stele)",
+  "clamor": "Crocodyl Dungeon (stele)",
+  "condemnation": "Runic Mimic Chest",
+  "conservation": "Vandalophrenic Dungeon (stele)",
+  "constant evasion": "Tundrazor Dungeon (stele)",
+  "counterattack": "Sufokia Rift",
+  "courage": "Frigost Ultimate Rift",
+  "critical consolation": "Scramshell Dungeon (stele)",
+  "critical hit expert": "Iced-Over Crest Dungeon (stele)",
+  "critical preparation": "Shustuft Crust Rift",
+  "critical save": "Nox (Ultimate Boss)",
+  "critical scale": "Plantiguard Dungeon (stele)",
+  "critical shield": "Tundrazor Dungeon (stele)",
+  "cyclical ruin": "Forbidden City Dungeon (3-player)",
+  "cyclothymia": "Womewo's Labowatowy Dungeon (stele)",
+  "delay": "Shustuft Crust Ultimate Rift",
+  "destruction": "Bonta Rift",
+  "determination": "Ow El Dungeon (stele)",
+  "devastate": "Or'Hodruin Volcano Dungeon (stele)",
+  "devastation": "Kannivore Dungeon (stele)",
+  "diagnosis": "Nox (Ultimate Boss)",
+  "dimensionality": "Mecha Factory Dungeon (stele)",
+  "direct force of will": "Vandalophrenic Dungeon (stele)",
+  "distance barrier": "Kanniball Dungeon (stele)",
+  "distant ambush": "Pandala Tomb Dungeon (stele)",
+  "dodge steal": "Bonta Rift",
+  "earthbound": "Enurado Dungeon (stele)",
+  "embellishment": "Pingwin Dungeon (stele)",
+  "endurance": "Kannivore Dungeon (stele)",
+  "escape": "Wa Wabbit's Castle",
+  "evasion": "Blackspore Dungeon (stele)",
+  "featherweight": "Shustuft Crust Ultimate Rift",
+  "firm foot": "Zinit Ultimate Rift",
+  "flaming return": "Bonta Rift",
+  "flee": "Wa Wabbit's Castle",
+  "focalization": "Ow El Dungeon (stele)",
+  "freezing": "Blopera Dungeon (stele)",
+  "frenzy": "All Lv. 200 Dungeons with Aguabrial",
+  "fury": "Badgeroxes' Lair Dungeon (stele)",
+  "healing": "Pandala Tomb Dungeon (stele)",
+  "heavy armor": "Shustuft Crust Ultimate Rift",
+  "indirect force of will": "Great Zomkin's Compost Dungeon (stele)",
+  "influence": "Runic Mimic Chest",
+  "integrity": "Badgeroxes' Lair Dungeon (Aguabrial)",
+  "interception": "Dirty Trouffe Estate (stele)",
+  "intermediate vision": "Blackspore Dungeon (stele)",
+  "interposition": "Plantiguard Dungeon (stele)",
+  "judgment": "Nox (Ultimate Boss)",
+  "last armor": "Srambad Dungeon (stele)",
+  "last breath": "Zinit Ultimate Rift",
+  "last heal": "Blackspore Dungeon (stele)",
+  "last resistance": "Sandyoptera Mother-Hive Dungeon (stele)",
+  "length": "Runic Mimic Chest",
+  "light strength": "Plantiguard Dungeon (stele)",
+  "light weapons expert": "Frigost Ultimate Rift",
+  "lightness": "Dreggons' Sanctuary (stele)",
+  "lock steal": "Astrub Rift",
+  "locking": "Shustuft Crust Rift",
+  "lone wolf": "Or'Hodruin Volcano Dungeon (Aguabrial)",
+  "madness": "Womewo's Labowatowy Dungeon (stele)",
+  "mania": "Moon Rift",
+  "melee barrier": "Tropickle Dungeon (stele)",
+  "moon scales": "Dreggons' Sanctuary (stele)",
+  "mp return": "Wellspring of Evil Dungeon (stele)",
+  "nature": "Sufokia Rift",
+  "neutrality": "Osamosa Rift",
+  "obstinacy": "Blightopard Canyon Dungeon (stele)",
+  "offensive block": "Osamosa Rift",
+  "paradoxical influence": "Vandalophrenic Dungeon (stele)",
+  "persistence": "Blightopard Canyon Dungeon (stele)",
+  "poise": "Wellspring of Evil Dungeon (stele)",
+  "poisoned weapon": "Moon Rift",
+  "precaution": "Amakna Rift",
+  "pretension": "Osamosa Rift",
+  "profit": "Sunsloth Dungeon (stele)",
+  "propagation": "Wa Wabbit's Castle",
+  "prosperity": "Wellspring of Evil Dungeon (stele)",
+  "raw power": "Zinit Ultimate Rift",
+  "rear shield": "Scramshell Dungeon (stele)",
+  "recklessness": "Treechnid Dungeon (stele)",
+  "reinvigoration": "Amakna Rift",
+  "reprisal": "Pingwin Dungeon (stele)",
+  "resolute": "Or'Hodruin Volcano Dungeon (stele)",
+  "rocky envelope": "Treechnid Dungeon (stele)",
+  "ruin": "Sandyoptera Mother-Hive Dungeon (stele)",
+  "save": "Or'Hodruin Volcano Dungeon (stele)",
+  "scrupulosity": "Crabstacean Dungeon (stele)",
+  "secondary burn": "Enurado Dungeon (stele)",
+  "secondary devastation": "Blightopard Canyon Dungeon (stele)",
+  "secondary earthbound": "Blopera Dungeon (stele)",
+  "secondary embellishment": "Nox (Ultimate Boss)",
+  "secondary freezing": "Enurado Dungeon (stele)",
+  "secondary ventilation": "Blopera Dungeon (stele)",
+  "secret of life": "Dreggons' Sanctuary (Aguabrial)",
+  "sensitivity": "Zinit Ultimate Rift",
+  "shell": "6",
+  "slow escape": "Forbidden City Dungeon (3-player)",
+  "slow influence": "Ow El Dungeon (stele)",
+  "social relations": "Moon Rift",
+  "solid weapon": "Sufokia Rift",
+  "solidity": "Lenald Palace Dungeon (stele)",
+  "spines": "Dreggons' Sanctuary (stele)",
+  "strong hand": "Astrub Rift",
+  "stupefaction": "Badgeroxes' Lair Dungeon (stele)",
+  "surge": "Nox (Ultimate Boss)",
+  "swiftness": "Tropickle Dungeon (stele)",
+  "tactical critical": "Osamosa Rift",
+  "technical critical": "Amakna Rift",
+  "tenacity": "Lenald Palace Dungeon (stele)",
+  "theory of matter": "Mecha Factory Dungeon (stele)",
+  "tolerance": "Iced-Over Crest Dungeon (Aguabrial)",
+  "topology": "Forbidden City Dungeon (3-player)",
+  "vampiric madness": "Dirty Trouffe Estate (stele)",
+  "ventilation": "Enurado Dungeon (stele)",
+  "violent rupture": "Srambad Dungeon (stele)",
+  "visibility": "Kanniball Dungeon (stele)",
+  "vital agility": "Pingwin Dungeon (stele)",
+  "vital influence": "Crabstacean Dungeon (stele)",
+  "vital return": "Astrub Rift",
+  "vital strength": "Scramshell Dungeon (stele)",
+  "vitality well": "Sandyoptera Mother-Hive Dungeon (stele)",
+  "vivacity": "Crocodyl Dungeon (stele)",
+  "wakfu conservation": "Womewo's Labowatowy Dungeon (stele)",
+  "wakfu influence": "Sufokia Rift",
+  "wall": "[[Category:Lists]]"
+ }
+}

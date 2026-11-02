@@ -1,0 +1,38 @@
+# Revisa cada lunes si Ankama publicó datos nuevos; si cambian, los guarda en main (lo que dispara la publicación).
+name: Actualizar datos del juego
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run data
+      - name: Guardar si hay cambios
+        run: |
+          if git diff --quiet -- public/data data; then
+            echo "Sin cambios en los datos."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data data
+          git commit -m "Actualizar datos del juego"
+          git push
+          # Un push hecho con GITHUB_TOKEN no dispara otros flujos: se lanza la publicación a mano.
+          gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}

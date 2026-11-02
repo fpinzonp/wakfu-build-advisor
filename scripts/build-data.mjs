@@ -68,9 +68,9 @@ async function getJson(url) {
 const { version } = await getJson(`${CDN}/config.json`);
 console.log(`Versión de datos: ${version}`);
 const get = (name) => getJson(`${CDN}/${version}/${name}.json`);
-const [items, recipes, recipeResults, recipeIngredients, recipeCategories, jobsItems, blueprints] = await Promise.all([
+const [items, recipes, recipeResults, recipeIngredients, recipeCategories, jobsItems, blueprints, gameStates] = await Promise.all([
   get('items'), get('recipes'), get('recipeResults'), get('recipeIngredients'),
-  get('recipeCategories'), get('jobsItems'), get('blueprints'),
+  get('recipeCategories'), get('jobsItems'), get('blueprints'), get('states'),
 ]);
 
 // Nombres e imágenes de recursos/ingredientes (jobsItems los contiene todos)
@@ -278,6 +278,18 @@ if (wiki) {
 const wikiStates = wiki?.states ?? {};
 const wikiSources = wiki?.sources ?? {};
 
+// Traducción propia al español de los textos de la wiki (clave: texto original en inglés).
+// Si la wiki cambia un texto y aún no está traducido, se muestra en inglés.
+const wikiEs = JSON.parse(await readFile(new URL('../data/wiki-es.json', import.meta.url), 'utf8'));
+const untranslated = new Set();
+const toEs = (text) => {
+  const es = wikiEs.effects[text];
+  if (es === undefined) untranslated.add(text);
+  return es ?? text;
+};
+// Nombres oficiales de los estados en español (Ankama los publica; las descripciones no)
+const stateNameEs = new Map(gameStates.map((st) => [st.definition.id, st.title?.es]));
+
 // Convierte las plantillas de la wiki en texto plano para un nivel dado.
 function renderEffect(text, level) {
   let s = String(text);
@@ -288,7 +300,7 @@ function renderEffect(text, level) {
       const pos = args.filter((a) => !a.includes('='));
       switch (name.trim()) {
         case 'se': return String(Math.floor(Number(kv.base ?? 0) + Number(kv.scale ?? 0) * (level - 1)));
-        case 'st': return wikiStates[pos[0]]?.name ?? '';
+        case 'st': return stateNameEs.get(Number(pos[0])) ?? wikiStates[pos[0]]?.name ?? '';
         case 'he': {
           if (kv.hidden && level < Number(kv.hidden)) return '';
           if (kv.hide && level >= Number(kv.hide)) return '';
@@ -321,8 +333,10 @@ for (const raw of items) {
     level,
     maxLevel: st?.max_level ?? null,
     stackable: !!st?.cumulative,
-    effect: st ? Object.values(st.effects ?? {}).map((e) => renderEffect(e, level)).filter(Boolean) : [],
-    ...(wikiSources[baseEn] && { source: renderEffect(wikiSources[baseEn], 1) }),
+    effect: st ? Object.values(st.effects ?? {}).map((e) => renderEffect(toEs(String(e)), level)).filter(Boolean) : [],
+    ...(wikiSources[baseEn] && wikiEs.sources[wikiSources[baseEn]] !== '' && {
+      source: renderEffect(wikiEs.sources[wikiSources[baseEn]] ?? wikiSources[baseEn], 1),
+    }),
     gfx: def.graphicParameters.gfxId,
   });
 }
@@ -331,6 +345,7 @@ await mkdir(OUT_DIR, { recursive: true });
 await writeFile(new URL('enchant.json', OUT_DIR), JSON.stringify({ version, shards, sublimations }));
 console.log(`${shards.length} runas y ${sublimations.length} sublimaciones escritas en public/data/enchant.json`,
   `(${sublimations.filter((s) => s.effect.length).length} con efecto descrito)`);
+if (untranslated.size) console.warn(`Aviso: ${untranslated.size} textos de la wiki sin traducir en data/wiki-es.json (se muestran en inglés).`);
 await writeFile(new URL('items.json', OUT_DIR), JSON.stringify({ version, items: out }));
 await writeFile(new URL('recipes.json', OUT_DIR), JSON.stringify({ version, recipes: recipesOut, ingredients: ingredientsOut }));
 const bySrc = out.reduce((acc, i) => ({ ...acc, [i.src]: (acc[i.src] ?? 0) + 1 }), {});

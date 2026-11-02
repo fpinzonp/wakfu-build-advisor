@@ -295,7 +295,7 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
   }, []);
   const toggleRecipe = (id: number) => setOpenRecipe((cur) => (cur === id ? null : id));
 
-  // Ficha de características: opcionalmente con el bonus de las runas recomendadas (lo calcula EnchantPanel).
+  // Ficha de características: opcionalmente con el bonus de las runas elegidas en EnchantPanel.
   const [runeBonus, setRuneBonus] = useState<Record<string, number> | null>(null);
   const [withRunes, setWithRunes] = useState(true);
   const sheetResult = withRunes && runeBonus ? evaluateBuild(result.slots, request, runeBonus) : result;

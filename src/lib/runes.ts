@@ -26,10 +26,31 @@ export interface RunePlan {
 /** Nivel máximo de runa que admite un objeto (1-11), según su nivel. */
 export const runeLevel = (item: Item, shard: Shard) => shard.req.filter((r) => r <= item.lvl).length || 1;
 
-const runeValue = (item: Item, slot: BuildSlot, shard: Shard) => {
+export const runeValue = (item: Item, slot: BuildSlot, shard: Shard) => {
   const doubled = shard.double.includes(RUNE_SLOTS[slot]!);
   return { value: Math.floor(shard.per * runeLevel(item, shard) * (doubled ? 2 : 1)), doubled };
 };
+
+export interface RuneSocket { slot: BuildSlot; item: Item; forced?: SocketColor }
+
+/** Engarces de la build, en orden; `forced` = color impuesto por la sublimación aplicada. */
+export function runeSockets(slots: BuildSlots, patterns: Partial<Record<BuildSlot, SocketColor[]>> = {}): RuneSocket[] {
+  const sockets: RuneSocket[] = [];
+  for (const [slot, key] of Object.entries(RUNE_SLOTS) as [BuildSlot, string][]) {
+    const item = slots[slot];
+    if (!key || !item?.sockets) continue;
+    const pattern = patterns[slot] ?? [];
+    for (let i = 0; i < Math.max(item.sockets, pattern.length); i++) sockets.push({ slot, item, forced: pattern[i] });
+  }
+  return sockets;
+}
+
+/** Suma de stats de una lista de runas. */
+export function runeBonus(plans: SocketPlan[]): Record<string, number> {
+  const b: Record<string, number> = {};
+  for (const p of plans) b[p.shard.stat] = (b[p.shard.stat] ?? 0) + p.value;
+  return b;
+}
 
 /**
  * @param patterns colores obligatorios de los primeros engarces de cada pieza (sublimaciones aplicadas)
@@ -38,13 +59,7 @@ export function planRunes(
   slots: BuildSlots, req: BuildRequest, shards: Shard[],
   patterns: Partial<Record<BuildSlot, SocketColor[]>> = {},
 ): RunePlan {
-  const sockets: { slot: BuildSlot; item: Item; forced?: SocketColor }[] = [];
-  for (const [slot, key] of Object.entries(RUNE_SLOTS) as [BuildSlot, string][]) {
-    const item = slots[slot];
-    if (!key || !item?.sockets) continue;
-    const pattern = patterns[slot] ?? [];
-    for (let i = 0; i < Math.max(item.sockets, pattern.length); i++) sockets.push({ slot, item, forced: pattern[i] });
-  }
+  const sockets = runeSockets(slots, patterns);
 
   const choice: (SocketPlan | null)[] = sockets.map(() => null);
   const bonusOf = (skip: number) => {

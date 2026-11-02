@@ -251,3 +251,10 @@ input[type=number] {
   .alt-delta, .alt .small-btn { grid-column: 2; }
 }
 .site-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); text-align: center; line-height: 1.6; }
+.rune-socket { display: flex; flex-direction: column; gap: 2px; padding: 3px 0; }
+.rune-line select { flex: 1; min-width: 0; font-size: 12px; }
+.rune-sug { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; padding-left: 18px; }
+.rune-sug .socket { width: 9px; height: 9px; }
+.warn { color: var(--accent-2); padding-left: 18px; }
+.link-btn { background: none; border: none; padding: 0; color: var(--accent); cursor: pointer; font: inherit; font-size: 11.5px; text-decoration: underline; }
+.rune-item-head .link-btn { margin-left: auto; }

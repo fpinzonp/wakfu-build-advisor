@@ -50,7 +50,7 @@ export interface Sublimation {
   level: number;
   maxLevel: number | null;
   stackable: boolean;
-  effect: string[];     // texto en inglés (wakfu.wiki.gg)
+  effect: string[];     // texto de wakfu.wiki.gg traducido al español (data/wiki-es.json)
   source?: string;
   gfx: number;
 }

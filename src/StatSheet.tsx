@@ -49,9 +49,9 @@ export default function StatSheet({ result, elements, withRunes, runesAvailable,
     <div className="panel sheet">
       <div className="mat-head">
         <h2>Características</h2>
-        <label className="check" title={runesAvailable ? '' : 'Cargando runas…'}>
+        <label className="check" title={runesAvailable ? '' : 'Elige runas en el panel de runas'}>
           <input type="checkbox" checked={withRunes} disabled={!runesAvailable} onChange={(e) => onToggleRunes(e.target.checked)} />
-          <span>Incluir runas recomendadas</span>
+          <span>Incluir mis runas</span>
         </label>
       </div>
 

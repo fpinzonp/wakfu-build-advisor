@@ -33,3 +33,15 @@ export function sublimationAffinity(s: Sublimation, role: Role, focus: Focus): n
 
 /** Nombre base sin el sufijo de nivel (I, II, III). */
 export const sublimationBase = (name: string) => name.replace(/\s+(I|II|III|IV)$/, '');
+
+/** La sublimación épica o reliquia más afín al rol (para proponerla por defecto). */
+export function bestSublimation(subs: Sublimation[], kind: 'epic' | 'relic', role: Role, focus: Focus): Sublimation | undefined {
+  let best: Sublimation | undefined;
+  let bestScore = -Infinity;
+  for (const s of subs) {
+    if (s.kind !== kind || !s.effect.length) continue;
+    const sc = sublimationAffinity(s, role, focus);
+    if (sc > bestScore || (sc === bestScore && best && s.name.localeCompare(best.name) < 0)) { best = s; bestScore = sc; }
+  }
+  return best;
+}

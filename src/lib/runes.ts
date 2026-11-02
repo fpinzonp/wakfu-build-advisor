@@ -93,3 +93,34 @@ export function planRunes(
   const bonus = bonusOf(-1);
   return { sockets: plan, bonus, before: evaluateBuild(slots, req), after: evaluateBuild(slots, req, bonus) };
 }
+
+export interface RuneGroup {
+  slot: BuildSlot;
+  item: Item;
+  sockets: { forced?: SocketColor; mine: SocketPlan | null; sug: SocketPlan | null }[];
+}
+
+/**
+ * Engarces agrupados por pieza con la runa elegida (si la pieza no ha cambiado) y la sugerida.
+ * @param chosen ids de runa por engarce, guardados junto al id de la pieza
+ */
+export function runeGroups(
+  slots: BuildSlots, shards: Shard[], patterns: Partial<Record<BuildSlot, SocketColor[]>>,
+  chosen: Partial<Record<BuildSlot, { itemId: number; shards: (number | null)[] }>>,
+  suggested: RunePlan | null,
+): RuneGroup[] {
+  const byId = new Map(shards.map((sh) => [sh.id, sh]));
+  const out: RuneGroup[] = [];
+  const seen = new Map<BuildSlot, number>();
+  for (const sock of runeSockets(slots, patterns)) {
+    const i = seen.get(sock.slot) ?? 0;
+    seen.set(sock.slot, i + 1);
+    if (i === 0) out.push({ slot: sock.slot, item: sock.item, sockets: [] });
+    const c = chosen[sock.slot];
+    const id = c?.itemId === sock.item.id ? c.shards[i] : null;
+    const shard = id != null ? byId.get(id) : undefined;
+    const mine = shard ? { shard, color: shard.color, forced: false, ...runeValue(sock.item, sock.slot, shard) } : null;
+    out[out.length - 1].sockets.push({ forced: sock.forced, mine, sug: suggested?.sockets[sock.slot]?.[i] ?? null });
+  }
+  return out;
+}

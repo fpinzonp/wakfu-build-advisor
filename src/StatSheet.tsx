@@ -1,4 +1,4 @@
-import { ELEMENTS, type Element } from './lib/game';
+import { ELEMENTS, STAT_LABELS, type Element } from './lib/game';
 import { buildSheet } from './lib/characteristics';
 import type { BuildResult } from './lib/optimizer';
 
@@ -24,9 +24,10 @@ const MASTERIES: Row[] = [
   ['Dominio cura', 'mastHeal'], ['Dominio berserker', 'mastBerserk'],
 ];
 
-export default function StatSheet({ result, elements, withRunes, runesAvailable, onToggleRunes }: {
+export default function StatSheet({ result, elements, withRunes, runesAvailable, onToggleRunes, runeBonus }: {
   result: BuildResult; elements: Element[];
   withRunes: boolean; runesAvailable: boolean; onToggleRunes: (v: boolean) => void;
+  runeBonus?: Record<string, number> | null;
 }) {
   const sheet = buildSheet(result, elements);
   const value = (key: string) => (key === 'hp' ? result.derived.hp : sheet.stats[key] ?? 0);
@@ -47,13 +48,20 @@ export default function StatSheet({ result, elements, withRunes, runesAvailable,
 
   return (
     <div className="panel sheet">
-      <div className="mat-head">
+      <div className="panel-head">
         <h2>Características</h2>
-        <label className="check" title={runesAvailable ? '' : 'Elige runas en el panel de runas'}>
+        <label className="check">
           <input type="checkbox" checked={withRunes} disabled={!runesAvailable} onChange={(e) => onToggleRunes(e.target.checked)} />
-          <span>Incluir mis runas</span>
+          <span>Incluir mis runas{!runesAvailable && <small className="muted">Elige runas en "Runas y sublimaciones"</small>}</span>
         </label>
       </div>
+      {withRunes && runeBonus && (
+        <div className="row wrap">
+          {Object.entries(runeBonus).sort((a, b) => b[1] - a[1]).map(([k, v]) => (
+            <span key={k} className="tag">+{fmt(v)} {STAT_LABELS[k] ?? k}</span>
+          ))}
+        </div>
+      )}
 
       {grid(GENERAL)}
       {grid(ARMOR)}

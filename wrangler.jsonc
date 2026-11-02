@@ -1,0 +1,6 @@
+// Publicación en Cloudflare Workers como sitio estático: sirve la carpeta dist que genera "npm run build".
+{
+  "name": "wakfu-build-advisor",
+  "compatibility_date": "2025-09-01",
+  "assets": { "directory": "./dist" }
+}

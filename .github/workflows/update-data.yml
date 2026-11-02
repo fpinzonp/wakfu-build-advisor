@@ -1,4 +1,4 @@
-# Revisa cada lunes si Ankama publicó datos nuevos; si cambian, los guarda en main (lo que dispara la publicación).
+# Revisa cada lunes si Ankama publicó datos nuevos; si cambian, los guarda en main y Cloudflare vuelve a publicar la app.
 name: Actualizar datos del juego
 
 on:
@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: write
-  actions: write
 
 jobs:
   update:
@@ -32,7 +31,3 @@ jobs:
           git add public/data data
           git commit -m "Actualizar datos del juego"
           git push
-          # Un push hecho con GITHUB_TOKEN no dispara otros flujos: se lanza la publicación a mano.
-          gh workflow run deploy.yml --ref main
-        env:
-          GH_TOKEN: ${{ github.token }}

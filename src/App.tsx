@@ -590,7 +590,6 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
 }) {
   const [picker, setPicker] = useState<BuildSlot | null>(null);
   const [tab, setTab] = useState<ViewTab>('equip');
-  const { totals, derived } = result;
 
   // Recetas y datos de runas/sublimaciones se cargan al mostrar la primera build.
   const [recipes, setRecipes] = useState<RecipeData | null>(null);
@@ -674,6 +673,8 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
   const [withRunes, setWithRunes] = useState(true);
   const sheetResult = withRunes && withMine ? withMine : result;
 
+  // El resumen de arriba sigue a la hoja: con runas y sublimaciones si la casilla está marcada.
+  const { totals, derived } = sheetResult;
   const keyStats: [string, string][] = [
     [t('stat.ap'), fmt(totals.ap ?? 0)], [t('stat.mp'), fmt(totals.mp ?? 0)], [t('stat.wp'), fmt(totals.wp ?? 0)],
     [t('stat.range'), fmt(totals.range ?? 0)], [t('stat.hp'), fmt(derived.hp)],

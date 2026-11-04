@@ -213,6 +213,7 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
                   {top.pattern.length > 0 && <span className="pattern">{top.pattern.map((c, i) => <Socket key={i} color={c} />)}</span>}
                   {affinity >= 2.5 && <span className="tag accent">{t('enchant.suggested')}</span>}
                   {selected && <span className="tag">{t('enchant.chosen')}</span>}
+                  {top.stats && <span className="tag" title={t('enchant.appliesStatsHint')}>{t('enchant.appliesStats')}</span>}
                   <div className="sub-action">
                     {tab === 'normal' ? (
                       <select aria-label={t('enchant.applyAria', { name: top.name })} value=""

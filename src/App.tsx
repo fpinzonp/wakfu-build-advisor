@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import {
   BUILD_SLOTS, CLASSES, ELEMENTS, EPIC, RARITIES, RELIC, ROLES, ROLE_DEFAULT_TARGETS, SOURCE_LABELS, STAT_LABELS,
   isDamageRole, itemImage,
-  type BuildSlot, type EnchantData, type Element, type Item, type RecipeData, type Role, type SocketColor,
+  type BuildSlot, type EnchantData, type Element, type Item, type RecipeData, type Role, type SocketColor, type Sublimation,
 } from './lib/game';
 import {
   evaluateBuild, rankAlternatives, recommend, requiredItems, swapItem,
@@ -15,7 +15,7 @@ import {
   EMPTY_ENCHANT, decodeBuild, encodeBuild, loadStored, readHashCode, saveStored, shareUrl, slotIds, slotsFromIds,
   type BuildSettings, type EnchantState, type SavedBuild, type StoredBuild,
 } from './lib/share';
-import { bestSublimation } from './lib/sublimations';
+import { bestSublimation, sublimationBonus } from './lib/sublimations';
 import { EMPTY_DECK, NO_DECK_BONUS, classSpells, deckBonus, fitDeck, type Deck, type DeckBonus, type Spell, type SpellData } from './lib/spells';
 import DeckPanel from './DeckPanel';
 import {
@@ -625,12 +625,43 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
   );
   const mine = groups.flatMap((g) => g.sockets.flatMap((s) => (s.mine ? [s.mine] : [])));
   const bonusKey = mine.map((m) => `${m.shard.id}:${m.value}`).join();
-  const bonus = useMemo(() => (mine.length ? runeBonus(mine) : null), [bonusKey]);
-  const withMine = useMemo(() => (bonus ? evaluateBuild(result.slots, request, bonus) : null), [bonus, result, reqKey]);
-
-  // Propone la sublimación épica y la de reliquia más afines mientras el usuario no haya elegido.
   const epicItem = Object.values(result.slots).find((i) => i?.rarity === EPIC);
   const relicItem = Object.values(result.slots).find((i) => i?.rarity === RELIC);
+
+  // Sublimaciones elegidas que están en una pieza equipada.
+  const chosenSubs = useMemo(() => {
+    const list: Sublimation[] = [];
+    for (const [slot, id] of Object.entries(enchant.subs)) {
+      const s = subById.get(id!);
+      if (s && result.slots[slot as BuildSlot]) list.push(s);
+    }
+    if (epicItem && enchant.epic != null && subById.get(enchant.epic)) list.push(subById.get(enchant.epic)!);
+    if (relicItem && enchant.relic != null && subById.get(enchant.relic)) list.push(subById.get(enchant.relic)!);
+    return list;
+  }, [enchant, subById, result, epicItem, relicItem]);
+  const subsKey = chosenSubs.map((s) => s.id).join();
+
+  // Runas + efectos permanentes de las sublimaciones: se suman a las características como "extra".
+  const mineExtra = useMemo(() => {
+    const runes = mine.length ? runeBonus(mine) : {};
+    if (!mine.length && !chosenSubs.some((s) => s.stats)) return null;
+    const before = evaluateBuild(result.slots, request, runes);
+    const subs = sublimationBonus(chosenSubs, level, (k) => before.totals[k] ?? 0);
+    const stats = { ...runes };
+    for (const [k, v] of Object.entries(subs.stats)) stats[k] = (stats[k] ?? 0) + v;
+    return { stats, zero: subs.zero };
+    // request se recrea en cada render; reqKey resume sus campos.
+  }, [bonusKey, subsKey, result, reqKey, level]);
+  const bonus = mineExtra && (Object.keys(mineExtra.stats).length || mineExtra.zero.length) ? mineExtra.stats : null;
+  const withMine = useMemo(() => {
+    if (!mineExtra || !bonus) return null;
+    const req = mineExtra.zero.length
+      ? { ...request, deck: { stats: request.deck?.stats ?? {}, zero: [...(request.deck?.zero ?? []), ...mineExtra.zero] } }
+      : request;
+    return evaluateBuild(result.slots, req, bonus);
+  }, [mineExtra, bonus, result, reqKey]);
+
+  // Propone la sublimación épica y la de reliquia más afines mientras el usuario no haya elegido.
   useEffect(() => {
     if (!enchantData) return;
     const focus = { crit: request.crit, back: request.back, berserk: request.berserk };

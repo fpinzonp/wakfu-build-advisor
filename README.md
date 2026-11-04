@@ -62,5 +62,9 @@ Si la wiki no responde, se mantiene la copia anterior.
   inglés). Los nombres de hechizos no son los oficiales del juego. Si la wiki cambia un texto, `npm run data` avisa
   de lo que falta por traducir y lo muestra en inglés.
 
-Limitaciones: no modela efectos especiales de objetos, sublimaciones ni runas; los pesos son
+- Sublimaciones: sus efectos permanentes o de inicio de combate (Influjo: % golpe crítico, Evasión: esquiva…) están
+  curados a mano en `data/sublimation-stats.json` y se suman a las características con tus runas. Varias iguales suman
+  su nivel hasta el máximo. Los efectos por turno, de 1 turno o condicionados al combate no se modelan.
+
+Limitaciones: el optimizador no elige sublimaciones ni modela los efectos especiales de los objetos; los pesos son
 heurísticos y se pueden ajustar en `ROLE_WEIGHTS`.

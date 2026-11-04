@@ -61,7 +61,12 @@ export interface Sublimation {
   text?: string[];      // texto en el idioma de la interfaz
   source?: string;
   gfx: number;
+  stats?: SubStats;     // efectos permanentes curados a mano (data/sublimation-stats.json)
 }
+
+/** Número fijo, [base, escala] por nivel de sublimación, o {lvl}: % del nivel del personaje. */
+export type SubValue = number | [base: number, scale: number] | { lvl: number | [base: number, scale: number] };
+export type SubStats = { if?: { s: string; min?: number; max?: number }; zero?: string[] } & Record<string, unknown>;
 
 export interface EnchantData { version: string; shards: Shard[]; sublimations: Sublimation[] }
 

@@ -1,6 +1,6 @@
 // Sugerencia orientativa de sublimaciones según el rol, a partir de palabras clave de su efecto
 // (efectos de wakfu.wiki.gg traducidos al español; no hay datos numéricos oficiales para modelarlos).
-import { isDamageRole, type Role, type Sublimation } from './game';
+import { isDamageRole, type Role, type SubValue, type Sublimation } from './game';
 
 export interface Focus { crit: boolean; back: boolean; berserk: boolean }
 
@@ -44,4 +44,49 @@ export function bestSublimation(subs: Sublimation[], kind: 'epic' | 'relic', rol
     if (sc > bestScore || (sc === bestScore && best && s.name.localeCompare(best.name) < 0)) { best = s; bestScore = sc; }
   }
   return best;
+}
+
+// ---------- Efectos sobre las características ----------
+
+export interface SubBonus { stats: Record<string, number>; zero: string[]; applied: { name: string; level: number }[] }
+
+const valueAt = (v: [number, number] | number, level: number) =>
+  typeof v === 'number' ? v : v[0] + v[1] * (level - 1);
+
+/**
+ * Suma de los efectos permanentes de las sublimaciones elegidas. Las iguales (mismo nombre base) suman su
+ * nivel hasta el máximo si son acumulables; si no, cuenta la de mayor nivel. `total` da las características
+ * de la build (para las sublimaciones con condición, p. ej. Pacto de Wakfu: 8 PW o más).
+ */
+export function sublimationBonus(chosen: Sublimation[], charLevel: number, total: (stat: string) => number): SubBonus {
+  const groups = new Map<string, { sub: Sublimation; level: number }>();
+  for (const s of chosen) {
+    if (!s.stats) continue;
+    const key = sublimationBase(s.nameEn);
+    const g = groups.get(key);
+    if (!g) groups.set(key, { sub: s, level: s.level });
+    else {
+      const sum = s.stackable ? g.level + s.level : Math.max(g.level, s.level);
+      g.level = s.maxLevel ? Math.min(sum, s.maxLevel) : sum;
+    }
+  }
+  const stats: Record<string, number> = {};
+  const zero = new Set<string>();
+  const applied: SubBonus['applied'] = [];
+  for (const { sub, level } of groups.values()) {
+    const { if: cond, zero: z, ...rest } = sub.stats!;
+    if (cond) {
+      const v = total(cond.s);
+      if ((cond.min !== undefined && v < cond.min) || (cond.max !== undefined && v > cond.max)) continue;
+    }
+    for (const [k, raw] of Object.entries(rest as Record<string, SubValue>)) {
+      const v = typeof raw === 'object' && !Array.isArray(raw)
+        ? (valueAt(raw.lvl, level) / 100) * charLevel
+        : valueAt(raw, level);
+      stats[k] = (stats[k] ?? 0) + Math.floor(v);
+    }
+    z?.forEach((k) => zero.add(k));
+    applied.push({ name: sublimationBase(sub.name), level });
+  }
+  return { stats, zero: [...zero], applied };
 }

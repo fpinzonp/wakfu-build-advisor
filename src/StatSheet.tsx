@@ -57,8 +57,8 @@ export default function StatSheet({ result, elements, withRunes, runesAvailable,
       </div>
       {withRunes && runeBonus && (
         <div className="row wrap">
-          {Object.entries(runeBonus).sort((a, b) => b[1] - a[1]).map(([k, v]) => (
-            <span key={k} className="tag">+{fmt(v)} {STAT_LABELS[k] ?? k}</span>
+          {Object.entries(runeBonus).filter(([, v]) => v !== 0).sort((a, b) => b[1] - a[1]).map(([k, v]) => (
+            <span key={k} className={`tag ${v < 0 ? 'neg' : ''}`}>{v > 0 ? '+' : ''}{fmt(v)} {STAT_LABELS[k] ?? k}</span>
           ))}
         </div>
       )}

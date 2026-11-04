@@ -235,6 +235,7 @@ function summarize(slots: BuildSlots, req: BuildRequest, ctx = context(req), ext
   for (const k of req.deck?.zero ?? []) {
     totals[k] = 0;
     if (k in IDX) t[IDX[k as (typeof K)[number]]] = 0;
+    if (k === 'mastElem') t[IDX.mastEff] = 0;
   }
   return {
     slots, totals, aptitudes: ctx.aptitudes,

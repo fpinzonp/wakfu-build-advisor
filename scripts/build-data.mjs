@@ -384,6 +384,9 @@ function renderEffect(text, level, lang = 'es') {
   return s.replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1').replace(/'''?/g, '').replace(/\s+/g, ' ').trim();
 }
 
+// Efectos permanentes curados a mano (data/sublimation-stats.json), por nombre inglés sin número romano.
+const subStats = JSON.parse(await readFile(new URL('../data/sublimation-stats.json', import.meta.url), 'utf8')).sublimations;
+const unusedSubStats = new Set(Object.keys(subStats));
 const sublimations = [];
 const subNames = Object.fromEntries(LANGS.map((l) => [l, {}]));
 for (const raw of items) {
@@ -395,7 +398,8 @@ for (const raw of items) {
   const sp = def.sublimationParameters;
   const st = wikiStates[stateId];
   const nameEn = raw.title?.en ?? '';
-  const baseEn = nameEn.replace(/\s+(I|II|III|IV)$/, '').toLowerCase();
+  const baseNameEn = nameEn.replace(/\s+(I|II|III|IV)$/, '');
+  const baseEn = baseNameEn.toLowerCase();
   sublimations.push({
     id: def.id,
     name: raw.title?.es ?? nameEn,
@@ -410,7 +414,9 @@ for (const raw of items) {
       source: renderEffect(wikiEs.sources[wikiSources[baseEn]] ?? wikiSources[baseEn], 1),
     }),
     gfx: def.graphicParameters.gfxId,
+    ...(subStats[baseNameEn] && { stats: subStats[baseNameEn] }),
   });
+  unusedSubStats.delete(baseNameEn);
   const sourceEn = wikiSources[baseEn];
   for (const lang of LANGS) {
     const effect = st ? Object.values(st.effects ?? {}).map((e) => renderEffect(toLang(String(e), lang), level, lang)).filter(Boolean) : [];
@@ -419,6 +425,7 @@ for (const raw of items) {
     subNames[lang][def.id] = [titleIn(raw.title, lang) ?? nameEn, effect, ...(srcText ? [renderEffect(srcText, 1, lang)] : [])];
   }
 }
+if (unusedSubStats.size) console.warn(`Aviso: sublimaciones de data/sublimation-stats.json que no existen: ${[...unusedSubStats].join(', ')}`);
 
 // ---------- Hechizos y pasivas (baraja) ----------
 

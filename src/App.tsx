@@ -17,6 +17,10 @@ import {
 import { bestSublimation } from './lib/sublimations';
 import { EMPTY_DECK, NO_DECK_BONUS, classSpells, deckBonus, fitDeck, type Deck, type DeckBonus, type Spell, type SpellData } from './lib/spells';
 import DeckPanel from './DeckPanel';
+import {
+  LANGS, LangContext, fmt, initialLang, jobName, locale, pct, setLang as applyLang, setNames, t, tk, type Lang, type LangData,
+} from './lib/i18n';
+import { localizeEnchant, localizeItems, localizeRecipes, localizeSpells } from './lib/localize';
 import EnchantPanel, { Socket } from './EnchantPanel';
 import MaterialsPanel from './MaterialsPanel';
 import StatSheet from './StatSheet';
@@ -26,7 +30,6 @@ const NO_EXTRA: Record<string, number> = {};
 
 interface Dataset { version: string; items: Item[] }
 
-const fmt = (n: number) => Math.round(n).toLocaleString('es-ES');
 
 /** Efecto de la baraja: solo cuentan las pasivas de la clase que caben a este nivel. */
 function bonusFor(data: SpellData | null, classId: string, deck: Deck, level: number): DeckBonus {
@@ -41,6 +44,9 @@ const roleLabel = (r: Role) => ROLES.find((x) => x.id === r)!.label;
 export default function App() {
   const [data, setData] = useState<Dataset | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [lang, setLangState] = useState<Lang>(() => initialLang());
+  const [names, setNamesState] = useState<LangData | null>(null);
+  const changeLang = useCallback((l: Lang) => { applyLang(l); setLangState(l); }, []);
 
   const [level, setLevel] = useState(200);
   const [classId, setClassId] = useState('yopuka');
@@ -76,12 +82,26 @@ export default function App() {
     fetch(import.meta.env.BASE_URL + 'data/items.json')
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then(setData)
-      .catch((e) => setError(`No se pudieron cargar los objetos (${e.message}). Recarga la página para reintentarlo.`));
+      .catch((e) => setError(t('app.loadError', { error: e.message })));
     fetch(import.meta.env.BASE_URL + 'data/spells.json')
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then(setSpellData)
       .catch(() => setSpellData({ version: '', common: [], classes: {} }));
   }, []);
+
+  // Nombres de objetos, runas, hechizos… en el idioma elegido.
+  useEffect(() => {
+    applyLang(lang);
+    let alive = true;
+    fetch(`${import.meta.env.BASE_URL}data/lang/${lang}.json`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((d: LangData) => { if (alive) { setNames(d); setNamesState(d); } })
+      .catch(() => undefined);
+    return () => { alive = false; };
+  }, [lang]);
+  // Los nombres se aplican sobre los mismos objetos para que la build actual también cambie de idioma.
+  if (names && data) localizeItems(data.items, names);
+  if (names && spellData) localizeSpells(spellData, names);
 
   const cls = CLASSES.find((c) => c.id === classId)!;
 
@@ -132,7 +152,7 @@ export default function App() {
     const code = readHashCode();
     if (!code) return;
     const saved = decodeBuild(code);
-    if (!saved || !openSaved(saved, data.items)) notify('El enlace no contiene una build válida.');
+    if (!saved || !openSaved(saved, data.items)) notify(t('app.badLink'));
   }, [data, openSaved, notify]);
 
   // Al cambiar la baraja (o al cargar los hechizos) la build se recalcula sin reoptimizar.
@@ -201,7 +221,7 @@ export default function App() {
   const currentCode = () => (result ? encodeBuild({
     settings, slots: slotIds(result.slots), locked: Object.keys(locked) as BuildSlot[], enchant, deck,
   }) : '');
-  const buildTitle = `${cls.label} · ${roleLabel(role)} · nv. ${level}`;
+  const buildTitle = `${cls.label} · ${roleLabel(role)} · ${t('common.lvlShort', { n: level })}`;
 
   const share = () => {
     const code = currentCode();
@@ -217,9 +237,9 @@ export default function App() {
     const list = [entry, ...stored];
     if (saveStored(list)) {
       setStored(list);
-      notify(`Build "${entry.name}" guardada en este navegador.`);
+      notify(t('app.saved', { name: entry.name }));
     } else {
-      notify('No se pudo guardar: el navegador no permite almacenamiento local. Usa "Compartir" para conservar el enlace.');
+      notify(t('app.saveFailed'));
     }
     setDialog(null);
   };
@@ -235,42 +255,46 @@ export default function App() {
     if (data && saved && openSaved(saved, data.items)) {
       history.replaceState(null, '', `#b=${s.code}`);
       setDialog(null);
-      notify(`Build "${s.name}" abierta.`);
+      notify(t('app.opened', { name: s.name }));
     } else {
-      notify('Esta build guardada está dañada y no se puede abrir.');
+      notify(t('app.openFailed'));
     }
   };
 
   return (
+    <LangContext.Provider value={{ lang, setLang: changeLang }}>
     <div className="app">
       <header className="top">
         <div className="brand">
           <h1>Wakfu Build Advisor</h1>
-          <p className="tagline">Equipamiento recomendado para tu nivel, clase y estilo de juego</p>
+          <p className="tagline">{t('app.tagline')}</p>
         </div>
         <div className="top-actions">
-          {data && <span className="badge" title={`${fmt(data.items.length)} objetos`}>Datos v{data.version}</span>}
+          {data && <span className="badge" title={t('app.itemsCount', { n: fmt(data.items.length) })}>{t('app.dataVersion', { v: data.version })}</span>}
+          <select className="lang-select" value={lang} onChange={(e) => changeLang(e.target.value as Lang)} aria-label={t('app.language')}>
+            {LANGS.map((l) => <option key={l.id} value={l.id}>{l.label}</option>)}
+          </select>
           <button className="btn ghost" onClick={() => setDialog('library')}>
-            Mis builds{stored.length > 0 && <span className="count">{stored.length}</span>}
+            {t('app.myBuilds')}{stored.length > 0 && <span className="count">{stored.length}</span>}
           </button>
         </div>
       </header>
 
       <main className="layout">
-        <aside className="panel form" aria-label="Configuración del personaje">
+        <aside className="panel form" aria-label={t('form.aria')}>
           <div className="form-scroll">
-            <FormStep n={1} title="Personaje">
+            <FormStep n={1} title={t('form.character')}>
               <div className="field">
-                <label htmlFor="level" className="label">Nivel</label>
+                <label htmlFor="level" className="label">{t('form.level')}</label>
                 <div className="level-row">
-                  <input id="level-range" type="range" min={1} max={245} value={level} aria-label="Nivel"
+                  <input id="level-range" type="range" min={1} max={245} value={level} aria-label={t('form.level')}
                     onChange={(e) => changeLevel(+e.target.value)} />
                   <input id="level" className="input level-input" type="number" min={1} max={245} value={level}
                     onChange={(e) => changeLevel(Math.min(245, Math.max(1, +e.target.value || 1)))} />
                 </div>
               </div>
               <div className="field">
-                <span className="label">Clase</span>
+                <span className="label">{t('form.class')}</span>
                 <div className="class-grid">
                   {CLASSES.map((c) => (
                     <button key={c.id} className={`chip ${c.id === classId ? 'on' : ''}`} aria-pressed={c.id === classId}
@@ -282,33 +306,33 @@ export default function App() {
               </div>
             </FormStep>
 
-            <FormStep n={2} title="Estilo de juego">
+            <FormStep n={2} title={t('form.playstyle')}>
               <div className="roles">
                 {ROLES.map((r) => (
                   <button key={r.id} className={`role ${r.id === role ? 'on' : ''}`} aria-pressed={r.id === role}
                     onClick={() => changeRole(r.id)}>
                     <strong>{r.label}</strong>
                     <small>{r.hint}</small>
-                    {cls.roles.includes(r.id) && <em>Habitual en {cls.label}</em>}
+                    {cls.roles.includes(r.id) && <em>{t('form.usualIn', { cls: cls.label })}</em>}
                   </button>
                 ))}
               </div>
 
               {isDamageRole(role) && (
                 <div className="field">
-                  <span className="label">Priorizar también</span>
+                  <span className="label">{t('form.alsoPrioritize')}</span>
                   <div className="toggles">
-                    <Toggle checked={critFocus} onChange={setCritFocus} label="Críticos" hint="% golpe crítico y dominio crítico" />
-                    <Toggle checked={backFocus} onChange={setBackFocus} label="Espalda" hint="dominio espalda" />
+                    <Toggle checked={critFocus} onChange={setCritFocus} label={t('form.crits')} hint={t('form.crits.hint')} />
+                    <Toggle checked={backFocus} onChange={setBackFocus} label={t('form.back')} hint={t('form.back.hint')} />
                     {cls.berserk && (
-                      <Toggle checked={berserk} onChange={setBerserk} label="Berserker" hint="activo bajo el 50 % de PdV" />
+                      <Toggle checked={berserk} onChange={setBerserk} label={t('form.berserk')} hint={t('form.berserk.hint')} />
                     )}
                   </div>
                 </div>
               )}
 
               <div className="field">
-                <span className="label">Elementos <span className="muted">({elements.length})</span></span>
+                <span className="label">{t('form.elements')} <span className="muted">({elements.length})</span></span>
                 <div className="el-grid">
                   {ELEMENTS.map((e) => (
                     <button key={e.id} className={`chip el ${elements.includes(e.id) ? 'on' : ''}`} aria-pressed={elements.includes(e.id)}
@@ -317,30 +341,30 @@ export default function App() {
                     </button>
                   ))}
                 </div>
-                <small className="muted">Menos elementos, más dominio en cada uno. * No es una rama habitual de la clase.</small>
+                <small className="muted">{t('form.elements.hint')}</small>
               </div>
             </FormStep>
 
-            <FormStep n={3} title="Filtros">
-              <Toggle checked={craftOnly} onChange={setCraftOnly} label="Solo objetos crafteables"
-                hint="La mascota y la montura no se filtran" />
+            <FormStep n={3} title={t('form.filters')}>
+              <Toggle checked={craftOnly} onChange={setCraftOnly} label={t('form.craftOnly')}
+                hint={t('form.craftOnly.hint')} />
               <details className="advanced">
-                <summary>Opciones avanzadas</summary>
+                <summary>{t('form.advanced')}</summary>
                 <div className="targets">
                   {(['ap', 'mp', 'range'] as const).map((k) => (
                     <label key={k}>
-                      <span>Objetivo de {STAT_LABELS[k]}</span>
+                      <span>{t('form.target', { stat: STAT_LABELS[k]! })}</span>
                       <input className="input" type="number" min={0} max={20} value={targets[k]}
                         onChange={(e) => setTargets({ ...targets, [k]: +e.target.value })} />
                     </label>
                   ))}
                   <label>
-                    <span>Nivel mínimo de objetos</span>
+                    <span>{t('form.minLevel')}</span>
                     <input className="input" type="number" min={0} max={level} value={minLevel}
                       onChange={(e) => setMinLevel(+e.target.value)} />
                   </label>
                 </div>
-                <span className="label">Rarezas permitidas</span>
+                <span className="label">{t('form.rarities')}</span>
                 <div className="row wrap">
                   {Object.entries(RARITIES).map(([r, info]) => (
                     <button key={r} className={`chip rar ${rarities.includes(+r) ? 'on' : ''}`} aria-pressed={rarities.includes(+r)}
@@ -349,10 +373,10 @@ export default function App() {
                 </div>
                 {excludedItems.length > 0 && (
                   <>
-                    <span className="label">Objetos excluidos</span>
+                    <span className="label">{t('form.excluded')}</span>
                     <div className="row wrap">
                       {excludedItems.map((i) => (
-                        <button key={i.id} className="chip on" title="Volver a permitir"
+                        <button key={i.id} className="chip on" title={t('form.allowAgain')}
                           onClick={() => setExcluded((s) => { const n = new Set(s); n.delete(i.id); return n; })}>
                           {i.name} ✕
                         </button>
@@ -367,12 +391,12 @@ export default function App() {
           <div className="form-footer">
             {Object.keys(locked).length > 0 && (
               <div className="locked-note">
-                <span>{Object.keys(locked).length} pieza(s) fijada(s): se respetan al recalcular.</span>
-                <button className="link" onClick={() => setLocked({})}>Soltar todas</button>
+                <span>{t('form.lockedNote', { n: Object.keys(locked).length })}</span>
+                <button className="link" onClick={() => setLocked({})}>{t('form.unlockAll')}</button>
               </div>
             )}
             <button className="go" disabled={!data || busy} onClick={() => run()}>
-              {busy ? 'Calculando…' : data ? (result ? 'Recalcular build' : 'Recomendar build') : 'Cargando objetos…'}
+              {busy ? t('form.computing') : data ? (result ? t('form.recompute') : t('form.recommend')) : t('form.loadingItems')}
             </button>
             {error && <p className="error" role="alert">{error}</p>}
           </div>
@@ -380,10 +404,10 @@ export default function App() {
 
         <section className="results" ref={resultsRef} aria-live="polite">
           {!result && !busy && <EmptyState />}
-          {busy && !result && <div className="panel skeleton" aria-label="Calculando build" />}
+          {busy && !result && <div className="panel skeleton" aria-label={t('form.computing')} />}
           {result && data && (
             <BuildView result={result} level={level} role={role} cls={cls.label} elements={elements}
-              items={data.items} request={makeRequest()} locked={locked} busy={busy}
+              items={data.items} request={makeRequest()} locked={locked} busy={busy} names={names}
               enchant={enchant} onEnchant={setEnchant}
               spells={spells} deck={deck} onDeck={setDeck} deckBonus={bonusOfDeck}
               onExclude={exclude} onSwap={swap} onUnlock={unlock}
@@ -393,24 +417,25 @@ export default function App() {
       </main>
 
       <footer className="site-footer">
-        Sitio de fans sin afiliación con Ankama. WAKFU, sus nombres, datos e imágenes son propiedad de Ankama Games.
-        Textos de sublimaciones: <a href="https://wakfu.wiki.gg" target="_blank" rel="noreferrer">wakfu.wiki.gg</a> (CC BY-SA).
-        Datos del juego: versión {data?.version ?? '—'}.
+        {t('footer.fan')}{' '}
+        {t('footer.wiki')} <a href="https://wakfu.wiki.gg" target="_blank" rel="noreferrer">wakfu.wiki.gg</a> (CC BY-SA).{' '}
+        {t('footer.version', { v: data?.version ?? '—' })}
       </footer>
 
       {dialog === 'share' && result && (
-        <ShareDialog url={shareUrl(currentCode())} onClose={() => setDialog(null)} onCopied={() => notify('Enlace copiado.')} />
+        <ShareDialog url={shareUrl(currentCode())} onClose={() => setDialog(null)} onCopied={() => notify(t('app.linkCopied'))} />
       )}
       {dialog === 'save' && result && (
         <SaveDialog defaultName={buildTitle} onSave={saveCurrent} onClose={() => setDialog(null)} />
       )}
       {dialog === 'library' && (
         <LibraryDialog builds={stored} onOpen={openStored} onDelete={removeStored}
-          onCopy={(s) => navigator.clipboard?.writeText(shareUrl(s.code)).then(() => notify('Enlace copiado.'), () => undefined)}
+          onCopy={(s) => navigator.clipboard?.writeText(shareUrl(s.code)).then(() => notify(t('app.linkCopied')), () => undefined)}
           onClose={() => setDialog(null)} canOpen={!!data} />
       )}
       {toast && <div className="toast" role="status">{toast}</div>}
     </div>
+    </LangContext.Provider>
   );
 }
 
@@ -437,15 +462,13 @@ function Toggle({ checked, onChange, label, hint }: {
 function EmptyState() {
   return (
     <div className="panel empty">
-      <h2>Configura tu personaje</h2>
+      <h2>{t('empty.title')}</h2>
       <ol className="empty-steps">
-        <li><b>Nivel y clase.</b> La clase propone sus elementos y su estilo habitual.</li>
-        <li><b>Estilo de juego.</b> Tanque, curas, daño a distancia o cuerpo a cuerpo.</li>
-        <li><b>Recomendar build.</b> Se revisa todo el equipamiento de tu nivel respetando las reglas del juego: una reliquia,
-          un épico, anillos distintos y armas a dos manos.</li>
+        <li><b>{t('empty.s1.title')}</b> {t('empty.s1')}</li>
+        <li><b>{t('empty.s2.title')}</b> {t('empty.s2')}</li>
+        <li><b>{t('empty.s3.title')}</b> {t('empty.s3')}</li>
       </ol>
-      <p className="muted">Después podrás cambiar piezas, elegir runas y sublimaciones, ver qué craftear, y guardar o compartir la
-        build con un enlace.</p>
+      <p className="muted">{t('empty.after')}</p>
     </div>
   );
 }
@@ -466,7 +489,7 @@ function Modal({ title, onClose, children, wide }: { title: string; onClose: () 
         onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <h2>{title}</h2>
-          <button className="x" aria-label="Cerrar" onClick={onClose}>✕</button>
+          <button className="x" aria-label={t('common.close')} onClick={onClose}>✕</button>
         </div>
         {children}
       </div>
@@ -477,12 +500,11 @@ function Modal({ title, onClose, children, wide }: { title: string; onClose: () 
 function ShareDialog({ url, onClose, onCopied }: { url: string; onClose: () => void; onCopied: () => void }) {
   const copy = () => navigator.clipboard?.writeText(url).then(onCopied, () => undefined);
   return (
-    <Modal title="Compartir build" onClose={onClose}>
-      <p className="muted">Cualquiera que abra este enlace verá esta build exacta: equipo, runas, sublimaciones, baraja y opciones. La build
-        va dentro del propio enlace; no se guarda en ningún servidor.</p>
+    <Modal title={t('share.title')} onClose={onClose}>
+      <p className="muted">{t('share.body')}</p>
       <div className="copy-row">
-        <input className="input" readOnly value={url} onFocus={(e) => e.target.select()} aria-label="Enlace de la build" />
-        <button className="btn primary" onClick={copy}>Copiar enlace</button>
+        <input className="input" readOnly value={url} onFocus={(e) => e.target.select()} aria-label={t('share.linkAria')} />
+        <button className="btn primary" onClick={copy}>{t('common.copyLink')}</button>
       </div>
     </Modal>
   );
@@ -491,16 +513,16 @@ function ShareDialog({ url, onClose, onCopied }: { url: string; onClose: () => v
 function SaveDialog({ defaultName, onSave, onClose }: { defaultName: string; onSave: (name: string) => void; onClose: () => void }) {
   const [name, setName] = useState(defaultName);
   return (
-    <Modal title="Guardar build" onClose={onClose}>
+    <Modal title={t('save.title')} onClose={onClose}>
       <form className="save-form" onSubmit={(e) => { e.preventDefault(); onSave(name); }}>
         <label className="field">
-          <span className="label">Nombre</span>
+          <span className="label">{t('save.name')}</span>
           <input className="input" value={name} maxLength={60} onChange={(e) => setName(e.target.value)} />
         </label>
-        <p className="muted small">Se guarda en este navegador. Para verla en otro dispositivo o enviarla a alguien, usa Compartir.</p>
+        <p className="muted small">{t('save.hint')}</p>
         <div className="actions end">
-          <button type="button" className="btn ghost" onClick={onClose}>Cancelar</button>
-          <button type="submit" className="btn primary">Guardar build</button>
+          <button type="button" className="btn ghost" onClick={onClose}>{t('common.cancel')}</button>
+          <button type="submit" className="btn primary">{t('save.title')}</button>
         </div>
       </form>
     </Modal>
@@ -513,11 +535,11 @@ function LibraryDialog({ builds, onOpen, onDelete, onCopy, onClose, canOpen }: {
 }) {
   const [confirm, setConfirm] = useState<string | null>(null);
   return (
-    <Modal title="Mis builds" onClose={onClose} wide>
+    <Modal title={t('app.myBuilds')} onClose={onClose} wide>
       {builds.length === 0 ? (
         <div className="empty-inline">
-          <p><b>Aún no tienes builds guardadas.</b></p>
-          <p className="muted">Calcula una build y pulsa "Guardar" en el resumen para tenerla aquí.</p>
+          <p><b>{t('library.empty')}</b></p>
+          <p className="muted">{t('library.emptyHint')}</p>
         </div>
       ) : (
         <ul className="library">
@@ -525,18 +547,18 @@ function LibraryDialog({ builds, onOpen, onDelete, onCopy, onClose, canOpen }: {
             <li key={b.id}>
               <div className="library-main">
                 <b>{b.name}</b>
-                <span className="muted">{b.summary} · {new Date(b.date).toLocaleDateString('es-ES')}</span>
+                <span className="muted">{b.summary} · {new Date(b.date).toLocaleDateString(locale())}</span>
               </div>
               {confirm === b.id ? (
                 <div className="actions">
-                  <button className="btn danger" onClick={() => { onDelete(b.id); setConfirm(null); }}>Borrar "{b.name}"</button>
-                  <button className="btn ghost" onClick={() => setConfirm(null)}>Cancelar</button>
+                  <button className="btn danger" onClick={() => { onDelete(b.id); setConfirm(null); }}>{t('library.deleteNamed', { name: b.name })}</button>
+                  <button className="btn ghost" onClick={() => setConfirm(null)}>{t('common.cancel')}</button>
                 </div>
               ) : (
                 <div className="actions">
-                  <button className="btn primary" disabled={!canOpen} onClick={() => onOpen(b)}>Abrir</button>
-                  <button className="btn ghost" onClick={() => onCopy(b)}>Copiar enlace</button>
-                  <button className="btn ghost" onClick={() => setConfirm(b.id)}>Borrar</button>
+                  <button className="btn primary" disabled={!canOpen} onClick={() => onOpen(b)}>{t('library.open')}</button>
+                  <button className="btn ghost" onClick={() => onCopy(b)}>{t('common.copyLink')}</button>
+                  <button className="btn ghost" onClick={() => setConfirm(b.id)}>{t('library.delete')}</button>
                 </div>
               )}
             </li>
@@ -548,17 +570,14 @@ function LibraryDialog({ builds, onOpen, onDelete, onCopy, onClose, canOpen }: {
 }
 
 type ViewTab = 'equip' | 'stats' | 'deck' | 'enchant' | 'craft' | 'apt';
-const VIEW_TABS: [ViewTab, string][] = [
-  ['equip', 'Equipo'], ['stats', 'Características'], ['deck', 'Hechizos'], ['enchant', 'Runas y sublimaciones'],
-  ['craft', 'Crafteo'], ['apt', 'Aptitudes'],
-];
+const VIEW_TABS: ViewTab[] = ['equip', 'stats', 'deck', 'enchant', 'craft', 'apt'];
 
 function BuildView({ result, level, role, cls, elements, items, request, locked, busy, enchant, onEnchant,
-  spells, deck, onDeck, deckBonus: deckEffect, onExclude, onSwap, onUnlock, onShare, onSave }: {
+  spells, deck, onDeck, deckBonus: deckEffect, names, onExclude, onSwap, onUnlock, onShare, onSave }: {
   result: BuildResult; level: number; role: Role; cls: string; elements: Element[];
   items: Item[]; request: BuildRequest; locked: BuildSlots; busy: boolean;
   enchant: EnchantState; onEnchant: (e: EnchantState) => void;
-  spells: Spell[] | null; deck: Deck; onDeck: (d: Deck) => void; deckBonus: DeckBonus;
+  spells: Spell[] | null; deck: Deck; onDeck: (d: Deck) => void; deckBonus: DeckBonus; names: LangData | null;
   onExclude: (id: number) => void; onSwap: (slot: BuildSlot, item: Item) => void; onUnlock: (slot: BuildSlot) => void;
   onShare: () => void; onSave: () => void;
 }) {
@@ -574,6 +593,8 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
     fetch(import.meta.env.BASE_URL + 'data/recipes.json').then((r) => r.json()).then(setRecipes).catch(() => undefined);
     fetch(import.meta.env.BASE_URL + 'data/enchant.json').then((r) => r.json()).then(setEnchantData).catch(() => undefined);
   }, []);
+  if (names && recipes) localizeRecipes(recipes, names);
+  if (names && enchantData) localizeEnchant(enchantData, names);
   const toggleRecipe = (id: number) => setOpenRecipe((cur) => (cur === id ? null : id));
 
   const reqKey = JSON.stringify({ ...request, excluded: [...request.excluded], locked: undefined });
@@ -616,11 +637,11 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
   const sheetResult = withRunes && withMine ? withMine : result;
 
   const keyStats: [string, string][] = [
-    ['PA', fmt(totals.ap ?? 0)], ['PM', fmt(totals.mp ?? 0)], ['PW', fmt(totals.wp ?? 0)],
-    ['Alcance', fmt(totals.range ?? 0)], ['PdV', fmt(derived.hp)],
-    [role === 'heal' ? 'Dominio (curas)' : 'Dominio efectivo', fmt(derived.mastery)],
-    ['Crítico', `${fmt(derived.critChance)} %`], ['Reducción por res.', `${fmt(derived.resPct)} %`],
-    ['PdV efectivos', fmt(derived.ehp)],
+    [t('stat.ap'), fmt(totals.ap ?? 0)], [t('stat.mp'), fmt(totals.mp ?? 0)], [t('stat.wp'), fmt(totals.wp ?? 0)],
+    [t('stat.range'), fmt(totals.range ?? 0)], [t('stat.hp'), fmt(derived.hp)],
+    [role === 'heal' ? t('summary.masteryHeal') : t('summary.mastery'), fmt(derived.mastery)],
+    [t('summary.crit'), `${fmt(derived.critChance)} %`], [t('summary.resReduction'), `${fmt(derived.resPct)} %`],
+    [t('summary.ehp'), fmt(derived.ehp)],
   ];
 
   // Sublimaciones a mostrar en la tarjeta de cada pieza
@@ -638,8 +659,8 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
       <div className="panel summary">
         <div className="summary-head">
           <div>
-            <span className="eyebrow">Build recomendada</span>
-            <h2>{cls} · {roleLabel(role)} · nivel {level}</h2>
+            <span className="eyebrow">{t('summary.eyebrow')}</span>
+            <h2>{cls} · {roleLabel(role)} · {t('common.level', { n: level })}</h2>
             <div className="row wrap el-tags">
               {elements.map((e) => (
                 <span key={e} className="el-tag" style={{ '--el': ELEMENTS.find((x) => x.id === e)!.color } as React.CSSProperties}>
@@ -649,8 +670,8 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
             </div>
           </div>
           <div className="actions">
-            <button className="btn primary" onClick={onShare}>Compartir</button>
-            <button className="btn" onClick={onSave}>Guardar</button>
+            <button className="btn primary" onClick={onShare}>{t('summary.share')}</button>
+            <button className="btn" onClick={onSave}>{t('summary.save')}</button>
           </div>
         </div>
         <div className="stats">
@@ -660,10 +681,10 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
         </div>
       </div>
 
-      <nav className="tabs" role="tablist" aria-label="Secciones de la build">
-        {VIEW_TABS.map(([id, label]) => (
+      <nav className="tabs" role="tablist" aria-label={t('tabs.aria')}>
+        {VIEW_TABS.map((id) => (
           <button key={id} role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}>
-            {label}
+            {t(`tab.${id}`)}
           </button>
         ))}
       </nav>
@@ -681,8 +702,8 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
                 <div className="slot-label">
                   <span>{s.label}</span>
                   {item && locked[s.id]?.id === item.id && (
-                    <button className="pin" title="Dejar que el optimizador elija esta ranura" onClick={() => onUnlock(s.id)}>
-                      Fijada ✕
+                    <button className="pin" title={t('equip.unlockHint')} onClick={() => onUnlock(s.id)}>
+                      {t('equip.locked')} ✕
                     </button>
                   )}
                 </div>
@@ -693,24 +714,24 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
                         onError={(e) => { (e.target as HTMLImageElement).style.visibility = 'hidden'; }} />
                       <div>
                         <div className="item-name">{item.name}</div>
-                        <div className="item-meta">Nv. {item.lvl} · {RARITIES[item.rarity].label}</div>
+                        <div className="item-meta">{t('common.lvlShort', { n: item.lvl })} · {RARITIES[item.rarity].label}</div>
                       </div>
                     </div>
                     <div className="source">
                       <span className={`src src-${item.src}`}>
-                        {SOURCE_LABELS[item.src]}{item.craft && ` · ${item.craft.job} nv. ${item.craft.lvl}`}
+                        {SOURCE_LABELS[item.src]}{item.craft && ` · ${jobName(item.craft.job)} ${t('common.lvlShort', { n: item.craft.lvl })}`}
                       </span>
                       {item.src === 'craft' && (
                         <button className="link" aria-expanded={openRecipe === item.id} onClick={() => toggleRecipe(item.id)}>
-                          {openRecipe === item.id ? 'Ocultar receta' : 'Ver receta'}
+                          {openRecipe === item.id ? t('equip.hideRecipe') : t('equip.showRecipe')}
                         </button>
                       )}
                     </div>
                     {(runes || subs.length > 0) && (
                       <div className="item-enchant">
                         {runes && (
-                          <span className="sockets" title="Runas elegidas">
-                            {runes.sockets.map((r, i) => <Socket key={i} color={r.mine?.color} title={r.mine?.shard.name ?? 'Vacío'} />)}
+                          <span className="sockets" title={t('equip.chosenRunes')}>
+                            {runes.sockets.map((r, i) => <Socket key={i} color={r.mine?.color} title={r.mine?.shard.name ?? t('socket.empty')} />)}
                           </span>
                         )}
                         {subs.map((n) => <span key={n} className="tag">{n}</span>)}
@@ -718,31 +739,30 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
                     )}
                     {openRecipe === item.id && <RecipeView item={item} data={recipes} />}
                     <ul className="item-stats">
-                      {item.multiMast && <li>+{item.multiMast.v} Dominio en {item.multiMast.n} elementos</li>}
-                      {item.multiRes && <li>+{item.multiRes.v} Resistencia en {item.multiRes.n} elementos</li>}
+                      {item.multiMast && <li>{t('item.multiMast', { v: item.multiMast.v, n: item.multiMast.n })}</li>}
+                      {item.multiRes && <li>{t('item.multiRes', { v: item.multiRes.v, n: item.multiRes.n })}</li>}
                       {Object.entries(item.stats).map(([k, v]) => (
                         <li key={k} className={v < 0 ? 'neg' : ''}>{v > 0 ? '+' : ''}{v} {STAT_LABELS[k] ?? k}</li>
                       ))}
                     </ul>
                     <div className="item-actions">
-                      <button className="btn" onClick={() => setPicker(s.id)}>Cambiar</button>
-                      <button className="btn ghost" title="No usar este objeto y recalcular" onClick={() => onExclude(item.id)}>
-                        Excluir
+                      <button className="btn" onClick={() => setPicker(s.id)}>{t('common.change')}</button>
+                      <button className="btn ghost" title={t('equip.excludeHint')} onClick={() => onExclude(item.id)}>
+                        {t('equip.exclude')}
                       </button>
                     </div>
                   </>
                 ) : (
                   <div className="item-actions">
-                    <span className="muted">Vacío</span>
-                    <button className="btn" onClick={() => setPicker(s.id)}>Elegir</button>
+                    <span className="muted">{t('socket.empty')}</span>
+                    <button className="btn" onClick={() => setPicker(s.id)}>{t('common.choose')}</button>
                   </div>
                 )}
               </article>
             );
           })}
         </div>
-        <p className="muted small">Usa "Excluir" en un objeto que no puedas conseguir para recalcular sin él. Al cambiar una pieza
-          a mano queda fijada y se respeta en los siguientes cálculos.</p>
+        <p className="muted small">{t('equip.note')}</p>
       </div>
 
       <div hidden={tab !== 'stats'} className="tab-body">
@@ -766,21 +786,19 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
 
       <div hidden={tab !== 'apt'} className="tab-body">
         <div className="panel">
-          <h2>Aptitudes recomendadas</h2>
+          <h2>{t('apt.title')}</h2>
           <div className="apt">
             {result.aptitudes.branches.map((b) => (
               <div key={b.branch} className="apt-branch">
-                <h3>{b.branch} <small>{b.total} pts</small></h3>
-                {b.lines.length === 0 && <p className="muted">Sin puntos todavía</p>}
+                <h3>{t(`apt.branch.${b.branch}`)} <small>{t('apt.pts', { n: b.total })}</small></h3>
+                {b.lines.length === 0 && <p className="muted">{t('apt.noPoints')}</p>}
                 {b.lines.map((l, i) => (
-                  <div key={i} className="apt-line"><span>{l.stat}</span><b>{b.branch === 'Mayor' ? '✓' : l.points}</b></div>
+                  <div key={i} className="apt-line"><span>{tk(l.key)}</span><b>{b.branch === 'major' ? '✓' : l.points}</b></div>
                 ))}
               </div>
             ))}
           </div>
-          <p className="muted small">La recomendación es heurística: modela daño esperado (dominios × crítico), supervivencia
-            (PdV, resistencias, anticipación) y objetivos de PA/PM/alcance, más los efectos permanentes de las pasivas de tu
-            baraja. No tiene en cuenta efectos especiales de objetos ni sublimaciones.</p>
+          <p className="muted small">{t('apt.note')}</p>
         </div>
       </div>
 
@@ -794,7 +812,7 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
 
 function RecipeView({ item, data }: { item: Item; data: RecipeData | null }) {
   const [mode, setMode] = useState<'chain' | 'last'>('chain');
-  if (!data) return <div className="recipe muted">Cargando receta…</div>;
+  if (!data) return <div className="recipe muted">{t('recipe.loading')}</div>;
 
   // Nombre con rareza para el equipamiento: en una mejora, base y resultado se llaman igual.
   const name = (id: number) => {
@@ -806,9 +824,9 @@ function RecipeView({ item, data }: { item: Item; data: RecipeData | null }) {
   const chain = upgradeChain(item.id, data);
   const hasChain = chain.steps.length > 1;
   const steps = mode === 'chain' && hasChain
-    ? chain.steps.map((s, i) => ({ ...s, title: `Paso ${i + 1}: ${name(s.id)}` }))
+    ? chain.steps.map((s, i) => ({ ...s, title: t('recipe.step', { n: i + 1, name: name(s.id) }) }))
     : (data.recipes[item.id] ?? []).map((recipe, i, all) => ({
-      id: item.id, recipe, title: all.length > 1 ? `Receta ${i + 1}/${all.length}` : name(item.id),
+      id: item.id, recipe, title: all.length > 1 ? t('recipe.nOf', { n: i + 1, total: all.length }) : name(item.id),
     }));
   const total = mode === 'chain' && hasChain
     ? materialsFor([item.id], data, { expand: false, fullChain: true }).materials
@@ -831,33 +849,31 @@ function RecipeView({ item, data }: { item: Item; data: RecipeData | null }) {
       {hasChain && (
         <div className="seg">
           <button className={mode === 'chain' ? 'on' : ''} onClick={() => setMode('chain')}>
-            Cadena completa ({chain.steps.length} pasos)
+            {t('recipe.fullChain', { n: chain.steps.length })}
           </button>
-          <button className={mode === 'last' ? 'on' : ''} onClick={() => setMode('last')}>Solo último paso</button>
+          <button className={mode === 'last' ? 'on' : ''} onClick={() => setMode('last')}>{t('recipe.lastStep')}</button>
         </div>
       )}
       {mode === 'chain' && chain.base !== undefined && (
-        <div className="plan">Parte de {name(chain.base)}: no se craftea, consíguelo por drop u otras vías.</div>
+        <div className="plan">{t('recipe.base', { name: name(chain.base) })}</div>
       )}
       {steps.map(({ recipe: r, title }, i) => (
         <div key={i} className="recipe-block">
           <div className="recipe-head"><b>{title}</b></div>
-          <div className="muted">{r.job} · nivel {r.lvl}{r.upgradeOf !== undefined && ` · mejora de ${name(r.upgradeOf)}`}</div>
-          {r.plan !== undefined && <div className="plan">Requiere plano: {name(r.plan)}</div>}
+          <div className="muted">{jobName(r.job)} · {t('common.level', { n: r.lvl })}{r.upgradeOf !== undefined && ` · ${t('recipe.upgradeOf', { name: name(r.upgradeOf) })}`}</div>
+          {r.plan !== undefined && <div className="plan">{t('recipe.plan', { name: name(r.plan) })}</div>}
           {ingredientList(r.ing)}
         </div>
       ))}
       {total && (
         <div className="recipe-block">
-          <div className="recipe-head"><b>Total de la cadena</b></div>
+          <div className="recipe-head"><b>{t('recipe.total')}</b></div>
           {ingredientList(total.map((m) => [m.id, m.qty]))}
         </div>
       )}
     </div>
   );
 }
-
-const pct = (n: number) => `${n > 0 ? '+' : ''}${n.toFixed(1).replace('.', ',')} %`;
 
 type RarityMode = 'same' | 'all';
 type LevelMode = 'same' | 'band' | 'all';
@@ -887,31 +903,30 @@ function SlotPicker({ slot, items, result, request, onPick, onClose }: {
   }, [items, slotInfo, current, rarityMode, levelMode, craftOnly, query, result, slot]);
 
   return (
-    <Modal title={`Cambiar ${slotInfo.label.toLowerCase()}`} onClose={onClose} wide>
-      {current && <p className="muted picker-current">Actual: {current.name} · Nv. {current.lvl} · {RARITIES[current.rarity].label}</p>}
+    <Modal title={t('picker.title', { slot: slotInfo.label.toLowerCase() })} onClose={onClose} wide>
+      {current && <p className="muted picker-current">{t('picker.current', { name: current.name, lvl: current.lvl, rarity: RARITIES[current.rarity].label })}</p>}
 
       <div className="picker-filters">
-        <input className="input" type="search" placeholder="Buscar por nombre…" aria-label="Buscar objeto"
+        <input className="input" type="search" placeholder={t('picker.search')} aria-label={t('picker.searchAria')}
           value={query} onChange={(e) => setQuery(e.target.value)} />
-        <select className="input" aria-label="Rareza" value={rarityMode} disabled={!current}
+        <select className="input" aria-label={t('picker.rarity')} value={rarityMode} disabled={!current}
           onChange={(e) => setRarityMode(e.target.value as RarityMode)}>
-          <option value="same">Misma rareza</option>
-          <option value="all">Todas las rarezas</option>
+          <option value="same">{t('picker.sameRarity')}</option>
+          <option value="all">{t('picker.allRarities')}</option>
         </select>
-        <select className="input" aria-label="Nivel" value={levelMode} disabled={!current}
+        <select className="input" aria-label={t('form.level')} value={levelMode} disabled={!current}
           onChange={(e) => setLevelMode(e.target.value as LevelMode)}>
-          <option value="same">Mismo nivel</option>
-          <option value="band">Nivel parecido (±15)</option>
-          <option value="all">Cualquier nivel hasta {request.level}</option>
+          <option value="same">{t('picker.sameLevel')}</option>
+          <option value="band">{t('picker.bandLevel')}</option>
+          <option value="all">{t('picker.anyLevel', { n: request.level })}</option>
         </select>
-        <Toggle checked={craftOnly} onChange={setCraftOnly} label="Solo crafteables" />
+        <Toggle checked={craftOnly} onChange={setCraftOnly} label={t('picker.craftOnly')} />
       </div>
 
-      <p className="muted small">Ordenadas por cómo quedaría tu build. El porcentaje grande resume el cambio completo; debajo,
-        el efecto en daño/cura y en PdV efectivos.</p>
+      <p className="muted small">{t('picker.note')}</p>
 
       <div className="alt-list">
-        {alternatives.length === 0 && <p className="muted">Ningún objeto cumple estos filtros. Prueba con otro nivel o rareza.</p>}
+        {alternatives.length === 0 && <p className="muted">{t('picker.none')}</p>}
         {alternatives.map(({ item, result: r, reason, delta }) => (
           <div key={item.id} className={`alt ${reason ? 'disabled' : ''}`}
             style={{ '--rar': RARITIES[item.rarity].color } as React.CSSProperties}>
@@ -920,10 +935,10 @@ function SlotPicker({ slot, items, result, request, onPick, onClose }: {
             <div className="alt-main">
               <div className="item-name">{item.name}</div>
               <div className="item-meta">
-                Nv. {item.lvl} · {RARITIES[item.rarity].label} · {SOURCE_LABELS[item.src]}{item.craft && ` (${item.craft.job})`}
+                {t('common.lvlShort', { n: item.lvl })} · {RARITIES[item.rarity].label} · {SOURCE_LABELS[item.src]}{item.craft && ` (${jobName(item.craft.job)})`}
               </div>
               <div className="alt-stats">
-                {item.multiMast && <span>+{item.multiMast.v} Dominio en {item.multiMast.n} elem.</span>}
+                {item.multiMast && <span>{t('item.multiMastShort', { v: item.multiMast.v, n: item.multiMast.n })}</span>}
                 {Object.entries(item.stats).slice(0, 8).map(([k, v]) => (
                   <span key={k} className={v < 0 ? 'neg' : ''}>{v > 0 ? '+' : ''}{v} {STAT_LABELS[k] ?? k}</span>
                 ))}
@@ -933,13 +948,13 @@ function SlotPicker({ slot, items, result, request, onPick, onClose }: {
               {r ? (
                 <>
                   <b className={delta >= 0 ? 'up' : 'down'}>{pct((Math.exp(delta) - 1) * 100)}</b>
-                  <small>Daño/cura {pct((r.derived.output / result.derived.output - 1) * 100)}</small>
-                  <small>PdV ef. {pct((r.derived.ehp / result.derived.ehp - 1) * 100)}</small>
-                  <small>{r.totals.ap ?? 0} PA · {r.totals.mp ?? 0} PM</small>
+                  <small>{t('picker.output')} {pct((r.derived.output / result.derived.output - 1) * 100)}</small>
+                  <small>{t('picker.ehp')} {pct((r.derived.ehp / result.derived.ehp - 1) * 100)}</small>
+                  <small>{r.totals.ap ?? 0} {t('stat.ap')} · {r.totals.mp ?? 0} {t('stat.mp')}</small>
                 </>
               ) : <small className="neg">{reason}</small>}
             </div>
-            <button className="btn" disabled={!!reason} onClick={() => onPick(item)}>Usar</button>
+            <button className="btn" disabled={!!reason} onClick={() => onPick(item)}>{t('picker.use')}</button>
           </div>
         ))}
       </div>

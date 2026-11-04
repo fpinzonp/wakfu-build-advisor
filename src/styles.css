@@ -89,7 +89,7 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
   padding: 1px 8px; color: var(--text); background: var(--panel-3);
 }
 .tag.accent { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
-.badge { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; }
+.badge { white-space: nowrap; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; }
 
 .check { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
 .check input { accent-color: var(--accent); margin: 3px 0 0; width: 16px; height: 16px; flex: none; }

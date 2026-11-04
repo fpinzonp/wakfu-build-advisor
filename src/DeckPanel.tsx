@@ -1,19 +1,19 @@
 import { useMemo, useState } from 'react';
 import { STAT_LABELS } from './lib/game';
+import { fmt, t } from './lib/i18n';
 import {
-  ACTIVE_SLOTS, SPELL_GROUPS, passiveSlots, spellImage, spellStats,
+  ACTIVE_SLOTS, SPELL_GROUPS, groupLabel, passiveSlots, spellImage, spellStats,
   type Deck, type DeckBonus, type Spell,
 } from './lib/spells';
 
 const PASSIVE_UNLOCK = [10, 30, 50, 100, 150, 200];
 const PCT_KEYS = new Set(['hpPct', 'dmgPct', 'healPct', 'armorGiven', 'armorReceived', 'crit', 'block']);
 
-const fmt = (n: number) => Math.round(n).toLocaleString('es-ES');
 const statLine = (k: string, v: number) => {
   const label = (STAT_LABELS[k] ?? k).replace(/^% /, '');
   return `${v > 0 ? '+' : ''}${fmt(v)}${PCT_KEYS.has(k) ? '%' : ''} ${label}`;
 };
-const zeroLine = (k: string) => `${(STAT_LABELS[k] ?? k).replace(/^% /, '')} a 0`;
+const zeroLine = (k: string) => t('deck.zero', { stat: (STAT_LABELS[k] ?? k).replace(/^% /, '') });
 
 export default function DeckPanel({ spells, deck, level, bonus, onChange, onShare }: {
   spells: Spell[] | null; deck: Deck; level: number; bonus: DeckBonus;
@@ -22,10 +22,8 @@ export default function DeckPanel({ spells, deck, level, bonus, onChange, onShar
   const [focus, setFocus] = useState<Spell | null>(null);
   const byId = useMemo(() => new Map((spells ?? []).map((s) => [s.id, s])), [spells]);
 
-  if (!spells) return <div className="panel muted">Cargando hechizos…</div>;
-  if (!spells.length) {
-    return <div className="panel muted">No hay datos de hechizos para esta clase. Ejecuta <code>npm run data</code> para descargarlos.</div>;
-  }
+  if (!spells) return <div className="panel muted">{t('deck.loading')}</div>;
+  if (!spells.length) return <div className="panel muted">{t('deck.noData')}</div>;
 
   const maxPassives = passiveSlots(level);
   const inDeck = new Set([...deck.actives, ...deck.passives]);
@@ -55,7 +53,7 @@ export default function DeckPanel({ spells, deck, level, bonus, onChange, onShar
       <button key={s.id} type="button"
         className={`spell ${selected ? 'on' : ''} ${locked ? 'locked' : ''} ${impact ? 'impact' : ''}`}
         aria-pressed={selected} aria-disabled={blocked}
-        title={`${s.name}${s.lvl ? ` · nv. ${s.lvl}` : ''}${locked ? ' (nivel insuficiente)' : ''}`}
+        title={`${s.name}${s.lvl ? ` · ${t('common.lvlShort', { n: s.lvl })}` : ''}${locked ? ` (${t('deck.lowLevel')})` : ''}`}
         onClick={() => (blocked ? setFocus(s) : toggle(s))}
         onMouseEnter={() => setFocus(s)} onFocus={() => setFocus(s)}>
         <img src={spellImage(s.icon)} alt={s.name} loading="lazy" referrerPolicy="no-referrer" />
@@ -68,12 +66,12 @@ export default function DeckPanel({ spells, deck, level, bonus, onChange, onShar
   const slot = (id: number | undefined, key: string, lockedAt?: number) => {
     const s = id !== undefined ? byId.get(id) : undefined;
     if (lockedAt !== undefined) {
-      return <div key={key} className="deck-slot is-locked" title={`Se desbloquea al nivel ${lockedAt}`}>nv. {lockedAt}</div>;
+      return <div key={key} className="deck-slot is-locked" title={t('deck.unlocksAt', { n: lockedAt })}>{t('common.lvlShort', { n: lockedAt })}</div>;
     }
-    if (!s) return <div key={key} className="deck-slot" aria-label="Ranura vacía" />;
+    if (!s) return <div key={key} className="deck-slot" aria-label={t('deck.emptySlot')} />;
     return (
       <button key={key} type="button" className={`deck-slot filled ${s.lvl > level ? 'over' : ''}`}
-        title={`Quitar ${s.name}`} onClick={() => toggle(s)}
+        title={t('deck.removeSpell', { name: s.name })} onClick={() => toggle(s)}
         onMouseEnter={() => setFocus(s)} onFocus={() => setFocus(s)}>
         <img src={spellImage(s.icon)} alt={s.name} referrerPolicy="no-referrer" />
       </button>
@@ -89,15 +87,15 @@ export default function DeckPanel({ spells, deck, level, bonus, onChange, onShar
   return (
     <div className="deck-layout">
       <div className="panel deck-pool">
-        <h2>Hechizos</h2>
+        <h2>{t('tab.deck')}</h2>
         {groups.map((g) => (
           <section key={g.el} className="spell-group">
-            <h3 style={{ color: g.color }}>{g.label}</h3>
+            <h3 style={{ color: g.color }}>{t(g.key)}</h3>
             <div className="spell-grid">{g.spells.map(icon)}</div>
           </section>
         ))}
         <section className="spell-group">
-          <h3>Pasivas <small>· el punto indica efecto en características</small></h3>
+          <h3>{t('deck.passives')} <small>· {t('deck.dotHint')}</small></h3>
           <div className="spell-grid">{passives.map(icon)}</div>
         </section>
       </div>
@@ -105,38 +103,36 @@ export default function DeckPanel({ spells, deck, level, bonus, onChange, onShar
       <div className="deck-side">
         <div className="panel">
           <div className="panel-head">
-            <h2>Baraja</h2>
+            <h2>{t('deck.title')}</h2>
             <div className="actions">
               <button className="btn ghost" disabled={!inDeck.size} onClick={() => onChange({ actives: [], passives: [] })}>
-                Vaciar baraja
+                {t('deck.clear')}
               </button>
-              <button className="btn" onClick={onShare}>Compartir build</button>
+              <button className="btn" onClick={onShare}>{t('share.title')}</button>
             </div>
           </div>
-          <span className="eyebrow">Activos {deck.actives.length}/{ACTIVE_SLOTS}</span>
+          <span className="eyebrow">{t('deck.actives')} {deck.actives.length}/{ACTIVE_SLOTS}</span>
           <div className="deck-grid">
             {Array.from({ length: ACTIVE_SLOTS }, (_, i) => slot(deck.actives[i], `a${i}`))}
           </div>
-          <span className="eyebrow">Pasivas {deck.passives.length}/{maxPassives}</span>
+          <span className="eyebrow">{t('deck.passives')} {deck.passives.length}/{maxPassives}</span>
           <div className="deck-grid">
             {PASSIVE_UNLOCK.map((lvl, i) => slot(deck.passives[i], `p${i}`, level >= lvl ? undefined : lvl))}
           </div>
-          <p className="muted small">La baraja va dentro del enlace y de las builds guardadas.</p>
+          <p className="muted small">{t('deck.inLink')}</p>
         </div>
 
         <div className="panel">
-          <h2>Efecto en tus características</h2>
+          <h2>{t('deck.impactTitle')}</h2>
           {impactLines.length ? (
             <>
               <div className="row wrap deck-impact">
                 {impactLines.map((l) => <span key={l.k} className={`tag ${l.neg ? 'neg' : ''}`}>{l.text}</span>)}
               </div>
-              <p className="muted small">Ya se suma en "Características" y el optimizador lo tiene en cuenta: pulsa "Recalcular
-                build" para que elija el equipo con estas pasivas.</p>
+              <p className="muted small">{t('deck.impactNote')}</p>
             </>
           ) : (
-            <p className="muted">Ninguna pasiva de tu baraja cambia tus características de forma permanente. Las marcadas con un
-              punto sí lo hacen (p. ej. Motivación: +1 PA).</p>
+            <p className="muted">{t('deck.noImpact')}</p>
           )}
         </div>
 
@@ -148,9 +144,9 @@ export default function DeckPanel({ spells, deck, level, bonus, onChange, onShar
                 <div>
                   <b>{focus.name}</b>
                   <div className="muted">
-                    {focus.el === 'passive' ? 'Pasiva' : SPELL_GROUPS.find((g) => g.el === focus.el)?.label ?? 'Hechizo'}
-                    {focus.lvl > 0 && ` · nivel ${focus.lvl}`}
-                    {focus.lvl > level && <span className="neg"> · aún no disponible</span>}
+                    {focus.el === 'passive' ? t('deck.passive') : groupLabel(focus.el)}
+                    {focus.lvl > 0 && ` · ${t('common.level', { n: focus.lvl })}`}
+                    {focus.lvl > level && <span className="neg"> · {t('deck.notYet')}</span>}
                   </div>
                 </div>
               </div>
@@ -160,12 +156,12 @@ export default function DeckPanel({ spells, deck, level, bonus, onChange, onShar
                   {focus.zero?.map((k) => <span key={k} className="tag neg">{zeroLine(k)}</span>)}
                 </div>
               )}
-              <ul className="spell-text" lang="en">
+              <ul className="spell-text">
                 {focus.text.map((l, i) => <li key={i}>{l}</li>)}
               </ul>
             </>
           ) : (
-            <p className="muted">Pasa el cursor o toca un hechizo para ver su efecto. Haz clic para añadirlo o quitarlo de la baraja.</p>
+            <p className="muted">{t('deck.hint')}</p>
           )}
         </div>
       </div>

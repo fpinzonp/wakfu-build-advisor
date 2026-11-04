@@ -1,15 +1,17 @@
 // Baraja de hechizos: 12 activos y hasta 6 pasivas. Las pasivas con efectos permanentes
 // (data/spell-stats.json) se suman a las características y al optimizador.
 
+import { t, type TKey } from './i18n';
+
 export type SpellElement = 'fire' | 'water' | 'earth' | 'air' | 'light' | 'neutral' | 'passive';
 
 export interface Spell {
   id: number;
-  name: string;         // nombre en inglés (wakfu.wiki.gg)
+  name: string;         // nombre en el idioma de la interfaz (inglés de wakfu.wiki.gg si no hay traducción)
   el: SpellElement;
   lvl: number;          // nivel necesario (0 = desde el inicio)
   icon: number;
-  text: string[];       // efecto según la wiki (inglés)
+  text: string[];       // efecto según la wiki, traducido
   stats?: Record<string, number | string>;  // número o "N%lvl"
   zero?: string[];      // características que la pasiva deja a 0
 }
@@ -23,14 +25,15 @@ export const ACTIVE_SLOTS = 12;
 /** Ranuras de pasivas desbloqueadas por nivel (10, 30, 50, 100, 150 y 200). */
 export const passiveSlots = (level: number) => [10, 30, 50, 100, 150, 200].filter((l) => level >= l).length;
 
-export const SPELL_GROUPS: { el: SpellElement; label: string; color: string }[] = [
-  { el: 'fire', label: 'Fuego', color: '#e8643a' },
-  { el: 'water', label: 'Agua', color: '#3a9be8' },
-  { el: 'earth', label: 'Tierra', color: '#8fb33a' },
-  { el: 'air', label: 'Aire', color: '#b48be8' },
-  { el: 'light', label: 'Luz', color: '#f0d264' },
-  { el: 'neutral', label: 'Neutros', color: '#c9b27c' },
+export const SPELL_GROUPS: { el: SpellElement; key: TKey; color: string }[] = [
+  { el: 'fire', key: 'el.fire', color: '#e8643a' },
+  { el: 'water', key: 'el.water', color: '#3a9be8' },
+  { el: 'earth', key: 'el.earth', color: '#8fb33a' },
+  { el: 'air', key: 'el.air', color: '#b48be8' },
+  { el: 'light', key: 'el.light', color: '#f0d264' },
+  { el: 'neutral', key: 'el.neutral', color: '#c9b27c' },
 ];
+export const groupLabel = (el: SpellElement) => t(SPELL_GROUPS.find((g) => g.el === el)?.key ?? 'deck.spell');
 
 export const spellImage = (icon: number) => `https://static.ankama.com/wakfu/portal/game/spell/${icon}.png`;
 

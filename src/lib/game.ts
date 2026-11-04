@@ -1,4 +1,9 @@
 // Reglas y constantes del juego usadas por el recomendador.
+import { t, tk } from './i18n';
+
+// Añade una etiqueta traducida que se resuelve al leerla (sigue el idioma actual).
+const L = <T extends object>(key: string, o: T) =>
+  Object.defineProperty(o, 'label', { get: () => tk(key), enumerable: true }) as T & { label: string };
 
 export type Element = 'fire' | 'water' | 'earth' | 'air';
 export type Role = 'tank' | 'heal' | 'dist' | 'melee';
@@ -16,7 +21,7 @@ export interface Item {
   gfx: number;
   stats: Record<string, number>;
   src: ItemSource;
-  craft?: { job: string; lvl: number };
+  craft?: { job: number; lvl: number };
   multiMast?: { v: number; n: number };
   multiRes?: { v: number; n: number };
   sockets?: number;   // engarces máximos para runas
@@ -26,9 +31,9 @@ export interface Item {
 
 export type SocketColor = 1 | 2 | 3;
 export const SOCKET_COLORS: Record<SocketColor, { label: string; color: string }> = {
-  1: { label: 'Rojo', color: '#e0524a' },
-  2: { label: 'Verde', color: '#5cc25a' },
-  3: { label: 'Azul', color: '#4a90e0' },
+  1: L('socket.1', { color: '#e0524a' }),
+  2: L('socket.2', { color: '#5cc25a' }),
+  3: L('socket.3', { color: '#4a90e0' }),
 };
 
 export interface Shard {
@@ -50,7 +55,8 @@ export interface Sublimation {
   level: number;
   maxLevel: number | null;
   stackable: boolean;
-  effect: string[];     // texto de wakfu.wiki.gg traducido al español (data/wiki-es.json)
+  effect: string[];     // texto de wakfu.wiki.gg en español (para puntuar por palabras clave)
+  text?: string[];      // texto en el idioma de la interfaz
   source?: string;
   gfx: number;
 }
@@ -59,13 +65,13 @@ export interface EnchantData { version: string; shards: Shard[]; sublimations: S
 
 export type ItemSource = 'craft' | 'shop' | 'other';
 export const SOURCE_LABELS: Record<ItemSource, string> = {
-  craft: 'Craft',
-  shop: 'Tienda',
-  other: 'Drop / otros',
+  get craft() { return t('source.craft'); },
+  get shop() { return t('source.shop'); },
+  get other() { return t('source.other'); },
 };
 
 export interface Recipe {
-  job: string;
+  job: number;          // id de oficio (nombre en public/data/lang)
   lvl: number;
   ing: [id: number, qty: number][];
   yield?: number;       // unidades producidas por receta (1 si no se indica)
@@ -82,17 +88,17 @@ export interface RecipeData {
 export const CRAFT_FILTER_EXEMPT: ItemSlot[] = ['pet', 'mount'];
 
 export const ELEMENTS: { id: Element; label: string; color: string }[] = [
-  { id: 'fire', label: 'Fuego', color: '#e8643a' },
-  { id: 'water', label: 'Agua', color: '#3a9be8' },
-  { id: 'earth', label: 'Tierra', color: '#8fb33a' },
-  { id: 'air', label: 'Aire', color: '#b48be8' },
+  L('el.fire', { id: 'fire', color: '#e8643a' }),
+  L('el.water', { id: 'water', color: '#3a9be8' }),
+  L('el.earth', { id: 'earth', color: '#8fb33a' }),
+  L('el.air', { id: 'air', color: '#b48be8' }),
 ];
 
 export const ROLES: { id: Role; label: string; hint: string }[] = [
-  { id: 'tank', label: 'Tanque', hint: 'Anticipación, resistencias y vida; más PM que PA' },
-  { id: 'heal', label: 'Curas', hint: 'Dominio cura + dominio distancia' },
-  { id: 'dist', label: 'Daño a distancia', hint: 'Full dominio distancia; PA primero' },
-  { id: 'melee', label: 'Daño cuerpo a cuerpo', hint: 'Full dominio de melé; PA primero' },
+  { id: 'tank', get label() { return tk('role.tank'); }, get hint() { return tk('role.tank.hint'); } },
+  { id: 'heal', get label() { return tk('role.heal'); }, get hint() { return tk('role.heal.hint'); } },
+  { id: 'dist', get label() { return tk('role.dist'); }, get hint() { return tk('role.dist.hint'); } },
+  { id: 'melee', get label() { return tk('role.melee'); }, get hint() { return tk('role.melee.hint'); } },
 ];
 
 // Ramas elementales habituales de cada clase (editables en la interfaz).
@@ -100,35 +106,35 @@ export const ROLES: { id: Role; label: string; hint: string }[] = [
 export const CLASSES: {
   id: string; label: string; elements: Element[]; roles: Role[]; berserk?: boolean; focus?: ('crit' | 'back')[];
 }[] = [
-  { id: 'feca', label: 'Feca', elements: ['fire', 'water', 'earth'], roles: ['tank', 'dist'] },
-  { id: 'osamodas', label: 'Osamodas', elements: ['fire', 'earth', 'air'], roles: ['dist', 'heal'] },
-  { id: 'anutrof', label: 'Anutrof', elements: ['fire', 'water', 'earth'], roles: ['dist'] },
-  { id: 'sram', label: 'Sram', elements: ['fire', 'water', 'air'], roles: ['melee'], focus: ['crit', 'back'] },
-  { id: 'xelor', label: 'Xelor', elements: ['fire', 'water', 'air'], roles: ['dist'] },
-  { id: 'zurcarak', label: 'Zurcarák', elements: ['fire', 'water', 'earth'], roles: ['melee', 'heal'] },
-  { id: 'aniripsa', label: 'Aniripsa', elements: ['fire', 'water', 'air'], roles: ['heal', 'dist'] },
-  { id: 'yopuka', label: 'Yopuka', elements: ['fire', 'earth', 'air'], roles: ['melee'] },
-  { id: 'ocra', label: 'Ocra', elements: ['fire', 'earth', 'air'], roles: ['dist'], focus: ['crit', 'back'] },
-  { id: 'sadida', label: 'Sadida', elements: ['water', 'earth', 'air'], roles: ['dist', 'heal'] },
-  { id: 'sacrogrito', label: 'Sacrógrito', elements: ['fire', 'earth', 'air'], roles: ['melee', 'tank'], berserk: true },
-  { id: 'pandawa', label: 'Pandawa', elements: ['fire', 'water', 'earth'], roles: ['tank', 'melee'] },
-  { id: 'tymador', label: 'Tymador', elements: ['fire', 'water', 'earth'], roles: ['melee', 'dist'] },
-  { id: 'zobal', label: 'Zobal', elements: ['fire', 'water', 'air'], roles: ['melee', 'tank'] },
-  { id: 'steamer', label: 'Steamer', elements: ['fire', 'water', 'earth'], roles: ['dist', 'heal'] },
-  { id: 'selotrop', label: 'Selotrop', elements: ['fire', 'water', 'air'], roles: ['dist', 'melee'] },
-  { id: 'hipermago', label: 'Hipermago', elements: ['fire', 'water', 'earth', 'air'], roles: ['dist'] },
-  { id: 'uginak', label: 'Uginak', elements: ['fire', 'water', 'earth'], roles: ['melee', 'tank'] },
+  L('class.feca', { id: 'feca', elements: ['fire', 'water', 'earth'], roles: ['tank', 'dist'] }),
+  L('class.osamodas', { id: 'osamodas', elements: ['fire', 'earth', 'air'], roles: ['dist', 'heal'] }),
+  L('class.anutrof', { id: 'anutrof', elements: ['fire', 'water', 'earth'], roles: ['dist'] }),
+  L('class.sram', { id: 'sram', elements: ['fire', 'water', 'air'], roles: ['melee'], focus: ['crit', 'back'] }),
+  L('class.xelor', { id: 'xelor', elements: ['fire', 'water', 'air'], roles: ['dist'] }),
+  L('class.zurcarak', { id: 'zurcarak', elements: ['fire', 'water', 'earth'], roles: ['melee', 'heal'] }),
+  L('class.aniripsa', { id: 'aniripsa', elements: ['fire', 'water', 'air'], roles: ['heal', 'dist'] }),
+  L('class.yopuka', { id: 'yopuka', elements: ['fire', 'earth', 'air'], roles: ['melee'] }),
+  L('class.ocra', { id: 'ocra', elements: ['fire', 'earth', 'air'], roles: ['dist'], focus: ['crit', 'back'] }),
+  L('class.sadida', { id: 'sadida', elements: ['water', 'earth', 'air'], roles: ['dist', 'heal'] }),
+  L('class.sacrogrito', { id: 'sacrogrito', elements: ['fire', 'earth', 'air'], roles: ['melee', 'tank'], berserk: true }),
+  L('class.pandawa', { id: 'pandawa', elements: ['fire', 'water', 'earth'], roles: ['tank', 'melee'] }),
+  L('class.tymador', { id: 'tymador', elements: ['fire', 'water', 'earth'], roles: ['melee', 'dist'] }),
+  L('class.zobal', { id: 'zobal', elements: ['fire', 'water', 'air'], roles: ['melee', 'tank'] }),
+  L('class.steamer', { id: 'steamer', elements: ['fire', 'water', 'earth'], roles: ['dist', 'heal'] }),
+  L('class.selotrop', { id: 'selotrop', elements: ['fire', 'water', 'air'], roles: ['dist', 'melee'] }),
+  L('class.hipermago', { id: 'hipermago', elements: ['fire', 'water', 'earth', 'air'], roles: ['dist'] }),
+  L('class.uginak', { id: 'uginak', elements: ['fire', 'water', 'earth'], roles: ['melee', 'tank'] }),
 ];
 
 export const RARITIES: Record<number, { label: string; color: string }> = {
-  0: { label: 'Común', color: '#9a9a9a' },
-  1: { label: 'Inusual', color: '#d8d8d8' },
-  2: { label: 'Raro', color: '#4fc35a' },
-  3: { label: 'Mítico', color: '#f08a2b' },
-  4: { label: 'Legendario', color: '#f5d33b' },
-  5: { label: 'Reliquia', color: '#c85ce0' },
-  6: { label: 'Recuerdo', color: '#5ec8e6' },
-  7: { label: 'Épico', color: '#e0458f' },
+  0: L('rarity.0', { color: '#9a9a9a' }),
+  1: L('rarity.1', { color: '#d8d8d8' }),
+  2: L('rarity.2', { color: '#4fc35a' }),
+  3: L('rarity.3', { color: '#f08a2b' }),
+  4: L('rarity.4', { color: '#f5d33b' }),
+  5: L('rarity.5', { color: '#c85ce0' }),
+  6: L('rarity.6', { color: '#5ec8e6' }),
+  7: L('rarity.7', { color: '#e0458f' }),
 };
 export const RELIC = 5;
 export const EPIC = 7;
@@ -138,37 +144,26 @@ export type BuildSlot =
   | 'ring1' | 'ring2' | 'weapon' | 'offhand' | 'accessory' | 'pet' | 'mount';
 
 export const BUILD_SLOTS: { id: BuildSlot; label: string; accepts: ItemSlot[] }[] = [
-  { id: 'head', label: 'Casco', accepts: ['head'] },
-  { id: 'neck', label: 'Amuleto', accepts: ['neck'] },
-  { id: 'chest', label: 'Coraza', accepts: ['chest'] },
-  { id: 'back', label: 'Capa', accepts: ['back'] },
-  { id: 'shoulders', label: 'Hombreras', accepts: ['shoulders'] },
-  { id: 'belt', label: 'Cinturón', accepts: ['belt'] },
-  { id: 'legs', label: 'Botas', accepts: ['legs'] },
-  { id: 'ring1', label: 'Anillo', accepts: ['ring'] },
-  { id: 'ring2', label: 'Anillo', accepts: ['ring'] },
-  { id: 'weapon', label: 'Arma', accepts: ['weapon1', 'weapon2h'] },
-  { id: 'offhand', label: 'Segunda mano', accepts: ['offhand'] },
-  { id: 'accessory', label: 'Emblema', accepts: ['accessory'] },
-  { id: 'pet', label: 'Mascota', accepts: ['pet'] },
-  { id: 'mount', label: 'Montura', accepts: ['mount'] },
+  L('slot.head', { id: 'head', accepts: ['head'] }),
+  L('slot.neck', { id: 'neck', accepts: ['neck'] }),
+  L('slot.chest', { id: 'chest', accepts: ['chest'] }),
+  L('slot.back', { id: 'back', accepts: ['back'] }),
+  L('slot.shoulders', { id: 'shoulders', accepts: ['shoulders'] }),
+  L('slot.belt', { id: 'belt', accepts: ['belt'] }),
+  L('slot.legs', { id: 'legs', accepts: ['legs'] }),
+  L('slot.ring1', { id: 'ring1', accepts: ['ring'] }),
+  L('slot.ring2', { id: 'ring2', accepts: ['ring'] }),
+  L('slot.weapon', { id: 'weapon', accepts: ['weapon1', 'weapon2h'] }),
+  L('slot.offhand', { id: 'offhand', accepts: ['offhand'] }),
+  L('slot.accessory', { id: 'accessory', accepts: ['accessory'] }),
+  L('slot.pet', { id: 'pet', accepts: ['pet'] }),
+  L('slot.mount', { id: 'mount', accepts: ['mount'] }),
 ];
 
-export const STAT_LABELS: Record<string, string> = {
-  hp: 'PdV', ap: 'PA', mp: 'PM', wp: 'PW', range: 'Alcance',
-  mastElem: 'Dominio elemental', mastFire: 'Dominio de fuego', mastWater: 'Dominio de agua',
-  mastEarth: 'Dominio de tierra', mastAir: 'Dominio de aire',
-  mastMelee: 'Dominio de melé', mastDist: 'Dominio distancia', mastBerserk: 'Dominio berserker',
-  mastCrit: 'Dominio crítico', mastBack: 'Dominio espalda', mastHeal: 'Dominio cura',
-  crit: '% Golpe crítico', block: '% Anticipación',
-  resElem: 'Resistencia elemental', resFire: 'Resistencia fuego', resWater: 'Resistencia agua',
-  resEarth: 'Resistencia tierra', resAir: 'Resistencia aire',
-  resCrit: 'Resistencia crítica', resBack: 'Resistencia espalda',
-  init: 'Iniciativa', tackle: 'Placaje', dodge: 'Esquiva', will: 'Voluntad',
-  prospection: 'Prospección', wisdom: 'Sabiduría',
-  armorGiven: '% Armadura dada', armorReceived: '% Armadura recibida',
-  hpPct: '% PdV', dmgPct: '% Daños infligidos', healPct: '% Curas realizadas',
-};
+/** Nombre traducido de cada característica (clave interna -> texto); undefined si no existe. */
+export const STAT_LABELS: Record<string, string | undefined> = new Proxy({}, {
+  get: (_, key) => (typeof key === 'string' && tk(`stat.${key}`) !== `stat.${key}` ? tk(`stat.${key}`) : undefined),
+});
 
 export const isDamageRole = (role: Role) => role === 'melee' || role === 'dist';
 

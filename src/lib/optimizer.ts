@@ -3,6 +3,7 @@
 import { BUILD_SLOTS, CRAFT_FILTER_EXEMPT, EPIC, RELIC, isDamageRole, type BuildSlot, type Element, type Item, type Role } from './game';
 import { planAptitudes, type AptitudePlan } from './aptitudes';
 import type { DeckBonus } from './spells';
+import { t } from './i18n';
 
 export interface BuildRequest {
   level: number;
@@ -188,11 +189,11 @@ function conflict(get: (s: BuildSlot) => Item | undefined): string | null {
     if (r === RELIC) relics++;
     if (r === EPIC) epics++;
   }
-  if (relics > 1) return 'Ya llevas otra reliquia';
-  if (epics > 1) return 'Ya llevas otro objeto épico';
+  if (relics > 1) return t('conflict.relic');
+  if (epics > 1) return t('conflict.epic');
   const r1 = get('ring1'), r2 = get('ring2');
-  if (r1 && r2 && r1.name === r2.name) return 'No puedes llevar dos anillos iguales';
-  if (get('weapon')?.slot === 'weapon2h' && get('offhand')) return 'El arma a dos manos ocupa la segunda mano';
+  if (r1 && r2 && r1.name === r2.name) return t('conflict.rings');
+  if (get('weapon')?.slot === 'weapon2h' && get('offhand')) return t('conflict.twoHanded');
   return null;
 }
 

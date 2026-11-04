@@ -7,13 +7,16 @@ import type { BuildRequest, BuildResult } from './lib/optimizer';
 import { runeValue, type RuneGroup, type RunePlan } from './lib/runes';
 import type { EnchantState } from './lib/share';
 import { sublimationAffinity, sublimationBase } from './lib/sublimations';
+import { pct, t } from './lib/i18n';
 
-const pct = (n: number) => `${n > 0 ? '+' : ''}${n.toFixed(1).replace('.', ',')} %`;
+/** Texto del efecto en el idioma de la interfaz (si no hay traducción, el español). */
+const subText = (s: Sublimation) => s.text ?? s.effect;
+
 const slotLabel = (s: BuildSlot) => BUILD_SLOTS.find((x) => x.id === s)!.label;
 
 // Sin color = engarce vacío (blanco).
 export function Socket({ color, title }: { color?: SocketColor; title?: string }) {
-  const c = color ? SOCKET_COLORS[color] : { label: 'Vacío', color: '#e8e8e8' };
+  const c = color ? SOCKET_COLORS[color] : { label: t('socket.empty'), color: '#e8e8e8' };
   return <span className="socket" title={title ?? c.label} style={{ background: c.color }} />;
 }
 
@@ -39,7 +42,7 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
     if (!data) return [];
     const q = query.trim().toLowerCase();
     const subs = data.sublimations.filter((s) => s.kind === tab && s.effect.length > 0
-      && (!q || s.name.toLowerCase().includes(q) || s.effect.join(' ').toLowerCase().includes(q)));
+      && (!q || s.name.toLowerCase().includes(q) || subText(s).join(' ').toLowerCase().includes(q)));
     // Las normales se agrupan por nombre base (I, II, III) mostrando el nivel más alto.
     const byBase = new Map<string, Sublimation[]>();
     for (const s of subs) {
@@ -55,7 +58,7 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
     // focus deriva de request (reqKey)
   }, [data, tab, query, reqKey]);
 
-  if (!data) return <div className="panel"><p className="muted">Cargando runas y sublimaciones…</p></div>;
+  if (!data) return <div className="panel"><p className="muted">{t('enchant.loading')}</p></div>;
 
   const setRune = (slot: BuildSlot, index: number, shardId: number | null) => {
     const item = result.slots[slot]!;
@@ -92,14 +95,13 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
       <section className="panel enchant">
         <div className="panel-head">
           <div>
-            <h2>Runas</h2>
-            <p className="muted">{chosenCount} de {totalSockets} engarces con runa. Empiezan vacíos: pon las que ya llevas y
-              decide si cambiarlas por las sugeridas.</p>
+            <h2>{t('enchant.runes')}</h2>
+            <p className="muted">{t('enchant.runesIntro', { n: chosenCount, total: totalSockets })}</p>
           </div>
           <div className="actions">
-            <button className="btn" onClick={() => applySuggested()}>Poner todas las sugeridas</button>
+            <button className="btn" onClick={() => applySuggested()}>{t('enchant.applyAll')}</button>
             {chosenCount > 0 && (
-              <button className="btn ghost" onClick={() => onChange({ ...enchant, runes: {} })}>Vaciar todas</button>
+              <button className="btn ghost" onClick={() => onChange({ ...enchant, runes: {} })}>{t('enchant.clearAll')}</button>
             )}
           </div>
         </div>
@@ -107,14 +109,14 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
         {before && suggested && (
           <div className="compare">
             <div>
-              <span className="muted">Tus runas</span>
+              <span className="muted">{t('enchant.yourRunes')}</span>
               <b>{withMine ? pct((withMine.derived.output / before.derived.output - 1) * 100) : '—'}</b>
-              <small>daño/cura · PdV ef. {withMine ? pct((withMine.derived.ehp / before.derived.ehp - 1) * 100) : '—'}</small>
+              <small>{t('enchant.outputEhp')} {withMine ? pct((withMine.derived.ehp / before.derived.ehp - 1) * 100) : '—'}</small>
             </div>
             <div>
-              <span className="muted">Sugeridas</span>
+              <span className="muted">{t('enchant.suggestedPlural')}</span>
               <b>{pct((suggested.after.derived.output / before.derived.output - 1) * 100)}</b>
-              <small>daño/cura · PdV ef. {pct((suggested.after.derived.ehp / before.derived.ehp - 1) * 100)}</small>
+              <small>{t('enchant.outputEhp')} {pct((suggested.after.derived.ehp / before.derived.ehp - 1) * 100)}</small>
             </div>
           </div>
         )}
@@ -127,7 +129,7 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
                   <span className="eyebrow">{slotLabel(g.slot)}</span>
                   <div className="rune-item-name">{g.item.name}</div>
                 </div>
-                <button className="link" onClick={() => applySuggested(g.slot)}>Usar sugeridas</button>
+                <button className="link" onClick={() => applySuggested(g.slot)}>{t('enchant.useSuggested')}</button>
               </div>
               {g.sockets.map((s, i) => {
                 const same = s.mine && s.sug && s.mine.shard.id === s.sug.shard.id;
@@ -135,10 +137,10 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
                   <div key={i} className="rune-socket">
                     <label className="rune-line">
                       <Socket color={s.mine?.color} />
-                      <span className="sr-only">Engarce {i + 1} de {slotLabel(g.slot)}</span>
+                      <span className="sr-only">{t('enchant.socketAria', { n: i + 1, slot: slotLabel(g.slot) })}</span>
                       <select value={s.mine?.shard.id ?? ''}
                         onChange={(e) => setRune(g.slot, i, e.target.value ? Number(e.target.value) : null)}>
-                        <option value="">Vacío</option>
+                        <option value="">{t('socket.empty')}</option>
                         {data.shards.map((sh) => {
                           const v = runeValue(g.item, g.slot, sh);
                           return (
@@ -150,12 +152,12 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
                       </select>
                     </label>
                     {s.forced && s.mine && s.mine.color !== s.forced && (
-                      <div className="hint warn">La sublimación pide aquí color {SOCKET_COLORS[s.forced].label.toLowerCase()}.</div>
+                      <div className="hint warn">{t('enchant.forcedColor', { color: SOCKET_COLORS[s.forced].label.toLowerCase() })}</div>
                     )}
                     {s.sug && !same && (
                       <div className="hint">
-                        Sugerida: <Socket color={s.sug.color} /> {s.sug.shard.name} +{s.sug.value}{s.sug.doubled && ' ×2'}
-                        <button className="link" onClick={() => setRune(g.slot, i, s.sug!.shard.id)}>Cambiar</button>
+                        {t('enchant.suggested')}: <Socket color={s.sug.color} /> {s.sug.shard.name} +{s.sug.value}{s.sug.doubled && ' ×2'}
+                        <button className="link" onClick={() => setRune(g.slot, i, s.sug!.shard.id)}>{t('common.change')}</button>
                       </div>
                     )}
                   </div>
@@ -164,15 +166,15 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
             </div>
           ))}
         </div>
-        <p className="muted small">El nivel de la runa depende del nivel de la pieza; ×2 indica que esa pieza duplica el bonus.</p>
+        <p className="muted small">{t('enchant.runesNote')}</p>
       </section>
 
       <section className="panel enchant">
-        <h2>Sublimaciones</h2>
+        <h2>{t('enchant.subs')}</h2>
         <div className="chosen-subs">
-          <ChosenSub label="Épica" host={epicItem?.name} sub={epicSub} missing="Tu build no lleva objeto épico."
+          <ChosenSub label={t('enchant.epic')} host={epicItem?.name} sub={epicSub} missing={t('enchant.noEpic')}
             onEdit={() => { setTab('epic'); setLimit(15); }} onClear={() => onChange({ ...enchant, epic: null })} />
-          <ChosenSub label="Reliquia" host={relicItem?.name} sub={relicSub} missing="Tu build no lleva objeto reliquia."
+          <ChosenSub label={t('enchant.relic')} host={relicItem?.name} sub={relicSub} missing={t('enchant.noRelic')}
             onEdit={() => { setTab('relic'); setLimit(15); }} onClear={() => onChange({ ...enchant, relic: null })} />
           {normalSubs.map(([slot, id]) => (
             <ChosenSub key={slot} label={slotLabel(slot as BuildSlot)} host={result.slots[slot as BuildSlot]!.name}
@@ -181,23 +183,23 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
         </div>
 
         <div className="seg" role="tablist">
-          {([['normal', 'Pergaminos'], ['epic', 'Épicas'], ['relic', 'Reliquia']] as [Tab, string][]).map(([t, label]) => (
-            <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''}
-              onClick={() => { setTab(t); setLimit(15); }}>{label}</button>
+          {([['normal', t('enchant.tab.normal')], ['epic', t('enchant.tab.epic')], ['relic', t('enchant.relic')]] as [Tab, string][]).map(([id, label]) => (
+            <button key={id} role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''}
+              onClick={() => { setTab(id); setLimit(15); }}>{label}</button>
           ))}
         </div>
 
         <p className="muted small">
           {tab === 'normal'
-            ? 'Se engarzan en una pieza con 3 engarces seguidos de los colores del patrón (los blancos valen para cualquier color).'
+            ? t('enchant.normalHint')
             : host
-              ? <>Va en tu objeto {tab === 'epic' ? 'épico' : 'reliquia'} <b>{host.name}</b>. Solo puedes llevar una.</>
-              : <>Tu build no lleva objeto {tab === 'epic' ? 'épico' : 'reliquia'}: estas sublimaciones no se pueden usar.</>}
+              ? <>{t(tab === 'epic' ? 'enchant.hostEpic' : 'enchant.hostRelic')} <b>{host.name}</b>. {t('enchant.onlyOne')}</>
+              : <>{t(tab === 'epic' ? 'enchant.noEpic' : 'enchant.noRelic')} {t('enchant.cantUse')}</>}
         </p>
 
         <label className="field-inline">
-          <span className="sr-only">Buscar sublimación</span>
-          <input type="search" className="input" placeholder="Buscar por nombre o efecto (crítico, cura, melé…)"
+          <span className="sr-only">{t('enchant.searchAria')}</span>
+          <input type="search" className="input" placeholder={t('enchant.search')}
             value={query} onChange={(e) => setQuery(e.target.value)} />
         </label>
 
@@ -209,13 +211,13 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
                 <div className="sub-head">
                   <b>{tab === 'normal' ? sublimationBase(top.name) : top.name}</b>
                   {top.pattern.length > 0 && <span className="pattern">{top.pattern.map((c, i) => <Socket key={i} color={c} />)}</span>}
-                  {affinity >= 2.5 && <span className="tag accent">Sugerida</span>}
-                  {selected && <span className="tag">Elegida</span>}
+                  {affinity >= 2.5 && <span className="tag accent">{t('enchant.suggested')}</span>}
+                  {selected && <span className="tag">{t('enchant.chosen')}</span>}
                   <div className="sub-action">
                     {tab === 'normal' ? (
-                      <select aria-label={`Aplicar ${top.name} a una pieza`} value=""
+                      <select aria-label={t('enchant.applyAria', { name: top.name })} value=""
                         onChange={(e) => { if (e.target.value) setSub(e.target.value as BuildSlot, top.id); }}>
-                        <option value="">Aplicar a…</option>
+                        <option value="">{t('enchant.applyTo')}</option>
                         {socketSlots.map((s) => (
                           <option key={s} value={s}>{slotLabel(s)}: {result.slots[s]!.name}</option>
                         ))}
@@ -223,27 +225,26 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
                     ) : (
                       <button className={`btn ${selected ? 'ghost' : ''}`} disabled={!host}
                         onClick={() => onChange({ ...enchant, [tab]: selected ? null : top.id })}>
-                        {selected ? 'Quitar' : 'Elegir'}
+                        {selected ? t('common.remove') : t('common.choose')}
                       </button>
                     )}
                   </div>
                 </div>
                 <div className="sub-meta muted">
-                  {variants.length > 1 && <>Niveles {variants.map((v) => v.level).join(' · ')} · </>}
-                  {top.stackable && top.maxLevel && <>acumulable hasta nivel {top.maxLevel} · </>}
-                  {top.source && <>se obtiene en {top.source}</>}
+                  {variants.length > 1 && <>{t('enchant.levels', { list: variants.map((v) => v.level).join(' · ') })} · </>}
+                  {top.stackable && top.maxLevel && <>{t('enchant.stackable', { n: top.maxLevel })} · </>}
+                  {top.source && <>{t('enchant.source', { source: top.source })}</>}
                 </div>
-                <ul>{top.effect.map((e, i) => <li key={i}>{e}</li>)}</ul>
+                <ul>{subText(top).map((e, i) => <li key={i}>{e}</li>)}</ul>
               </article>
             );
           })}
           {list.length > limit && (
-            <button className="btn ghost" onClick={() => setLimit((l) => l + 20)}>Ver más ({list.length - limit})</button>
+            <button className="btn ghost" onClick={() => setLimit((l) => l + 20)}>{t('enchant.more', { n: list.length - limit })}</button>
           )}
-          {list.length === 0 && <p className="muted">Ninguna sublimación coincide con "{query}". Prueba con otra palabra.</p>}
+          {list.length === 0 && <p className="muted">{t('enchant.none', { q: query })}</p>}
         </div>
-        <p className="muted small">"Sugerida" se calcula por palabras clave del efecto según tu rol; es orientativa. Efectos traducidos
-          al español desde <a href="https://wakfu.wiki.gg/wiki/List_of_Sublimations" target="_blank" rel="noreferrer">wakfu.wiki.gg</a> (CC BY-SA).</p>
+        <p className="muted small">{t('enchant.note')} <a href="https://wakfu.wiki.gg/wiki/List_of_Sublimations" target="_blank" rel="noreferrer">wakfu.wiki.gg</a> (CC BY-SA).</p>
       </section>
     </>
   );
@@ -258,12 +259,12 @@ function ChosenSub({ label, host, sub, missing, onEdit, onClear }: {
       {!host && missing ? <span className="muted">{missing}</span> : sub ? (
         <>
           <b>{sub.name}</b>
-          <span className="muted clamp">{sub.effect.join(' ')}</span>
+          <span className="muted clamp">{subText(sub).join(' ')}</span>
         </>
-      ) : <span className="muted">Sin elegir</span>}
+      ) : <span className="muted">{t('enchant.notChosen')}</span>}
       <div className="row">
-        {onEdit && host && <button className="link" onClick={onEdit}>{sub ? 'Cambiar' : 'Elegir'}</button>}
-        {sub && <button className="link" onClick={onClear}>Quitar</button>}
+        {onEdit && host && <button className="link" onClick={onEdit}>{sub ? t('common.change') : t('common.choose')}</button>}
+        {sub && <button className="link" onClick={onClear}>{t('common.remove')}</button>}
       </div>
     </div>
   );

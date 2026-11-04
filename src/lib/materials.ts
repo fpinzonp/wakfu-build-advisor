@@ -4,7 +4,7 @@ import type { Recipe, RecipeData } from './game';
 export interface CraftStep {
   id: number;
   times: number;   // veces que hay que lanzar la receta
-  job: string;
+  job: number;
   lvl: number;
   upgrade: boolean; // la receta mejora un objeto base (p. ej. mítico -> legendario)
 }
@@ -13,7 +13,7 @@ export interface MaterialList {
   materials: { id: number; qty: number }[];   // materias que hay que conseguir
   crafts: CraftStep[];                          // intermedios primero, piezas al final
   plans: number[];
-  jobs: { job: string; lvl: number }[];         // nivel máximo requerido por profesión
+  jobs: { job: number; lvl: number }[];         // nivel máximo requerido por profesión
 }
 
 export interface MaterialOptions {
@@ -48,7 +48,7 @@ export function materialsFor(itemIds: number[], data: RecipeData, opts: Material
   const crafts = new Map<number, CraftStep>();
   const order: number[] = [];
   const plans = new Set<number>();
-  const jobs = new Map<string, number>();
+  const jobs = new Map<number, number>();
 
   const need = (id: number, qty: number, craft: boolean, stack: Set<number>) => {
     const recipe = data.recipes[id]?.[0];

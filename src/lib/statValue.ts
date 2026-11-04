@@ -2,26 +2,26 @@
 import type { Role } from './game';
 import { evaluateBuild, type BuildRequest, type BuildSlots } from './optimizer';
 
-export interface StatProbe { key: string; amount: number; label: string; roles?: Role[] }
+export interface StatProbe { key: string; amount: number; roles?: Role[] }
 
 // Cantidades de referencia, parecidas a lo que suele variar entre dos piezas.
 export const PROBES: StatProbe[] = [
-  { key: 'mastElem', amount: 100, label: '+100 Dominio elemental' },
-  { key: 'mastHeal', amount: 100, label: '+100 Dominio cura', roles: ['heal'] },
-  { key: 'mastDist', amount: 100, label: '+100 Dominio distancia' },
-  { key: 'mastMelee', amount: 100, label: '+100 Dominio de melé' },
-  { key: 'mastCrit', amount: 100, label: '+100 Dominio crítico' },
-  { key: 'mastBack', amount: 100, label: '+100 Dominio espalda', roles: ['melee', 'dist'] },
-  { key: 'mastBerserk', amount: 100, label: '+100 Dominio berserker', roles: ['melee', 'dist'] },
-  { key: 'crit', amount: 10, label: '+10 % Golpe crítico' },
-  { key: 'dmgPct', amount: 10, label: '+10 % Daños infligidos', roles: ['melee', 'dist', 'tank'] },
-  { key: 'healPct', amount: 10, label: '+10 % Curas realizadas', roles: ['heal'] },
-  { key: 'ap', amount: 1, label: '+1 PA' },
-  { key: 'mp', amount: 1, label: '+1 PM' },
-  { key: 'range', amount: 1, label: '+1 Alcance', roles: ['dist', 'heal'] },
-  { key: 'hp', amount: 500, label: '+500 PdV' },
-  { key: 'resElem', amount: 100, label: '+100 Resistencia elemental' },
-  { key: 'block', amount: 10, label: '+10 % Anticipación', roles: ['tank'] },
+  { key: 'mastElem', amount: 100 },
+  { key: 'mastHeal', amount: 100, roles: ['heal'] },
+  { key: 'mastDist', amount: 100 },
+  { key: 'mastMelee', amount: 100 },
+  { key: 'mastCrit', amount: 100 },
+  { key: 'mastBack', amount: 100, roles: ['melee', 'dist'] },
+  { key: 'mastBerserk', amount: 100, roles: ['melee', 'dist'] },
+  { key: 'crit', amount: 10 },
+  { key: 'dmgPct', amount: 10, roles: ['melee', 'dist', 'tank'] },
+  { key: 'healPct', amount: 10, roles: ['heal'] },
+  { key: 'ap', amount: 1 },
+  { key: 'mp', amount: 1 },
+  { key: 'range', amount: 1, roles: ['dist', 'heal'] },
+  { key: 'hp', amount: 500 },
+  { key: 'resElem', amount: 100 },
+  { key: 'block', amount: 10, roles: ['tank'] },
 ];
 
 export interface StatValue {

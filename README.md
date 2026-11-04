@@ -44,5 +44,16 @@ Si la wiki no responde, se mantiene la copia anterior.
   optimizador; los condicionales (al final del turno, en un estado…) y los buffs de los activos no se modelan.
   La baraja va dentro del enlace de la build.
 
+## Idiomas (español, inglés y francés)
+
+- Interfaz: `src/locales/{es,en,fr}.ts` (`es.ts` define todas las claves) y `src/lib/i18n.ts` (`t()`, selector y
+  formato de números). El idioma se recuerda en el navegador; por defecto se usa el del navegador.
+- Datos del juego: `npm run data` genera `public/data/lang/{es,en,fr}.json` con los nombres oficiales de Ankama
+  (objetos, ingredientes, oficios, runas, sublimaciones) y los textos traducidos. `src/lib/localize.ts` los aplica.
+- Traducciones propias (la wiki solo está en inglés): efectos de sublimaciones en `data/wiki-es.json` y
+  `data/wiki-fr.json`, y nombres y efectos de hechizos en `data/spells-es.json` y `data/spells-fr.json` (clave: texto en
+  inglés). Los nombres de hechizos no son los oficiales del juego. Si la wiki cambia un texto, `npm run data` avisa
+  de lo que falta por traducir y lo muestra en inglés.
+
 Limitaciones: no modela efectos especiales de objetos, sublimaciones ni runas; los pesos son
 heurísticos y se pueden ajustar en `ROLE_WEIGHTS`.

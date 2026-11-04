@@ -1,27 +1,27 @@
 import { ELEMENTS, STAT_LABELS, type Element } from './lib/game';
 import { buildSheet } from './lib/characteristics';
 import type { BuildResult } from './lib/optimizer';
+import { fmt, t, type TKey } from './lib/i18n';
 
-const fmt = (n: number) => Math.round(n).toLocaleString('es-ES');
 
-type Row = [label: string, key: string, suffix?: string];
+type Row = [label: TKey, key: string, suffix?: string];
 
-const GENERAL: Row[] = [['PdV', 'hp'], ['PA', 'ap'], ['PM', 'mp'], ['PW', 'wp']];
-const ARMOR: Row[] = [['Armadura recibida', 'armorReceived', '%'], ['Armadura dada', 'armorGiven', '%']];
+const GENERAL: Row[] = [['stat.hp', 'hp'], ['stat.ap', 'ap'], ['stat.mp', 'mp'], ['stat.wp', 'wp']];
+const ARMOR: Row[] = [['sheet.armorReceived', 'armorReceived', '%'], ['sheet.armorGiven', 'armorGiven', '%']];
 const SECONDARY: Row[] = [
-  ['Daños infligidos', 'dmgPct', '%'], ['Curas realizadas', 'healPct', '%'],
-  ['Golpe crítico', 'crit', '%'],
-  ['Anticipación', 'block', '%'],
-  ['Iniciativa', 'init'], ['Alcance', 'range'],
-  ['Esquiva', 'dodge'], ['Placaje', 'tackle'],
-  ['Sabiduría', 'wisdom'], ['Prospección', 'prospection'],
-  ['Control', 'control'], ['Voluntad', 'will'],
+  ['sheet.dmgPct', 'dmgPct', '%'], ['sheet.healPct', 'healPct', '%'],
+  ['sheet.crit', 'crit', '%'],
+  ['sheet.block', 'block', '%'],
+  ['stat.init', 'init'], ['stat.range', 'range'],
+  ['stat.dodge', 'dodge'], ['stat.tackle', 'tackle'],
+  ['stat.wisdom', 'wisdom'], ['stat.prospection', 'prospection'],
+  ['stat.control', 'control'], ['stat.will', 'will'],
 ];
 const MASTERIES: Row[] = [
-  ['Dominio crítico', 'mastCrit'], ['Resistencia crítica', 'resCrit'],
-  ['Dominio espalda', 'mastBack'], ['Resistencia espalda', 'resBack'],
-  ['Dominio de melé', 'mastMelee'], ['Dominio distancia', 'mastDist'],
-  ['Dominio cura', 'mastHeal'], ['Dominio berserker', 'mastBerserk'],
+  ['stat.mastCrit', 'mastCrit'], ['stat.resCrit', 'resCrit'],
+  ['stat.mastBack', 'mastBack'], ['stat.resBack', 'resBack'],
+  ['stat.mastMelee', 'mastMelee'], ['stat.mastDist', 'mastDist'],
+  ['stat.mastHeal', 'mastHeal'], ['stat.mastBerserk', 'mastBerserk'],
 ];
 
 export default function StatSheet({ result, elements, withRunes, runesAvailable, onToggleRunes, runeBonus }: {
@@ -38,7 +38,7 @@ export default function StatSheet({ result, elements, withRunes, runesAvailable,
         const v = value(key);
         return (
           <div key={key} className="sheet-cell">
-            <span>{label}</span>
+            <span>{t(label)}</span>
             <b className={v < 0 ? 'neg' : ''}>{fmt(v)}{suffix}</b>
           </div>
         );
@@ -49,10 +49,10 @@ export default function StatSheet({ result, elements, withRunes, runesAvailable,
   return (
     <div className="panel sheet">
       <div className="panel-head">
-        <h2>Características</h2>
+        <h2>{t('tab.stats')}</h2>
         <label className="check">
           <input type="checkbox" checked={withRunes} disabled={!runesAvailable} onChange={(e) => onToggleRunes(e.target.checked)} />
-          <span>Incluir mis runas{!runesAvailable && <small className="muted">Elige runas en "Runas y sublimaciones"</small>}</span>
+          <span>{t('sheet.withRunes')}{!runesAvailable && <small className="muted">{t('sheet.withRunes.hint')}</small>}</span>
         </label>
       </div>
       {withRunes && runeBonus && (
@@ -73,15 +73,15 @@ export default function StatSheet({ result, elements, withRunes, runesAvailable,
           return (
             <div key={l.element} className={`sheet-el ${used ? '' : 'unused'}`} style={{ '--el': info.color } as React.CSSProperties}>
               <span className="el-name">{info.label}</span>
-              <span className="el-val" title="Dominio">{fmt(l.mastery)}</span>
-              <span className="el-res" title="Resistencia (reducción de daño)">
+              <span className="el-val" title={t('sheet.mastery')}>{fmt(l.mastery)}</span>
+              <span className="el-res" title={t('sheet.resistance')}>
                 <small>({Math.floor(l.resPct)} %)</small> {fmt(l.res)}
               </span>
             </div>
           );
         })}
         <div className="sheet-cell wide">
-          <span>Dominio efectivo del rol</span>
+          <span>{t('sheet.roleMastery')}</span>
           <b>{fmt(result.derived.mastery)}</b>
         </div>
       </div>
@@ -89,10 +89,7 @@ export default function StatSheet({ result, elements, withRunes, runesAvailable,
       {grid(SECONDARY)}
       {grid(MASTERIES)}
 
-      <p className="muted small">Dominio y resistencia por elemento: cada columna muestra dominio, luego (% de reducción)
-        y resistencia. El "dominio en N elementos" aleatorio se asigna a tus elementos y las resistencias aleatorias a los
-        elementos con menos resistencia. Incluye los efectos permanentes de las pasivas de tu baraja (pestaña Hechizos); no
-        incluye sublimaciones ni bonificaciones de combate.</p>
+      <p className="muted small">{t('sheet.note')}</p>
     </div>
   );
 }

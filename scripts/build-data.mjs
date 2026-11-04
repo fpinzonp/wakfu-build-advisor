@@ -73,17 +73,19 @@ const [items, recipes, recipeResults, recipeIngredients, recipeCategories, jobsI
   get('recipeCategories'), get('jobsItems'), get('blueprints'), get('states'),
 ]);
 
+// Idiomas de la interfaz. Cada uno recibe public/data/lang/{idioma}.json con los nombres del juego.
+const LANGS = ['es', 'en', 'fr'];
+const titleIn = (title, lang) => title?.[lang] || title?.en || title?.fr || title?.es;
+
 // Nombres e imágenes de recursos/ingredientes (jobsItems los contiene todos)
 const resourceInfo = new Map();
 for (const j of jobsItems) {
-  const t = j.title ?? {};
-  resourceInfo.set(j.definition.id, { name: t.es || t.en || t.fr, gfx: j.definition.graphicParameters?.gfxId });
+  resourceInfo.set(j.definition.id, { title: j.title ?? {}, name: titleIn(j.title, 'es'), gfx: j.definition.graphicParameters?.gfxId });
 }
 for (const i of items) {
   const id = i.definition.item.id;
   if (!resourceInfo.has(id)) {
-    const t = i.title ?? {};
-    resourceInfo.set(id, { name: t.es || t.en || t.fr, gfx: i.definition.item.graphicParameters.gfxId });
+    resourceInfo.set(id, { title: i.title ?? {}, name: titleIn(i.title, 'es'), gfx: i.definition.item.graphicParameters.gfxId });
   }
 }
 // La rareza solo se guarda para el equipamiento (p. ej. el objeto base de una mejora).
@@ -91,7 +93,7 @@ for (const i of items) {
   const def = i.definition.item;
   if (TYPE_SLOT[def.baseParameters.itemTypeId]) resourceInfo.get(def.id).rarity = def.baseParameters.rarity;
 }
-const jobName = new Map(recipeCategories.map((c) => [c.definition.id, c.title?.es || c.title?.en]));
+const jobTitles = new Map(recipeCategories.map((c) => [c.definition.id, c.title ?? {}]));
 const recipeById = new Map(recipes.map((r) => [r.id, r]));
 const planByRecipe = new Map();
 for (const b of blueprints) for (const rid of b.recipeId) planByRecipe.set(rid, b.blueprintId);
@@ -128,7 +130,7 @@ const mapRecipes = (itemRecipes) => itemRecipes.map((r) => {
   const plan = planByRecipe.get(r.id);
   if (plan) registerIngredient(plan);
   return {
-    job: jobName.get(r.categoryId) ?? '?',
+    job: r.categoryId,
     lvl: r.level,
     ing,
     ...(r.yield > 1 && { yield: r.yield }),
@@ -169,7 +171,7 @@ for (const raw of items) {
   let craft;
   if (itemRecipes.length) {
     const first = itemRecipes[0];
-    craft = { job: jobName.get(first.categoryId) ?? '?', lvl: first.level };
+    craft = { job: first.categoryId, lvl: first.level };
     recipesOut[def.id] = mapRecipes(itemRecipes);
   }
 
@@ -315,11 +317,21 @@ const toEs = (text) => {
   if (es === undefined) untranslated.add(text);
   return es ?? text;
 };
-// Nombres oficiales de los estados en español (Ankama los publica; las descripciones no)
-const stateNameEs = new Map(gameStates.map((st) => [st.definition.id, st.title?.es]));
+// Traducción propia al francés (misma estructura que wiki-es.json).
+const wikiFr = JSON.parse(await readFile(new URL('../data/wiki-fr.json', import.meta.url), 'utf8'));
+const untranslatedFr = new Set();
+const toLang = (text, lang) => {
+  if (lang === 'en') return text;
+  if (lang === 'es') return toEs(text);
+  const fr = wikiFr.effects[text];
+  if (fr === undefined) untranslatedFr.add(text);
+  return fr ?? text;
+};
+// Nombres oficiales de los estados (Ankama los publica en todos los idiomas; las descripciones no)
+const stateTitles = new Map(gameStates.map((st) => [st.definition.id, st.title ?? {}]));
 
 // Convierte las plantillas de la wiki en texto plano para un nivel dado.
-function renderEffect(text, level) {
+function renderEffect(text, level, lang = 'es') {
   let s = String(text);
   for (let guard = 0; guard < 20 && s.includes('{{'); guard++) {
     s = s.replace(/\{\{([^{}]*)\}\}/g, (_, body) => {
@@ -328,7 +340,7 @@ function renderEffect(text, level) {
       const pos = args.filter((a) => !a.includes('='));
       switch (name.trim()) {
         case 'se': return String(Math.floor(Number(kv.base ?? 0) + Number(kv.scale ?? 0) * (level - 1)));
-        case 'st': return stateNameEs.get(Number(pos[0])) ?? wikiStates[pos[0]]?.name ?? '';
+        case 'st': return stateTitles.get(Number(pos[0]))?.[lang] ?? wikiStates[pos[0]]?.name ?? '';
         case 'he': {
           if (kv.hidden && level < Number(kv.hidden)) return '';
           if (kv.hide && level >= Number(kv.hide)) return '';
@@ -342,6 +354,7 @@ function renderEffect(text, level) {
 }
 
 const sublimations = [];
+const subNames = Object.fromEntries(LANGS.map((l) => [l, {}]));
 for (const raw of items) {
   const def = raw.definition.item;
   if (def.baseParameters.itemTypeId !== SUBLIMATION_TYPE) continue;
@@ -367,6 +380,13 @@ for (const raw of items) {
     }),
     gfx: def.graphicParameters.gfxId,
   });
+  const sourceEn = wikiSources[baseEn];
+  for (const lang of LANGS) {
+    const effect = st ? Object.values(st.effects ?? {}).map((e) => renderEffect(toLang(String(e), lang), level, lang)).filter(Boolean) : [];
+    const srcText = sourceEn === undefined ? undefined
+      : lang === 'en' ? sourceEn : (lang === 'es' ? wikiEs : wikiFr).sources[sourceEn] ?? sourceEn;
+    subNames[lang][def.id] = [titleIn(raw.title, lang) ?? nameEn, effect, ...(srcText ? [renderEffect(srcText, 1, lang)] : [])];
+  }
 }
 
 // ---------- Hechizos y pasivas (baraja) ----------
@@ -397,6 +417,22 @@ const spellText = (wikitext) => String(wikitext ?? '')
   .replace(/'''?/g, '')
   .split('\n').map((l) => l.replace(/\s+/g, ' ').trim()).filter(Boolean);
 
+// Traducción propia de nombres y textos de hechizos (la wiki solo los tiene en inglés).
+// Claves: nombre o línea de texto en inglés. Si falta una traducción se deja en inglés.
+const spellI18n = {
+  en: { names: {}, lines: {} },
+  es: JSON.parse(await readFile(new URL('../data/spells-es.json', import.meta.url), 'utf8')),
+  fr: JSON.parse(await readFile(new URL('../data/spells-fr.json', import.meta.url), 'utf8')),
+};
+const spellNames = Object.fromEntries(LANGS.map((l) => [l, {}]));
+const missingSpell = { es: new Set(), fr: new Set() };
+const trSpell = (lang, kind, text) => {
+  if (lang === 'en') return text;
+  const tr = spellI18n[lang][kind][text];
+  if (tr === undefined) missingSpell[lang].add(text);
+  return tr ?? text;
+};
+
 const spellsOut = { common: [], classes: {} };
 const usedIds = new Map();
 const unusedStats = new Set(Object.keys(spellStats));
@@ -422,6 +458,9 @@ for (const r of wiki?.spells ?? []) {
     ...(curated && Object.keys(stats).length && { stats }),
     ...(zero?.length && { zero }),
   };
+  for (const lang of LANGS) {
+    spellNames[lang][id] = [trSpell(lang, 'names', spell.name), spell.text.map((l) => trSpell(lang, 'lines', l))];
+  }
   if (classId === 'common') spellsOut.common.push(spell);
   else (spellsOut.classes[classId] ??= []).push(spell);
 }
@@ -439,6 +478,25 @@ console.log(`${shards.length} runas y ${sublimations.length} sublimaciones escri
 if (untranslated.size) console.warn(`Aviso: ${untranslated.size} textos de la wiki sin traducir en data/wiki-es.json (se muestran en inglés).`);
 await writeFile(new URL('items.json', OUT_DIR), JSON.stringify({ version, items: out }));
 await writeFile(new URL('recipes.json', OUT_DIR), JSON.stringify({ version, recipes: recipesOut, ingredients: ingredientsOut }));
+// Nombres por idioma
+await mkdir(new URL('lang/', OUT_DIR), { recursive: true });
+const itemTitles = new Map(items.map((i) => [i.definition.item.id, i.title ?? {}]));
+for (const lang of LANGS) {
+  const names = {
+    items: Object.fromEntries(out.map((i) => [i.id, titleIn(itemTitles.get(i.id), lang) ?? i.name])),
+    ingredients: Object.fromEntries(Object.keys(ingredientsOut).map((id) => [id, titleIn(resourceInfo.get(Number(id))?.title, lang) ?? ingredientsOut[id][0]])),
+    jobs: Object.fromEntries([...jobTitles].map(([id, title]) => [id, titleIn(title, lang) ?? `#${id}`])),
+    shards: Object.fromEntries(shards.map((s) => [s.id, titleIn(itemTitles.get(s.id), lang) ?? s.name])),
+    subs: subNames[lang],
+    spells: spellNames[lang],
+  };
+  await writeFile(new URL(`lang/${lang}.json`, OUT_DIR), JSON.stringify(names));
+}
+console.log(`Nombres en ${LANGS.join(', ')} escritos en public/data/lang/`);
+if (untranslatedFr.size) console.warn(`Aviso: ${untranslatedFr.size} textos de la wiki sin traducir en data/wiki-fr.json (se muestran en inglés).`);
+for (const lang of ['es', 'fr']) {
+  if (missingSpell[lang].size) console.warn(`Aviso: ${missingSpell[lang].size} textos de hechizos sin traducir en data/spells-${lang}.json (se muestran en inglés).`);
+}
 const bySrc = out.reduce((acc, i) => ({ ...acc, [i.src]: (acc[i.src] ?? 0) + 1 }), {});
 console.log(`${out.length} objetos de equipamiento escritos en public/data/items.json`, bySrc);
 console.log(`${Object.keys(recipesOut).length} recetas escritas en public/data/recipes.json`);

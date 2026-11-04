@@ -360,6 +360,48 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .site-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); text-align: center; line-height: 1.6; color: var(--muted); font-size: 12px; }
 
 /* Tablet y móvil */
+/* Baraja de hechizos */
+.deck-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 16px; align-items: start; }
+.deck-pool { display: flex; flex-direction: column; gap: 12px; }
+.deck-side { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 16px; }
+.spell-group h3 { margin-bottom: 8px; }
+.spell-grid { display: grid; grid-template-columns: repeat(auto-fill, 48px); gap: 6px; }
+.spell {
+  position: relative; width: 48px; height: 48px; padding: 0; border-radius: var(--radius-sm);
+  background: var(--panel-2); border: 2px solid var(--line); overflow: hidden;
+}
+.spell img { width: 100%; height: 100%; display: block; }
+.spell:hover { border-color: var(--line-strong); }
+.spell.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.spell.locked img { filter: grayscale(1); opacity: .35; }
+.spell[aria-disabled=true] { cursor: not-allowed; }
+.spell-lvl {
+  position: absolute; right: 2px; bottom: 2px; font-size: 10px; line-height: 14px; padding: 0 3px;
+  background: rgba(0, 0, 0, .75); border-radius: 3px; color: var(--text);
+}
+.spell-dot { position: absolute; top: 3px; right: 3px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid #000; }
+.deck-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 6px 0 12px; }
+.deck-slot {
+  aspect-ratio: 1; border-radius: var(--radius-sm); border: 1px dashed var(--line-strong); background: var(--panel-2);
+  padding: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); overflow: hidden;
+}
+.deck-slot.filled { border: 2px solid var(--accent); }
+.deck-slot.filled:hover { border-color: var(--neg); }
+.deck-slot.over { border-color: var(--neg); }
+.deck-slot.filled img { width: 100%; height: 100%; display: block; }
+.deck-slot.is-locked { border-style: solid; border-color: var(--line); background: transparent; }
+.deck-impact { gap: 6px; margin-top: 8px; }
+.tag.neg { color: var(--neg); border-color: #6b3a3f; }
+.neg { color: var(--neg); }
+.spell-detail-head { display: flex; gap: 12px; align-items: center; }
+.spell-detail-head img { width: 44px; height: 44px; border-radius: var(--radius-sm); flex: none; }
+.spell-text { list-style: none; padding: 0; margin: 12px 0 0; font-size: 12.5px; display: flex; flex-direction: column; gap: 2px; }
+
+@media (max-width: 1100px) {
+  .deck-layout { grid-template-columns: 1fr; }
+  .deck-side { position: static; }
+}
+
 @media (max-width: 960px) {
   .layout { grid-template-columns: 1fr; }
   .form { position: static; max-height: none; }

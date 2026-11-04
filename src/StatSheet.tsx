@@ -91,7 +91,8 @@ export default function StatSheet({ result, elements, withRunes, runesAvailable,
 
       <p className="muted small">Dominio y resistencia por elemento: cada columna muestra dominio, luego (% de reducción)
         y resistencia. El "dominio en N elementos" aleatorio se asigna a tus elementos y las resistencias aleatorias a los
-        elementos con menos resistencia. No incluye pasivas de clase, sublimaciones ni bonificaciones de combate.</p>
+        elementos con menos resistencia. Incluye los efectos permanentes de las pasivas de tu baraja (pestaña Hechizos); no
+        incluye sublimaciones ni bonificaciones de combate.</p>
     </div>
   );
 }

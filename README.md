@@ -37,6 +37,12 @@ Si la wiki no responde, se mantiene la copia anterior.
   Busca la mejor combinación con ascenso por coordenadas y reinicios aleatorios, respetando:
   una reliquia, un épico, dos anillos distintos y armas a dos manos sin segunda mano.
 - `src/lib/aptitudes.ts`: puntos de aptitud por nivel y reparto recomendado según el rol.
+- `src/lib/spells.ts` y pestaña **Hechizos**: baraja de 12 activos y hasta 6 pasivas (ranuras en los niveles
+  10, 30, 50, 100, 150 y 200). Los hechizos vienen de la tabla `Class_spells` de wakfu.wiki.gg
+  (`public/data/spells.json`, textos en inglés). Los efectos **permanentes** de las pasivas (p. ej. Motivación:
+  +1 PA, −20 % daños) están curados a mano en `data/spell-stats.json` y se suman a las características y al
+  optimizador; los condicionales (al final del turno, en un estado…) y los buffs de los activos no se modelan.
+  La baraja va dentro del enlace de la build.
 
 Limitaciones: no modela efectos especiales de objetos, sublimaciones ni runas; los pesos son
 heurísticos y se pueden ajustar en `ROLE_WEIGHTS`.

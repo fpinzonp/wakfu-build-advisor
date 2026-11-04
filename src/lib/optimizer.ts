@@ -2,6 +2,7 @@
 // combinación con ascenso por coordenadas, reinicios aleatorios y respeto de las reglas del juego.
 import { BUILD_SLOTS, CRAFT_FILTER_EXEMPT, EPIC, RELIC, isDamageRole, type BuildSlot, type Element, type Item, type Role } from './game';
 import { planAptitudes, type AptitudePlan } from './aptitudes';
+import type { DeckBonus } from './spells';
 
 export interface BuildRequest {
   level: number;
@@ -16,6 +17,7 @@ export interface BuildRequest {
   back: boolean;             // priorizar daños por la espalda (roles de daño)
   excluded: Set<number>;
   locked: BuildSlots;        // piezas elegidas a mano que el optimizador respeta
+  deck?: DeckBonus;          // efectos permanentes de las pasivas equipadas
 }
 
 export type BuildSlots = Partial<Record<BuildSlot, Item>>;
@@ -171,7 +173,9 @@ const SLOT_IDS = BUILD_SLOTS.map((s) => s.id);
 
 function context(req: BuildRequest) {
   const aptitudes = planAptitudes(req.role, req.level, req);
-  return { aptitudes, base: baseVector(aptitudes.bonus, req.elements) };
+  const bonus = { ...aptitudes.bonus };
+  for (const [k, v] of Object.entries(req.deck?.stats ?? {})) bonus[k] = (bonus[k] ?? 0) + v;
+  return { aptitudes, base: baseVector(bonus, req.elements) };
 }
 
 const itemVector = (item: Item, req: BuildRequest) => toVector(item.stats, item.multiMast, item.multiRes, req.elements);
@@ -197,6 +201,7 @@ function summarize(slots: BuildSlots, req: BuildRequest, ctx = context(req), ext
   const totals: Record<string, number> = { ap: 6, mp: 3, wp: 6, crit: 3 };
   const add = (k: string, v: number) => { totals[k] = (totals[k] ?? 0) + v; };
   for (const [k, v] of Object.entries(ctx.aptitudes.bonus)) add(k, v);
+  for (const [k, v] of Object.entries(req.deck?.stats ?? {})) add(k, v);
   // Stats extra (runas) que no pertenecen a ningún objeto
   const ev = toVector(extra, undefined, undefined, req.elements);
   for (let i = 0; i < N; i++) t[i] += ev[i];
@@ -207,6 +212,11 @@ function summarize(slots: BuildSlots, req: BuildRequest, ctx = context(req), ext
     const v = itemVector(item, req);
     for (let i = 0; i < N; i++) t[i] += v[i];
     for (const [k, val] of Object.entries(item.stats)) add(k, val);
+  }
+  // Pasivas que dejan una característica a 0 (p. ej. "esquiva a 0 al inicio del combate")
+  for (const k of req.deck?.zero ?? []) {
+    totals[k] = 0;
+    if (k in IDX) t[IDX[k as (typeof K)[number]]] = 0;
   }
   return {
     slots, totals, aptitudes: ctx.aptitudes,

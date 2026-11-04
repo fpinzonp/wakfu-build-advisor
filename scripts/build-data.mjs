@@ -258,7 +258,25 @@ async function fetchWiki() {
     if (depth > 0) for (const e of states[id].effects) for (const m of String(e).matchAll(/\{\{st\|(\d+)/g)) add(m[1], depth - 1);
   };
   for (const id of wanted) add(id, 1);
-  return { source: WIKI, license: 'CC BY-SA', fetchedAt: new Date().toISOString(), states, sources };
+  return { source: WIKI, license: 'CC BY-SA', fetchedAt: new Date().toISOString(), states, sources, spells: await fetchSpells() };
+}
+
+// Hechizos y pasivas de clase (tabla Cargo "Class_spells" de la wiki), sin los retirados del juego.
+async function fetchSpells() {
+  const rows = [];
+  for (let offset = 0; ; offset += 500) {
+    const params = new URLSearchParams({
+      action: 'cargoquery', format: 'json', limit: '500', offset: String(offset),
+      tables: 'Class_spells,_pageData', join_on: 'Class_spells._pageID=_pageData._pageID',
+      fields: 'Class_spells.class=class,Class_spells.spell=spell,Class_spells.type=type,Class_spells.element=element,'
+        + 'Class_spells.level=level,Class_spells.icon=icon,Class_spells.effects=effects,_pageData._categories__full=cats',
+    });
+    const res = await (await fetch(`${WIKI}/api.php?${params}`, { headers: wikiHeaders })).json();
+    if (!res.cargoquery) throw new Error(res.error?.info ?? 'respuesta inesperada de Class_spells');
+    rows.push(...res.cargoquery.map((r) => r.title));
+    if (res.cargoquery.length < 500) break;
+  }
+  return rows.filter((r) => !/(^|\|)Removed/.test(r.cats ?? '')).map(({ cats, ...r }) => r);
 }
 
 let wiki = process.argv.includes('--refresh-wiki') ? null : await readWikiCache();
@@ -273,6 +291,16 @@ if (wiki) {
   } catch (e) {
     wiki = await readWikiCache();
     console.warn(`No se pudo leer la wiki (${e.message}); ${wiki ? 'se usa la copia local anterior' : 'las sublimaciones irán sin descripción'}.`);
+  }
+}
+// Copias antiguas sin hechizos: se descargan solo los hechizos y se añaden a la copia.
+if (wiki && !wiki.spells) {
+  try {
+    wiki.spells = await fetchSpells();
+    await writeFile(WIKI_CACHE, JSON.stringify(wiki, null, 1));
+    console.log(`Wiki: añadidos ${wiki.spells.length} hechizos a la copia local`);
+  } catch (e) {
+    console.warn(`No se pudieron descargar los hechizos (${e.message}); la baraja irá vacía.`);
   }
 }
 const wikiStates = wiki?.states ?? {};
@@ -341,7 +369,70 @@ for (const raw of items) {
   });
 }
 
+// ---------- Hechizos y pasivas (baraja) ----------
+
+// Clase de la wiki -> id de clase de la app ("Common" = pasivas comunes a todas las clases)
+const WIKI_CLASS = {
+  Feca: 'feca', Osamodas: 'osamodas', Enutrof: 'anutrof', Sram: 'sram', Xelor: 'xelor', Ecaflip: 'zurcarak',
+  Eniripsa: 'aniripsa', Iop: 'yopuka', Cra: 'ocra', Sadida: 'sadida', Sacrier: 'sacrogrito', Pandawa: 'pandawa',
+  Rogue: 'tymador', Masqueraider: 'zobal', Foggernaut: 'steamer', Eliotrope: 'selotrop', Huppermage: 'hipermago',
+  Ouginak: 'uginak',
+};
+const spellStats = JSON.parse(await readFile(new URL('../data/spell-stats.json', import.meta.url), 'utf8')).passives;
+
+// Id numérico corto y estable (FNV-1a de "Clase|Nombre") para guardar la baraja en el enlace.
+const spellId = (key) => {
+  let h = 0x811c9dc5;
+  for (const ch of key) h = Math.imul(h ^ ch.codePointAt(0), 0x01000193) >>> 0;
+  return h;
+};
+
+// Texto de la wiki a líneas planas (sin iconos ni marcado).
+const spellText = (wikitext) => String(wikitext ?? '')
+  .replace(/<span[^>]*>([^<]*)<\/span>/g, '$1')
+  .replace(/\[\[File:[^\]|]*\|link=\|(Ally|Enemy|Caster|Target)\]\]/g, '')
+  .replace(/\[\[File:[^\]]*\]\]/g, '')
+  .replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1')
+  .replace(/<[^>]+>/g, '')
+  .replace(/'''?/g, '')
+  .split('\n').map((l) => l.replace(/\s+/g, ' ').trim()).filter(Boolean);
+
+const spellsOut = { common: [], classes: {} };
+const usedIds = new Map();
+const unusedStats = new Set(Object.keys(spellStats));
+for (const r of wiki?.spells ?? []) {
+  const classId = r.class === 'Common' ? 'common' : WIKI_CLASS[r.class];
+  if (!classId) continue;
+  const key = `${r.class}|${r.spell}`;
+  const id = spellId(key);
+  if (usedIds.get(id) === key) continue; // fila repetida en la wiki
+  if (usedIds.has(id)) throw new Error(`Id de hechizo repetido: ${key} y ${usedIds.get(id)}`);
+  usedIds.set(id, key);
+  const passive = r.type === 'Passive';
+  const curated = spellStats[key];
+  unusedStats.delete(key);
+  const { zero, ...stats } = curated ?? {};
+  const spell = {
+    id,
+    name: r.spell,
+    el: passive ? 'passive' : (r.element || 'Neutral').toLowerCase(),
+    lvl: Number(r.level) || 0,
+    icon: Number(/(\d+)/.exec(r.icon ?? '')?.[1] ?? 0),
+    text: spellText(r.effects),
+    ...(curated && Object.keys(stats).length && { stats }),
+    ...(zero?.length && { zero }),
+  };
+  if (classId === 'common') spellsOut.common.push(spell);
+  else (spellsOut.classes[classId] ??= []).push(spell);
+}
+for (const list of [spellsOut.common, ...Object.values(spellsOut.classes)]) {
+  list.sort((a, b) => a.lvl - b.lvl || a.name.localeCompare(b.name));
+}
+if (unusedStats.size) console.warn(`Aviso: pasivas de data/spell-stats.json que ya no están en la wiki: ${[...unusedStats].join(', ')}`);
+
 await mkdir(OUT_DIR, { recursive: true });
+await writeFile(new URL('spells.json', OUT_DIR), JSON.stringify({ version, source: WIKI, ...spellsOut }));
+console.log(`${usedIds.size} hechizos y pasivas escritos en public/data/spells.json`);
 await writeFile(new URL('enchant.json', OUT_DIR), JSON.stringify({ version, shards, sublimations }));
 console.log(`${shards.length} runas y ${sublimations.length} sublimaciones escritas en public/data/enchant.json`,
   `(${sublimations.filter((s) => s.effect.length).length} con efecto descrito)`);

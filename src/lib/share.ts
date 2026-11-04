@@ -1,6 +1,7 @@
 // Guardar y compartir builds: todo cabe en un código que va en el enlace (#b=…), sin servidor.
 import { BUILD_SLOTS, type BuildSlot, type Element, type Item, type Role } from './game';
 import type { BuildSlots } from './optimizer';
+import { EMPTY_DECK, type Deck } from './spells';
 
 /** Runas y sublimaciones elegidas por el usuario. */
 export interface EnchantState {
@@ -26,6 +27,7 @@ export interface SavedBuild {
   slots: Partial<Record<BuildSlot, number>>;  // id de objeto por ranura
   locked: BuildSlot[];
   enchant: EnchantState;
+  deck: Deck;
 }
 
 // Claves cortas para que el enlace no sea enorme.
@@ -38,6 +40,7 @@ interface Packed {
   u: Partial<Record<BuildSlot, number>>;
   e?: number | null;
   q?: number | null;
+  d?: [actives: number[], passives: number[]];
 }
 
 const b = (x: boolean) => (x ? 1 : 0) as 0 | 1;
@@ -54,6 +57,7 @@ export function encodeBuild(build: SavedBuild): string {
     u: build.enchant.subs,
     e: build.enchant.epic,
     q: build.enchant.relic,
+    ...((build.deck.actives.length || build.deck.passives.length) && { d: [build.deck.actives, build.deck.passives] }),
   };
   const bytes = new TextEncoder().encode(JSON.stringify(packed));
   return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -77,6 +81,7 @@ export function decodeBuild(code: string): SavedBuild | null {
       },
       slots: p.i, locked: p.k ?? [],
       enchant: { runes, subs: p.u ?? {}, epic: p.e, relic: p.q },
+      deck: p.d ? { actives: p.d[0] ?? [], passives: p.d[1] ?? [] } : EMPTY_DECK,
     };
   } catch {
     return null;

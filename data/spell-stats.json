@@ -1,0 +1,71 @@
+{
+  "_doc": "Efectos permanentes (sin condición) de las pasivas sobre las características. Clave: 'Clase|Nombre en inglés' como en wakfu.wiki.gg. Valores: número fijo o 'N%lvl' (N % del nivel del personaje). 'zero': características que la pasiva deja a 0. Los efectos condicionales (al final del turno, en un estado, al matar…) no se incluyen.",
+  "passives": {
+    "Common|Carnage": { "dmgPct": 15, "healPct": -30 },
+    "Common|Evasion": { "dodge": "100%lvl" },
+    "Common|Inhalation": { "init": "50%lvl" },
+    "Common|Medicine": { "healPct": 30, "armorGiven": 25, "dmgPct": -15 },
+    "Common|Motivation": { "ap": 1, "dmgPct": -20, "will": 10 },
+    "Common|Rock": { "hpPct": 60, "dmgPct": -25, "healPct": -50 },
+
+    "Cra|Untouchable Scout": { "will": 20, "zero": ["dodge"] },
+
+    "Ecaflip|Heads, I win": { "zero": ["dodge"] },
+
+    "Eniripsa|All for Me": { "hp": "800%lvl" },
+    "Eniripsa|Wind Elixir": { "zero": ["tackle"] },
+
+    "Enutrof|Springboard": { "zero": ["dodge"] },
+
+    "Feca|Combat Armor": { "armorReceived": -100 },
+    "Feca|Herd Protector": { "hp": "300%lvl", "dmgPct": -20 },
+    "Feca|If You Want Peace, Prepare for War": { "armorGiven": -100, "dmgPct": 25 },
+    "Feca|Rocky Skin": { "block": 30 },
+
+    "Foggernaut|Advanced Mechanics": { "dmgPct": -30 },
+    "Foggernaut|Earthy Assistance": { "armorReceived": -30 },
+    "Foggernaut|Heavy Duty Covering": { "hp": "600%lvl" },
+    "Foggernaut|Light Alloy": { "mp": -1 },
+    "Foggernaut|Patience": { "wp": -2 },
+
+    "Huppermage|Quadramental Absorption": { "will": 20 },
+
+    "Iop|The Iop of Wazemmes": { "armorReceived": -20 },
+    "Iop|Virility": { "hp": "300%lvl" },
+
+    "Masqueraider|Anchor": { "mp": -1 },
+    "Masqueraider|Brute": { "dmgPct": 25, "armorReceived": -40, "armorGiven": -40 },
+    "Masqueraider|Erosion": { "dmgPct": -25 },
+    "Masqueraider|Fancy Footwork": { "dodge": "200%lvl", "resElem": -50 },
+    "Masqueraider|Masked Gaze": { "mp": 1 },
+    "Masqueraider|Regenerating Collisions": { "armorReceived": -30 },
+
+    "Osamodas|Animal Devotion": { "dmgPct": -25, "healPct": -25 },
+    "Osamodas|Animal Sharing": { "resElem": -100 },
+    "Osamodas|Animal Synergy": { "dmgPct": -20 },
+    "Osamodas|Summoning Warrior": { "dmgPct": 20 },
+    "Osamodas|Taur Strength": { "zero": ["dodge"] },
+
+    "Ouginak|Ardor": { "mp": -1 },
+    "Ouginak|Canine Energy": { "wp": 3 },
+    "Ouginak|Cunning Fang": { "block": 20 },
+    "Ouginak|Exhaustion": { "range": -2 },
+    "Ouginak|Fury": { "wp": -1 },
+    "Ouginak|Growlight": { "tackle": "300%lvl" },
+    "Ouginak|Raiding": { "dmgPct": -10, "armorReceived": 30, "hp": "400%lvl" },
+    "Ouginak|Relentless": { "will": 20, "dmgPct": -10 },
+    "Ouginak|Tailing": { "mp": 1 },
+
+    "Sacrier|Blood Flow": { "armorReceived": -50 },
+    "Sacrier|Blood Pact": { "hpPct": -30 },
+    "Sacrier|Mobility": { "zero": ["tackle"] },
+    "Sacrier|Placidity": { "wp": -2 },
+    "Sacrier|Tattooed Blood": { "hp": "800%lvl" },
+    "Sacrier|Wakfu Pact": { "hp": "400%lvl" },
+
+    "Sadida|Great Chain of Being": { "will": 20 },
+
+    "Xelor|Assimilation": { "wp": -6 },
+    "Xelor|Memory": { "wp": 6, "mp": -2 }
+  }
+}

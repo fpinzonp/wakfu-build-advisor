@@ -15,6 +15,8 @@ import {
   type BuildSettings, type EnchantState, type SavedBuild, type StoredBuild,
 } from './lib/share';
 import { bestSublimation } from './lib/sublimations';
+import { EMPTY_DECK, NO_DECK_BONUS, classSpells, deckBonus, fitDeck, type Deck, type DeckBonus, type Spell, type SpellData } from './lib/spells';
+import DeckPanel from './DeckPanel';
 import EnchantPanel, { Socket } from './EnchantPanel';
 import MaterialsPanel from './MaterialsPanel';
 import StatSheet from './StatSheet';
@@ -25,6 +27,14 @@ const NO_EXTRA: Record<string, number> = {};
 interface Dataset { version: string; items: Item[] }
 
 const fmt = (n: number) => Math.round(n).toLocaleString('es-ES');
+
+/** Efecto de la baraja: solo cuentan las pasivas de la clase que caben a este nivel. */
+function bonusFor(data: SpellData | null, classId: string, deck: Deck, level: number): DeckBonus {
+  if (!data) return NO_DECK_BONUS;
+  const spells = classSpells(data, classId);
+  const byId = new Map(spells.map((s) => [s.id, s]));
+  return deckBonus(fitDeck(deck, spells, level).passives.map((id) => byId.get(id)!), level);
+}
 const elementLabel = (e: Element) => ELEMENTS.find((x) => x.id === e)!.label;
 const roleLabel = (r: Role) => ROLES.find((x) => x.id === r)!.label;
 
@@ -48,6 +58,8 @@ export default function App() {
 
   const [result, setResult] = useState<BuildResult | null>(null);
   const [enchant, setEnchant] = useState<EnchantState>(EMPTY_ENCHANT);
+  const [deck, setDeck] = useState<Deck>(EMPTY_DECK);
+  const [spellData, setSpellData] = useState<SpellData | null>(null);
   const [busy, setBusy] = useState(false);
 
   const [stored, setStored] = useState<StoredBuild[]>(() => loadStored());
@@ -65,16 +77,26 @@ export default function App() {
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then(setData)
       .catch((e) => setError(`No se pudieron cargar los objetos (${e.message}). Recarga la página para reintentarlo.`));
+    fetch(import.meta.env.BASE_URL + 'data/spells.json')
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then(setSpellData)
+      .catch(() => setSpellData({ version: '', common: [], classes: {} }));
   }, []);
 
   const cls = CLASSES.find((c) => c.id === classId)!;
+
+  const spells = useMemo(() => (spellData ? classSpells(spellData, classId) : null), [spellData, classId]);
+  const deckKey = JSON.stringify(deck);
+  const bonusOfDeck = useMemo(() => bonusFor(spellData, classId, deck, level), [spellData, classId, deckKey, level]);
+  const spellDataRef = useRef(spellData);
+  spellDataRef.current = spellData;
 
   const settings: BuildSettings = {
     level, classId, role, elements, targets, rarities, minLevel, craftOnly,
     berserk, crit: critFocus, back: backFocus, excluded: [...excluded],
   };
 
-  const requestFor = (s: BuildSettings, lock: BuildSlots): BuildRequest => {
+  const requestFor = (s: BuildSettings, lock: BuildSlots, deckEffect = bonusOfDeck): BuildRequest => {
     const c = CLASSES.find((x) => x.id === s.classId)!;
     // Las piezas fijadas por encima del nivel actual dejan de aplicarse.
     const usable: BuildSlots = {};
@@ -82,7 +104,7 @@ export default function App() {
     return {
       level: s.level, role: s.role, elements: s.elements, targets: s.targets, allowedRarities: s.rarities,
       minLevel: s.minLevel, craftOnly: s.craftOnly, berserk: s.berserk && !!c.berserk, crit: s.crit, back: s.back,
-      excluded: new Set(s.excluded), locked: usable,
+      excluded: new Set(s.excluded), locked: usable, deck: deckEffect,
     };
   };
   const makeRequest = (excl = excluded, lock = locked) => requestFor({ ...settings, excluded: [...excl] }, lock);
@@ -98,7 +120,8 @@ export default function App() {
     setRarities(s.rarities); setMinLevel(s.minLevel); setCraftOnly(s.craftOnly); setBerserk(s.berserk);
     setCritFocus(s.crit); setBackFocus(s.back); setExcluded(new Set(s.excluded)); setLocked(lock);
     setEnchant(saved.enchant);
-    setResult(evaluateBuild(slots, requestFor(s, lock)));
+    setDeck(saved.deck);
+    setResult(evaluateBuild(slots, requestFor(s, lock, bonusFor(spellDataRef.current, s.classId, saved.deck, s.level))));
     return true;
     // requestFor solo usa sus argumentos
   }, []);
@@ -112,11 +135,19 @@ export default function App() {
     if (!saved || !openSaved(saved, data.items)) notify('El enlace no contiene una build válida.');
   }, [data, openSaved, notify]);
 
+  // Al cambiar la baraja (o al cargar los hechizos) la build se recalcula sin reoptimizar.
+  const bonusKey = JSON.stringify(bonusOfDeck);
+  useEffect(() => {
+    setResult((r) => (r ? evaluateBuild(r.slots, makeRequest()) : r));
+    // makeRequest usa el estado de este render; basta con reaccionar al efecto de la baraja.
+  }, [bonusKey]);
+
   const changeLevel = (l: number) => { setLevel(l); setTargets(ROLE_DEFAULT_TARGETS(role, l)); };
   const changeRole = (r: Role) => { setRole(r); setTargets(ROLE_DEFAULT_TARGETS(r, level)); };
 
   const chooseClass = (id: string) => {
     const c = CLASSES.find((x) => x.id === id)!;
+    if (id !== classId) setDeck(EMPTY_DECK);
     setClassId(id);
     setElements(c.elements.slice(0, 2));
     changeRole(c.roles[0]);
@@ -168,7 +199,7 @@ export default function App() {
   );
 
   const currentCode = () => (result ? encodeBuild({
-    settings, slots: slotIds(result.slots), locked: Object.keys(locked) as BuildSlot[], enchant,
+    settings, slots: slotIds(result.slots), locked: Object.keys(locked) as BuildSlot[], enchant, deck,
   }) : '');
   const buildTitle = `${cls.label} · ${roleLabel(role)} · nv. ${level}`;
 
@@ -354,6 +385,7 @@ export default function App() {
             <BuildView result={result} level={level} role={role} cls={cls.label} elements={elements}
               items={data.items} request={makeRequest()} locked={locked} busy={busy}
               enchant={enchant} onEnchant={setEnchant}
+              spells={spells} deck={deck} onDeck={setDeck} deckBonus={bonusOfDeck}
               onExclude={exclude} onSwap={swap} onUnlock={unlock}
               onShare={share} onSave={() => setDialog('save')} />
           )}
@@ -446,7 +478,7 @@ function ShareDialog({ url, onClose, onCopied }: { url: string; onClose: () => v
   const copy = () => navigator.clipboard?.writeText(url).then(onCopied, () => undefined);
   return (
     <Modal title="Compartir build" onClose={onClose}>
-      <p className="muted">Cualquiera que abra este enlace verá esta build exacta: equipo, runas, sublimaciones y opciones. La build
+      <p className="muted">Cualquiera que abra este enlace verá esta build exacta: equipo, runas, sublimaciones, baraja y opciones. La build
         va dentro del propio enlace; no se guarda en ningún servidor.</p>
       <div className="copy-row">
         <input className="input" readOnly value={url} onFocus={(e) => e.target.select()} aria-label="Enlace de la build" />
@@ -515,16 +547,18 @@ function LibraryDialog({ builds, onOpen, onDelete, onCopy, onClose, canOpen }: {
   );
 }
 
-type ViewTab = 'equip' | 'stats' | 'enchant' | 'craft' | 'apt';
+type ViewTab = 'equip' | 'stats' | 'deck' | 'enchant' | 'craft' | 'apt';
 const VIEW_TABS: [ViewTab, string][] = [
-  ['equip', 'Equipo'], ['stats', 'Características'], ['enchant', 'Runas y sublimaciones'], ['craft', 'Crafteo'], ['apt', 'Aptitudes'],
+  ['equip', 'Equipo'], ['stats', 'Características'], ['deck', 'Hechizos'], ['enchant', 'Runas y sublimaciones'],
+  ['craft', 'Crafteo'], ['apt', 'Aptitudes'],
 ];
 
 function BuildView({ result, level, role, cls, elements, items, request, locked, busy, enchant, onEnchant,
-  onExclude, onSwap, onUnlock, onShare, onSave }: {
+  spells, deck, onDeck, deckBonus: deckEffect, onExclude, onSwap, onUnlock, onShare, onSave }: {
   result: BuildResult; level: number; role: Role; cls: string; elements: Element[];
   items: Item[]; request: BuildRequest; locked: BuildSlots; busy: boolean;
   enchant: EnchantState; onEnchant: (e: EnchantState) => void;
+  spells: Spell[] | null; deck: Deck; onDeck: (d: Deck) => void; deckBonus: DeckBonus;
   onExclude: (id: number) => void; onSwap: (slot: BuildSlot, item: Item) => void; onUnlock: (slot: BuildSlot) => void;
   onShare: () => void; onSave: () => void;
 }) {
@@ -717,6 +751,10 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
         <StatValuePanel slots={result.slots} request={request} extra={withRunes && bonus ? bonus : NO_EXTRA} />
       </div>
 
+      <div hidden={tab !== 'deck'} className="tab-body">
+        <DeckPanel spells={spells} deck={deck} level={level} bonus={deckEffect} onChange={onDeck} onShare={onShare} />
+      </div>
+
       <div hidden={tab !== 'enchant'} className="tab-body">
         <EnchantPanel data={enchantData} result={result} request={request} enchant={enchant} onChange={onEnchant}
           suggested={suggested} groups={groups} withMine={withMine} />
@@ -741,8 +779,8 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
             ))}
           </div>
           <p className="muted small">La recomendación es heurística: modela daño esperado (dominios × crítico), supervivencia
-            (PdV, resistencias, anticipación) y objetivos de PA/PM/alcance. No tiene en cuenta efectos especiales de objetos
-            ni sublimaciones.</p>
+            (PdV, resistencias, anticipación) y objetivos de PA/PM/alcance, más los efectos permanentes de las pasivas de tu
+            baraja. No tiene en cuenta efectos especiales de objetos ni sublimaciones.</p>
         </div>
       </div>
 

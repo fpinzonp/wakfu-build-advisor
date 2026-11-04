@@ -4,9 +4,11 @@ import { BUILD_SLOTS, CRAFT_FILTER_EXEMPT, EPIC, RELIC, isDamageRole, type Build
 import { planAptitudes, type AptitudePlan } from './aptitudes';
 import type { DeckBonus } from './spells';
 import { t } from './i18n';
+import { condConflict, itemById, type CondState } from './conditions';
 
 export interface BuildRequest {
   level: number;
+  classId: string;           // para los objetos exclusivos de una clase
   role: Role;
   elements: Element[];
   targets: { ap: number; mp: number; range: number };
@@ -182,7 +184,8 @@ function context(req: BuildRequest) {
 const itemVector = (item: Item, req: BuildRequest) => toVector(item.stats, item.multiMast, item.multiRes, req.elements);
 
 // Motivo por el que una combinación no es válida, o null si lo es.
-function conflict(get: (s: BuildSlot) => Item | undefined): string | null {
+// Con `req` se comprueban también las condiciones de cada objeto, y con `total` sus umbrales de características.
+function conflict(get: (s: BuildSlot) => Item | undefined, req?: BuildRequest, total?: CondState['total']): string | null {
   let relics = 0, epics = 0;
   for (const s of SLOT_IDS) {
     const r = get(s)?.rarity;
@@ -194,7 +197,21 @@ function conflict(get: (s: BuildSlot) => Item | undefined): string | null {
   const r1 = get('ring1'), r2 = get('ring2');
   if (r1 && r2 && r1.name === r2.name) return t('conflict.rings');
   if (get('weapon')?.slot === 'weapon2h' && get('offhand')) return t('conflict.twoHanded');
-  return null;
+  if (!req) return null;
+  const equipped = SLOT_IDS.map(get);
+  return condConflict(equipped, {
+    equipped: (id) => equipped.some((i) => i?.id === id),
+    total: total ?? (() => undefined),
+    classId: req.classId,
+  });
+}
+
+const vectorTotal = (t: Float64Array) => (k: string) => (k in IDX ? t[IDX[k as (typeof K)[number]]] : undefined);
+
+/** Ranura donde equipar `needed` sin tocar `except` (prefiere una vacía). */
+function slotFor(slots: Partial<Record<BuildSlot, unknown>>, needed: Item, except: BuildSlot): BuildSlot | undefined {
+  const options = BUILD_SLOTS.filter((s) => s.id !== except && s.accepts.includes(needed.slot)).map((s) => s.id);
+  return options.find((s) => !slots[s]) ?? options[options.length - 1];
 }
 
 function summarize(slots: BuildSlots, req: BuildRequest, ctx = context(req), extra: Record<string, number> = {}): BuildResult {
@@ -230,13 +247,30 @@ export function evaluateBuild(slots: BuildSlots, req: BuildRequest, extra?: Reco
   return summarize(slots, req, context(req), extra);
 }
 
-/** Pone un objeto en una ranura; un arma a dos manos libera la segunda mano. */
+/** Pone un objeto en una ranura; un arma a dos manos libera la segunda mano y un objeto que exige otro
+ * (espada de nación -> su anillo) lo equipa también, quitando la reliquia o el épico que choque con él. */
 export function swapItem(slots: BuildSlots, slot: BuildSlot, item: Item | undefined): BuildSlots {
   const next = { ...slots, [slot]: item };
   if (!item) delete next[slot];
   if (slot === 'weapon' && item?.slot === 'weapon2h') delete next.offhand;
+  for (const needed of item ? requiredItems(next, item) : []) {
+    // Primero se quita la reliquia/el épico que choca (p. ej. el anillo de otra nación) para reutilizar su ranura.
+    if (needed.rarity === RELIC || needed.rarity === EPIC) {
+      for (const s of SLOT_IDS) if (s !== slot && next[s]?.rarity === needed.rarity) delete next[s];
+    }
+    const target = slotFor(next, needed, slot);
+    if (target) next[target] = needed;
+  }
   return next;
 }
+
+/** Objetos que `swapItem` equiparía además de `item` porque `item` los exige. */
+export const requiredItems = (slots: BuildSlots, item: Item): Item[] =>
+  (item.cond ?? []).flatMap((c) => {
+    if (!('needs' in c) || SLOT_IDS.some((s) => slots[s]?.id === c.needs)) return [];
+    const needed = itemById(c.needs);
+    return needed ? [needed] : [];
+  });
 
 export interface Alternative {
   item: Item;
@@ -251,8 +285,13 @@ export function rankAlternatives(candidates: Item[], current: BuildResult, slot:
   return candidates
     .map((item) => {
       const slots = swapItem(current.slots, slot, item);
-      const reason = conflict((s) => slots[s]);
-      const result = reason ? null : summarize(slots, req, ctx);
+      let reason = conflict((s) => slots[s], req);
+      let result = reason ? null : summarize(slots, req, ctx);
+      if (result) {
+        const totals = result.totals;
+        reason = conflict((s) => slots[s], req, (k) => totals[k] ?? 0);
+        if (reason) result = null;
+      }
       return { item, result, reason, delta: result ? result.score - current.score : -Infinity };
     })
     .sort((a, b) => b.delta - a.delta);
@@ -273,7 +312,9 @@ export function recommend(items: Item[], req: BuildRequest): BuildResult {
 
   const pool = items.filter((i) => i.lvl <= req.level && i.lvl >= req.minLevel
     && allowed.has(i.rarity) && !req.excluded.has(i.id)
-    && (!req.craftOnly || i.src === 'craft' || CRAFT_FILTER_EXEMPT.includes(i.slot)));
+    && (!req.craftOnly || i.src === 'craft' || CRAFT_FILTER_EXEMPT.includes(i.slot))
+    && !i.cond?.some((c) => 'cls' in c && c.cls !== req.classId));
+  const poolById = new Map(pool.map((i) => [i.id, i]));
 
   const slotIds = SLOT_IDS;
   const isLocked = (s: BuildSlot) => req.locked[s] !== undefined;
@@ -302,6 +343,17 @@ export function recommend(items: Item[], req: BuildRequest): BuildResult {
     if (locked) cands[slot.id] = [{ item: locked, vec: itemVector(locked, req), twoHanded: locked.slot === 'weapon2h' }];
   }
 
+  // Los objetos que exige otro candidato (anillo de nación) también son candidatos de su ranura.
+  const needs = Object.values(cands).flat().flatMap((c) => c.item.cond ?? [])
+    .flatMap((c) => ('needs' in c && poolById.get(c.needs)) || []);
+  for (const slot of BUILD_SLOTS) {
+    if (isLocked(slot.id)) continue;
+    for (const needed of needs) {
+      if (!slot.accepts.includes(needed.slot) || cands[slot.id].some((x) => x.item === needed)) continue;
+      cands[slot.id].push({ item: needed, vec: itemVector(needed, req), twoHanded: false });
+    }
+  }
+
   type Assign = Partial<Record<BuildSlot, Cand>>;
 
   const totalsOf = (a: Assign) => {
@@ -314,8 +366,9 @@ export function recommend(items: Item[], req: BuildRequest): BuildResult {
   };
 
   // Válida si cumple las reglas del juego y conserva las piezas fijadas.
-  const valid = (a: Assign) =>
-    conflict((s) => a[s]?.item) === null && slotIds.every((s) => !isLocked(s) || a[s]?.item === req.locked[s]);
+  const valid = (a: Assign, t?: Float64Array) =>
+    conflict((s) => a[s]?.item, req, t && vectorTotal(t)) === null
+    && slotIds.every((s) => !isLocked(s) || a[s]?.item === req.locked[s]);
 
   const lockedStart = (): Assign => {
     const a: Assign = {};
@@ -323,19 +376,35 @@ export function recommend(items: Item[], req: BuildRequest): BuildResult {
     return a;
   };
 
-  // Al poner c en la ranura, libera conflictos (2 manos, reliquia/épico duplicado).
+  // Al poner c en la ranura, libera conflictos (2 manos, reliquia/épico duplicado)
+  // y equipa también el objeto que c exige (espada de nación -> su anillo).
   const place = (a: Assign, slot: BuildSlot, c: Cand | undefined): Assign => {
-    const next = { ...a, [slot]: c };
+    let next: Assign = { ...a, [slot]: c };
     if (slot === 'weapon' && c?.twoHanded) delete next.offhand;
     if (slot === 'offhand' && c && next.weapon?.twoHanded) delete next.weapon;
     const r = c?.item.rarity;
     if (r === RELIC || r === EPIC) {
       for (const s of slotIds) if (s !== slot && next[s]?.item.rarity === r) delete next[s];
     }
+    for (const cond of c?.item.cond ?? []) {
+      if (!('needs' in cond) || slotIds.some((s) => next[s]?.item.id === cond.needs)) continue;
+      const needed = poolById.get(cond.needs);
+      if (!needed) continue;
+      // La ranura de la reliquia/el épico que el objeto necesario desplazaría cuenta como libre.
+      const free = { ...next };
+      for (const s of slotIds) if (s !== slot && free[s]?.item.rarity === needed.rarity && !isLocked(s)) delete free[s];
+      const target = slotFor(free, needed, slot);
+      const nc = target && !isLocked(target) ? cands[target].find((x) => x.item === needed) : undefined;
+      if (nc && target) next = place(next, target, nc);
+    }
     return next;
   };
 
-  const evalA = (a: Assign) => (valid(a) ? score(totalsOf(a), req) : -Infinity);
+  const evalA = (a: Assign) => {
+    if (!valid(a)) return -Infinity;
+    const t = totalsOf(a);
+    return valid(a, t) ? score(t, req) : -Infinity;
+  };
 
   const fillEmpty = (a: Assign) => {
     for (const s of slotIds) {

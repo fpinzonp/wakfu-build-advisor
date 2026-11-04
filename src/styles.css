@@ -194,6 +194,11 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .item-stats { list-style: none; padding: 0; margin: 0; font-size: 12px; columns: 2; column-gap: 12px; flex: 1; }
 .item-stats li { break-inside: avoid; padding: 1px 0; }
 .item-stats .neg { color: var(--neg); }
+.item-conds { font-size: 12px; border-top: 1px solid var(--line); padding-top: 8px; }
+.item-conds ul { list-style: none; padding: 0; margin: 4px 0 0; }
+.item-conds li { padding: 1px 0; }
+.item-conds .ok { color: var(--accent); }
+.item-conds .small { margin: 4px 0 0; }
 .item-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
 .item-enchant { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .sockets { display: inline-flex; gap: 4px; }
@@ -346,6 +351,8 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .alt-main { min-width: 0; }
 .alt-stats { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 11.5px; color: var(--muted); margin-top: 4px; }
 .alt-stats .neg, .alt-delta .neg { color: var(--neg); }
+.alt-conds { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 11.5px; color: var(--gold); margin-top: 4px; }
+.alt-conds .also { color: var(--accent); }
 .alt-delta { display: flex; flex-direction: column; font-size: 11.5px; color: var(--muted); }
 .alt-delta b { font-size: 15px; }
 .alt-delta .up { color: var(--accent); }

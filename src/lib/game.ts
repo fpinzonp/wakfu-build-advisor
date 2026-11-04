@@ -1,5 +1,6 @@
 // Reglas y constantes del juego usadas por el recomendador.
 import { t, tk } from './i18n';
+import type { Cond } from './conditions';
 
 // Añade una etiqueta traducida que se resuelve al leerla (sigue el idioma actual).
 const L = <T extends object>(key: string, o: T) =>
@@ -25,6 +26,7 @@ export interface Item {
   multiMast?: { v: number; n: number };
   multiRes?: { v: number; n: number };
   sockets?: number;   // engarces máximos para runas
+  cond?: Cond[];      // condiciones para equiparlo (wakfu.wiki.gg)
 }
 
 // ---------- Runas y sublimaciones ----------

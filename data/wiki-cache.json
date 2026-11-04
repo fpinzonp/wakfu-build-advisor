@@ -9664,5 +9664,2502 @@
    "icon": "Spell 7187.png",
    "effects": "30% indirect damage inflicted\n\nAt start of turn, on the '''current hour:'''\n[[File:Icon Arrow.png|link=|]] [[File:Element_Light.png|link=|]] damage: 7"
   }
+ ],
+ "conditions": [
+  {
+   "name": "Aborr Ring",
+   "level": "82",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Adventure Ring",
+   "level": "24",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Agilish Ring",
+   "level": "27",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ahmlait Ring",
+   "level": "42",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Alamood Ring",
+   "level": "30",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Alms",
+   "level": "24",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Alpha Predator Ring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Amakna Sword",
+   "level": "200",
+   "conditions": "Has Amakna Ring equipped"
+  },
+  {
+   "name": "Amaknian Ring",
+   "level": "5",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ammonia Ring",
+   "level": "187",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ammonia Ring",
+   "level": "195",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ammonia Ring",
+   "level": "198",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ammonia Ring",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Amon Amarth Breastplate",
+   "level": "182",
+   "conditions": "Lock >= 400\nLock <= 500"
+  },
+  {
+   "name": "Amon Amarth Breastplate",
+   "level": "185",
+   "conditions": "Lock >= 400\nLock <= 500"
+  },
+  {
+   "name": "Amulet of Respite",
+   "level": "215",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Ancestral Treechnid Ring",
+   "level": "133",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ancestral Treechnid Ring",
+   "level": "138",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ancestral Treechnid Ring",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ancestral Treechnid Ring",
+   "level": "58",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Apiring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Apiring",
+   "level": "75",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Apprentice Ring",
+   "level": "95",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Arachnee Ring",
+   "level": "41",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Archmonster Hunter Emblem",
+   "level": "155",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Ardent Ring",
+   "level": "25",
+   "conditions": "Only usable by Cra\nUnique"
+  },
+  {
+   "name": "Ardent Ring",
+   "level": "94",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Art'And Cards",
+   "level": "195",
+   "conditions": "RA <= 3"
+  },
+  {
+   "name": "Art'And Cards",
+   "level": "200",
+   "conditions": "RA <= 3"
+  },
+  {
+   "name": "Ax of Reason",
+   "level": "198",
+   "conditions": "RA >= 2"
+  },
+  {
+   "name": "Ax of Reason",
+   "level": "200",
+   "conditions": "RA >= 2"
+  },
+  {
+   "name": "Beechnuuut",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Belle Ring",
+   "level": "23",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Biddyplate",
+   "level": "200",
+   "conditions": "Lock >= 500\nLock <= 600"
+  },
+  {
+   "name": "Biddyplate",
+   "level": "200",
+   "conditions": "Lock >= 500\nLock <= 600"
+  },
+  {
+   "name": "Black Crow's Ring",
+   "level": "109",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Black Crow's Ring",
+   "level": "110",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Black Hole",
+   "level": "22",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Black Hole",
+   "level": "71",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Black Hole",
+   "level": "79",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Black Widow Ring",
+   "level": "75",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Black Widow Ring",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Blue Riktus Ring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Boney Zwombbit Claw",
+   "level": "144",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Boney Zwombbit Claw",
+   "level": "152",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Boney Zwombbit Claw",
+   "level": "155",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Boney Zwombbit Claw",
+   "level": "155",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Bonta Sword",
+   "level": "200",
+   "conditions": "Has Bonta Ring equipped"
+  },
+  {
+   "name": "Bontarian Ring",
+   "level": "5",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Booster",
+   "level": "41",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Boowolf",
+   "level": "0 - 50",
+   "conditions": "Troupe Rank >= 5"
+  },
+  {
+   "name": "Bouze Lite Yeah's Ring",
+   "level": "8",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Brakmar Sword",
+   "level": "200",
+   "conditions": "Has Brakmar Ring equipped"
+  },
+  {
+   "name": "Brakmarian Ring",
+   "level": "5",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Breastplate of Shadows",
+   "level": "200",
+   "conditions": "Lock >= 500\nLock <= 600"
+  },
+  {
+   "name": "Breastplate of Shadows",
+   "level": "200",
+   "conditions": "Lock >= 500\nLock <= 600"
+  },
+  {
+   "name": "BreasTRON",
+   "level": "136",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "BreasTRON",
+   "level": "140",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Brrr Belt",
+   "level": "200",
+   "conditions": "AP Max >= 13"
+  },
+  {
+   "name": "Brrr Belt",
+   "level": "200",
+   "conditions": "AP Max >= 13"
+  },
+  {
+   "name": "Brrrbley Spears's Ring",
+   "level": "105",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Brrrbley Spears's Ring",
+   "level": "110",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Brrrbley Spears's Ring",
+   "level": "95",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Brrrbli Ring",
+   "level": "104",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Brrrbli Ring",
+   "level": "107",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Brrrbli Ring",
+   "level": "81",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Brrrbli Ring",
+   "level": "96",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Bubuckle",
+   "level": "196",
+   "conditions": "AP Max <= 11"
+  },
+  {
+   "name": "Bubuckle",
+   "level": "200",
+   "conditions": "AP Max <= 11"
+  },
+  {
+   "name": "Bunny Grumbler Ring",
+   "level": "65",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Cape Hillary",
+   "level": "200",
+   "conditions": "Block <= 20"
+  },
+  {
+   "name": "Cape Hillary",
+   "level": "200",
+   "conditions": "Block <= 20"
+  },
+  {
+   "name": "Carnivore Ring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Cawamel Wodent Ring",
+   "level": "13",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Celestial Strich Ring",
+   "level": "92",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Celestial Tofu Ring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Circular Bandages",
+   "level": "137",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Circular Bandages",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Cire Momore's Spaulders",
+   "level": "230",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Cire Momore's Spaulders",
+   "level": "230",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Clawed Paws",
+   "level": "0",
+   "conditions": "Troupe Rank >= 4"
+  },
+  {
+   "name": "Cloudy Strich Ring",
+   "level": "82",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Commanche",
+   "level": "110",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Commanche",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Consummate Neo Pet",
+   "level": "0",
+   "conditions": "Have finished: Neo Reward VIII"
+  },
+  {
+   "name": "Contact Ring",
+   "level": "62",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Contact Ring",
+   "level": "65",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Count Frigost's Ring",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Count Frigost's Ring",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Count Harebourg's Ring",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Count Harebourg's Ring",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Crackly Ring",
+   "level": "37",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Crackly Ring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Crackly Ring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Crobak Ring",
+   "level": "66",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Crobak Ring",
+   "level": "74",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Crobak Ring",
+   "level": "77",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Cube Breastplate",
+   "level": "237",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Cube Breastplate",
+   "level": "245",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Cube Breastplate",
+   "level": "245",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Cwabwing",
+   "level": "24",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Cwabwing",
+   "level": "51",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Cwabwing",
+   "level": "59",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Cwabwing",
+   "level": "62",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Dardondakal Fang",
+   "level": "200",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Dardondakal Fang",
+   "level": "200",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Dark Ring",
+   "level": "5",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Dash Band",
+   "level": "1",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Deckhand Ring",
+   "level": "60",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Deckhand Ring",
+   "level": "63",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Divine Bangool",
+   "level": "35",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Divine Gooano",
+   "level": "35",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Divine Tofu Ring",
+   "level": "65",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Drhellzerker Ring",
+   "level": "132",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Drhellzerker Ring",
+   "level": "137",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Drhellzerker Ring",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Drown Ring",
+   "level": "113",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Drown Ring",
+   "level": "121",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Drown Ring",
+   "level": "124",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Drown Ring",
+   "level": "125",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Drown Ring",
+   "level": "49",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Earth Ring",
+   "level": "25",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ebony Scararing",
+   "level": "59",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ebony Scararing",
+   "level": "90",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ebony Scararing",
+   "level": "93",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ecaflip's Luck",
+   "level": "20",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ecalisor",
+   "level": "40",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ecalisor",
+   "level": "40",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ecnal Laroproc",
+   "level": "120",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ecnal Laroproc",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Eggband",
+   "level": "192",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Eggband",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Eggband",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "El Pochito Ring",
+   "level": "90",
+   "conditions": "Unique"
+  },
+  {
+   "name": "El Pochito Ring",
+   "level": "95",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Elite Riktus Ring",
+   "level": "157",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Elite Riktus Ring",
+   "level": "165",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Elite Riktus Ring",
+   "level": "168",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Elite Riktus Ring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Elite Riktus Ring",
+   "level": "61",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Emawlettes",
+   "level": "0",
+   "conditions": "Troupe Rank >= 6"
+  },
+  {
+   "name": "Emiw Wing",
+   "level": "134",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Emiw Wing",
+   "level": "139",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Emiw Wing",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Empelol's Ling",
+   "level": "134",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Empelol's Ling",
+   "level": "139",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Empelol's Ling",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Empelol's Ling",
+   "level": "230",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Enraged Tofu Ring",
+   "level": "89",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Enraged Tofu Ring",
+   "level": "94",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Enutrof Memento",
+   "level": "30",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Epaulectrics",
+   "level": "245",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Epaulectrics",
+   "level": "245",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Eternal Sword",
+   "level": "200",
+   "conditions": "Force of Will <= 20"
+  },
+  {
+   "name": "Excarnus Veil",
+   "level": "215",
+   "conditions": "CH >= 40\nCH <= 50"
+  },
+  {
+   "name": "Exotic Ring",
+   "level": "62",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Externaring",
+   "level": "4",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Faded Seal",
+   "level": "127",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Faded Seal",
+   "level": "136",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Faded Seal",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Fake Shadofang",
+   "level": "30",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Falot",
+   "level": "110",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Falot",
+   "level": "120",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Fanged Breastplate",
+   "level": "0",
+   "conditions": "Troupe Rank >= 4"
+  },
+  {
+   "name": "Feldspar",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Felin",
+   "level": "110",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Felin",
+   "level": "60",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Firedrhell Ring",
+   "level": "135",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Firedrhell Ring",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Firedrhell Ring",
+   "level": "64",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Fleaster Wodent Ring",
+   "level": "13",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Floral Sporing",
+   "level": "127",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Floral Sporing",
+   "level": "135",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Floral Sporing",
+   "level": "138",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Floral Sporing",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Fluo Ring",
+   "level": "69",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Fluo Ring",
+   "level": "77",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Fluo Ring",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Foremast",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Freezepop",
+   "level": "1",
+   "conditions": "In the state \"De Darm\""
+  },
+  {
+   "name": "Frenzied Ring",
+   "level": "162",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Frenzied Ring",
+   "level": "167",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Frenzied Ring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Fungus Run",
+   "level": "0",
+   "conditions": "Not to be on a Battlefield"
+  },
+  {
+   "name": "Fuop",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Gauntloonies",
+   "level": "182",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Gauntloonies",
+   "level": "185",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Gauntnutts",
+   "level": "182",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Gauntnutts",
+   "level": "185",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Gelano",
+   "level": "65",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Gladiatrool Gloves",
+   "level": "1",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Gladiatrool Gloves",
+   "level": "95",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Gladiatrool Gloves",
+   "level": "95",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Glowing Ringmote",
+   "level": "26",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Gnaw",
+   "level": "100",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Gnaw",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Golden Api of His Parodies",
+   "level": "125",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Golden Scara Ring",
+   "level": "30",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Grambo Ring",
+   "level": "9",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Grand Orrok Totem",
+   "level": "78",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Great Wild Gobball Ring",
+   "level": "57",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Great Wild Gobball Ring",
+   "level": "62",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Greedy Ring",
+   "level": "25",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Hagen Daz's Helmet",
+   "level": "215",
+   "conditions": "Distance Mastery >= 400\nDistance Mastery <= 500"
+  },
+  {
+   "name": "Hairlarious Cloak",
+   "level": "200",
+   "conditions": "CH >= 40\nCH <= 50"
+  },
+  {
+   "name": "Hairlarious Cloak",
+   "level": "200",
+   "conditions": "CH >= 40\nCH <= 50"
+  },
+  {
+   "name": "Hairy Rat Ring",
+   "level": "66",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Hairy Rat Ring",
+   "level": "74",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Hairy Rat Ring",
+   "level": "77",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Half-Hero Ring",
+   "level": "23",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Hardened Hero Ring",
+   "level": "28",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Homa Ring",
+   "level": "20",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Hoodfella Ring",
+   "level": "163",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Hoodfella Ring",
+   "level": "168",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Hoodfella Ring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Hoodfella Ring",
+   "level": "73",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Hooklettes",
+   "level": "200",
+   "conditions": "MP Max <= 5"
+  },
+  {
+   "name": "Hooklettes",
+   "level": "200",
+   "conditions": "MP Max <= 5"
+  },
+  {
+   "name": "Hop Ring",
+   "level": "15",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Horned Headgear",
+   "level": "200",
+   "conditions": "Distance Mastery >= 400\nDistance Mastery <= 500"
+  },
+  {
+   "name": "Horned Headgear",
+   "level": "200",
+   "conditions": "Distance Mastery >= 400\nDistance Mastery <= 500"
+  },
+  {
+   "name": "Howto Ring",
+   "level": "10",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Icecast Bone Ring",
+   "level": "113",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Icecast Bone Ring",
+   "level": "121",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Icecast Bone Ring",
+   "level": "124",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Icecast Bone Ring",
+   "level": "125",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Idodelion",
+   "level": "20",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperator Ring",
+   "level": "50",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperator Ring",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Blibli Ring",
+   "level": "59",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Blibli Ring",
+   "level": "74",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Blibli Ring",
+   "level": "79",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Gobball Ring",
+   "level": "17",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Puddly Ring",
+   "level": "125",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Puddly Ring",
+   "level": "125",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Puddly Ring",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Strich Ring",
+   "level": "75",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Strich Ring",
+   "level": "75",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Strich Ring",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Treechnid Ring",
+   "level": "139",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Treechnid Ring",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Imperial Treechnid Ring",
+   "level": "64",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Incarnaring",
+   "level": "2",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Influenceables",
+   "level": "236",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Influenceables",
+   "level": "245",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Initiate Ring",
+   "level": "120",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Initiate Ring",
+   "level": "123",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Initiate Ring",
+   "level": "125",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Instruction Manual for the H.O.T. Machine",
+   "level": "105",
+   "conditions": "Not have started Some like it H.O.T."
+  },
+  {
+   "name": "Iron-Plated Claws",
+   "level": "0",
+   "conditions": "Troupe Rank >= 6"
+  },
+  {
+   "name": "Itslite Ring",
+   "level": "10",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Itslite Ring",
+   "level": "39",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Itslite Ring",
+   "level": "47",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Itslite Ring",
+   "level": "50",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Justice Breastplate",
+   "level": "51",
+   "conditions": "Citizen points >= 500"
+  },
+  {
+   "name": "Justice Epaulettes",
+   "level": "51",
+   "conditions": "Citizen points >= 500"
+  },
+  {
+   "name": "Juvenile Neo Pet",
+   "level": "0",
+   "conditions": "Have finished: Neo Reward IV"
+  },
+  {
+   "name": "K-Band",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kanniball Bracelet",
+   "level": "174",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kanniball Bracelet",
+   "level": "182",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kanniball Bracelet",
+   "level": "185",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kannivore Ring",
+   "level": "171",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kannivore Ring",
+   "level": "179",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kannivore Ring",
+   "level": "182",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kannivore Ring",
+   "level": "185",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kapow Ring",
+   "level": "36",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kapow Ring",
+   "level": "44",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kapow Ring",
+   "level": "47",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kikbox Ring",
+   "level": "156",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kikbox Ring",
+   "level": "164",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kikbox Ring",
+   "level": "167",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kikbox Ring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kokobelt",
+   "level": "60",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Kokobungo Ring",
+   "level": "40",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kokobungo Ring",
+   "level": "60",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Kokobungo Ring",
+   "level": "65",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Laroproc",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Laroproc",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Lavaring",
+   "level": "168",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Lavaring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Lavaring",
+   "level": "27",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Leafy Ring",
+   "level": "40",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Leafy Ring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Lieute",
+   "level": "140",
+   "conditions": "Unique\nUnique"
+  },
+  {
+   "name": "Lieute",
+   "level": "160",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Lunaring",
+   "level": "72",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Lunaring",
+   "level": "77",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Magmacrak Breastplate",
+   "level": "46",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Magmacrak Ring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Magmog Halo",
+   "level": "108",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Magmog Halo",
+   "level": "110",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Makabrakfire Ring",
+   "level": "0",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Makabraktion Ring",
+   "level": "0",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Makabraspekting Ring",
+   "level": "0",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Makabrisdom Ring",
+   "level": "0",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Michelangecrow Ring",
+   "level": "10",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Milimoowolf Bracelet",
+   "level": "90",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Mirt",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Mirt",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Moogrring",
+   "level": "23",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Moogrring",
+   "level": "37",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Moogrring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Moogrring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Moowolf Signet Ring",
+   "level": "90",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Moowolf Signet Ring",
+   "level": "95",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Mud-Pied Piper Ring",
+   "level": "25",
+   "conditions": "Only usable by Sadida\nUnique"
+  },
+  {
+   "name": "Mud-Pied Piper Ring",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Mummy Bandage",
+   "level": "1",
+   "conditions": "In the state \"De Darm\""
+  },
+  {
+   "name": "Mumussell Pearl",
+   "level": "47",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Natural Ring",
+   "level": "9",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Necroforged Boots",
+   "level": "215",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Necroforged Ring",
+   "level": "118",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Necroforged Ring",
+   "level": "123",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Necroforged Ring",
+   "level": "125",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Nobility Ring",
+   "level": "15",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Norveija Ring",
+   "level": "52",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Nostalja Ring",
+   "level": "40",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Nova Wings Run",
+   "level": "0",
+   "conditions": "Not to be on a Battlefield"
+  },
+  {
+   "name": "Novice Hero Ring",
+   "level": "18",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Nozokomial Ring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "O'Burjean Ring",
+   "level": "132",
+   "conditions": "Unique"
+  },
+  {
+   "name": "O'Burjean Ring",
+   "level": "138",
+   "conditions": "Unique"
+  },
+  {
+   "name": "O'Burjean Ring",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Orringade",
+   "level": "15",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Oyster Ring",
+   "level": "87",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Oyster Ring",
+   "level": "92",
+   "conditions": "Unique"
+  },
+  {
+   "name": "P-penguin Ring",
+   "level": "34",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Pack Leader Boots",
+   "level": "0",
+   "conditions": "Troupe Rank >= 9"
+  },
+  {
+   "name": "Pack Leader Breastplate",
+   "level": "0",
+   "conditions": "Troupe Rank >= 9"
+  },
+  {
+   "name": "Pack Leader Cloak",
+   "level": "0",
+   "conditions": "Troupe Rank >= 9"
+  },
+  {
+   "name": "Pack Leader Helm",
+   "level": "0",
+   "conditions": "Troupe Rank >= 9"
+  },
+  {
+   "name": "Palablue Ring",
+   "level": "1",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Palablue Ring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Palablue Ring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Paladout Ring",
+   "level": "1",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Paladout Ring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Paladout Ring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Phosphorescent Ring",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Pilfer Ring",
+   "level": "32",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Pilfer Ring",
+   "level": "89",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Polished Metal Piece",
+   "level": "0",
+   "conditions": "Real level >= 100"
+  },
+  {
+   "name": "Prickel Ring",
+   "level": "65",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Prickel Ring",
+   "level": "65",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Promisring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Puddly Ring",
+   "level": "114",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Puddly Ring",
+   "level": "122",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Puddly Ring",
+   "level": "125",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Puddly Ring",
+   "level": "125",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Puddly Ring",
+   "level": "77",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Pumbrrr's Ring",
+   "level": "105",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Pumbrrr's Ring",
+   "level": "90",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Raging Ring",
+   "level": "158",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Raging Ring",
+   "level": "166",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Raging Ring",
+   "level": "169",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Raging Ring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Rat Ring",
+   "level": "18",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ratical Ring",
+   "level": "75",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ratical Ring",
+   "level": "78",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Red Riktus Ring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ring O'Stradamus",
+   "level": "74",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ring of Trouble",
+   "level": "215",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ring of Trouble",
+   "level": "32",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ringmote",
+   "level": "156",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ringmote",
+   "level": "164",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ringmote",
+   "level": "167",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ringmote",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ringmote",
+   "level": "36",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Round Han",
+   "level": "189",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Round Han",
+   "level": "197",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Round Han",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Round Han",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Round Seal of Sor'Hon",
+   "level": "192",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Round Seal of Sor'Hon",
+   "level": "197",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Round Seal of Sor'Hon",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Royal Blibli Ring",
+   "level": "30",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Royal Blibli Ring",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Royal Kir-Ring",
+   "level": "106",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sacred Ring",
+   "level": "86",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sacred Ring",
+   "level": "94",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sage Ring",
+   "level": "137",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sage Ring",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sage Ring",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sand Ring",
+   "level": "85",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sand Ring",
+   "level": "93",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Scararing",
+   "level": "23",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Scararing",
+   "level": "83",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Scararing",
+   "level": "91",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Scararing",
+   "level": "94",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Scarecut",
+   "level": "0",
+   "conditions": "Troupe Rank >= 6"
+  },
+  {
+   "name": "Seal of Companionship",
+   "level": "0",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Selachii Ring",
+   "level": "55",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Selachii Ring",
+   "level": "63",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sentiment Ring",
+   "level": "1",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sex and Appearance Change",
+   "level": "1",
+   "conditions": "Not to be on a Battlefield\nNot to be in a haven bag\nNot to be in a Moderator prison\nNot to be in a Moderator prison\nNot to be in Demonic Prison"
+  },
+  {
+   "name": "Shademail",
+   "level": "200",
+   "conditions": "Lock >= 500\nLock <= 600"
+  },
+  {
+   "name": "Shademail",
+   "level": "200",
+   "conditions": "Lock >= 500\nLock <= 600"
+  },
+  {
+   "name": "Shadofang Ring",
+   "level": "89",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Shadofang Ring",
+   "level": "94",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sham Moon Hands",
+   "level": "180",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sham Moon Hands",
+   "level": "185",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ships Ahoy Ring",
+   "level": "73",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Shoulder Fangs",
+   "level": "0",
+   "conditions": "Troupe Rank >= 2"
+  },
+  {
+   "name": "Shrink Ring",
+   "level": "31",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Silimelle's Bejeweled Wedding Ring",
+   "level": "33",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Silimelle's Wedding Ring",
+   "level": "26",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sinistring",
+   "level": "168",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Sinistring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Snapper Ring",
+   "level": "115",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Snapper Ring",
+   "level": "123",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Snapper Ring",
+   "level": "125",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Snapper Ring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Soff",
+   "level": "104",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Soff",
+   "level": "107",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Soff",
+   "level": "47",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Solo's Ring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Souvenir",
+   "level": "167",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Souvenir",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Starry Ring",
+   "level": "77",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Steel Beak Ring",
+   "level": "166",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Steel Beak Ring",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Stone Cold Ring",
+   "level": "47",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Strange Ice Fragment",
+   "level": "105",
+   "conditions": "Real level >= 105"
+  },
+  {
+   "name": "Sufokia Sword",
+   "level": "200",
+   "conditions": "Has Sufokia Ring equipped"
+  },
+  {
+   "name": "Sufokian Ring",
+   "level": "5",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Supernova Wings Run",
+   "level": "0",
+   "conditions": "Not to be on a Battlefield"
+  },
+  {
+   "name": "Synwel's Ring",
+   "level": "47",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Synwel's Ring",
+   "level": "77",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tanja Ring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tanja Ring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tell-Tale Boots",
+   "level": "195",
+   "conditions": "WP Max >= 8"
+  },
+  {
+   "name": "Tell-Tale Boots",
+   "level": "200",
+   "conditions": "WP Max >= 8"
+  },
+  {
+   "name": "Tell-Tale Boots",
+   "level": "200",
+   "conditions": "WP Max >= 8"
+  },
+  {
+   "name": "Tenacious Hero Ring",
+   "level": "51",
+   "conditions": "Unique"
+  },
+  {
+   "name": "The Beyond",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "The Country",
+   "level": "40",
+   "conditions": "Unique"
+  },
+  {
+   "name": "The Country",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "The Desperingo",
+   "level": "18",
+   "conditions": "Unique"
+  },
+  {
+   "name": "The Levy Lup",
+   "level": "20",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "The Nakey",
+   "level": "65",
+   "conditions": "Unique"
+  },
+  {
+   "name": "The One",
+   "level": "69",
+   "conditions": "Unique"
+  },
+  {
+   "name": "The Rak",
+   "level": "30",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Thettle Ring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Thettle Ring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tiffaring",
+   "level": "62",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tofu Ring",
+   "level": "7",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tooth-Duster",
+   "level": "186",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tooth-Duster",
+   "level": "194",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tooth-Duster",
+   "level": "197",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tooth-Duster",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Torch Ring",
+   "level": "32",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tough Hero Ring",
+   "level": "36",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Treering",
+   "level": "128",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Treering",
+   "level": "136",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Treering",
+   "level": "139",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Treering",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Treering",
+   "level": "53",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tsar Ring",
+   "level": "48",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tsar Ring",
+   "level": "73",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tsar Ring",
+   "level": "78",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tsar Seal",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Tsar Seal",
+   "level": "75",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ultimate Neo Pet",
+   "level": "0",
+   "conditions": "Have finished: Neo Reward XII"
+  },
+  {
+   "name": "Ultimate Survivor Ring",
+   "level": "60",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Ultimate Survivor Ring",
+   "level": "64",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Unique Ring",
+   "level": "37",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Vegetaring",
+   "level": "42",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Vegetaring",
+   "level": "50",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Viper Ring",
+   "level": "94",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Wabbit Stampew",
+   "level": "126",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Wabbit Stampew",
+   "level": "134",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Wabbit Stampew",
+   "level": "137",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Wabbit Stampew",
+   "level": "140",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Wax-Ring",
+   "level": "200",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Wax-Ring",
+   "level": "85",
+   "conditions": "Unique"
+  },
+  {
+   "name": "White Crow Hackle",
+   "level": "215",
+   "conditions": "MP Max <= 5"
+  },
+  {
+   "name": "White Riktus Ring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Wild Gobball Ring",
+   "level": "51",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Wild Gobball Ring",
+   "level": "59",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Wild Gobball Ring",
+   "level": "62",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Wodent Ring",
+   "level": "2",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Worn Blood-Stained Ring",
+   "level": "69",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Worn Imperial Drheller Ring",
+   "level": "65",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Worn Imperial Whirly Ring",
+   "level": "69",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Worn Imperial Whirly Wedding Ring",
+   "level": "69",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Worn Kralaring",
+   "level": "42",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Worn Royal Whirly Ring",
+   "level": "55",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Worn Schnek Bracelet",
+   "level": "38",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Worn Sharkring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Worn Tiffaring",
+   "level": "55",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Worn Wounded Ring",
+   "level": "55",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Xelor's Past",
+   "level": "32",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Yellow Riktus Ring",
+   "level": "45",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Zerd",
+   "level": "170",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Zinit Amulet",
+   "level": "153",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Zinit Amulet",
+   "level": "155",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Zinit Hat",
+   "level": "200",
+   "conditions": "CH > -10"
+  },
+  {
+   "name": "Zlug",
+   "level": "160",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Zlug",
+   "level": "80",
+   "conditions": "Unique"
+  },
+  {
+   "name": "Zora's Glove",
+   "level": "30",
+   "conditions": "Unique"
+  }
  ]
 }

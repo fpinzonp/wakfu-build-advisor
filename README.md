@@ -43,6 +43,13 @@ Si la wiki no responde, se mantiene la copia anterior.
   +1 PA, −20 % daños) están curados a mano en `data/spell-stats.json` y se suman a las características y al
   optimizador; los condicionales (al final del turno, en un estado…) y los buffs de los activos no se modelan.
   La baraja va dentro del enlace de la build.
+- `src/lib/conditions.ts`: condiciones para equipar cada objeto, sacadas de la tabla `Items` de wakfu.wiki.gg
+  (Ankama no las publica). El optimizador y el selector las respetan:
+  - umbrales de características (p. ej. placaje entre 500 y 600, PM máx. ≤ 5),
+  - objeto necesario (cada espada de nación exige su anillo, que se equipa a la vez),
+  - objetos exclusivos de una clase.
+
+  El rango de manada, los puntos de ciudadanía y las misiones solo se muestran como aviso.
 
 ## Idiomas (español, inglés y francés)
 

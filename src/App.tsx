@@ -5,9 +5,10 @@ import {
   type BuildSlot, type EnchantData, type Element, type Item, type RecipeData, type Role, type SocketColor,
 } from './lib/game';
 import {
-  evaluateBuild, rankAlternatives, recommend, swapItem,
+  evaluateBuild, rankAlternatives, recommend, requiredItems, swapItem,
   type BuildRequest, type BuildResult, type BuildSlots,
 } from './lib/optimizer';
+import { condLabel, condMet, registerItems } from './lib/conditions';
 import { materialsFor, upgradeChain } from './lib/materials';
 import { planRunes, runeBonus, runeGroups } from './lib/runes';
 import {
@@ -101,6 +102,7 @@ export default function App() {
   }, [lang]);
   // Los nombres se aplican sobre los mismos objetos para que la build actual también cambie de idioma.
   if (names && data) localizeItems(data.items, names);
+  if (data) registerItems(data.items);
   if (names && spellData) localizeSpells(spellData, names);
 
   const cls = CLASSES.find((c) => c.id === classId)!;
@@ -122,7 +124,7 @@ export default function App() {
     const usable: BuildSlots = {};
     for (const [slot, item] of Object.entries(lock)) if (item && item.lvl <= s.level) usable[slot as BuildSlot] = item;
     return {
-      level: s.level, role: s.role, elements: s.elements, targets: s.targets, allowedRarities: s.rarities,
+      level: s.level, classId: s.classId, role: s.role, elements: s.elements, targets: s.targets, allowedRarities: s.rarities,
       minLevel: s.minLevel, craftOnly: s.craftOnly, berserk: s.berserk && !!c.berserk, crit: s.crit, back: s.back,
       excluded: new Set(s.excluded), locked: usable, deck: deckEffect,
     };
@@ -204,10 +206,15 @@ export default function App() {
   // Cambio manual: la pieza queda fijada y la build se recalcula sin reoptimizar.
   const swap = (slot: BuildSlot, item: Item) => {
     if (!result) return;
+    const slots = swapItem(result.slots, slot, item);
     const lock: BuildSlots = { ...locked, [slot]: item };
-    if (slot === 'weapon' && item.slot === 'weapon2h') delete lock.offhand;
+    // Lo que swapItem equipa o quita además (anillo de nación, segunda mano) también queda fijado o liberado.
+    for (const s of BUILD_SLOTS.map((b) => b.id)) {
+      if (!slots[s]) { if (result.slots[s]) delete lock[s]; }
+      else if (slots[s] !== result.slots[s]) lock[s] = slots[s];
+    }
     setLocked(lock);
-    setResult(evaluateBuild(swapItem(result.slots, slot, item), makeRequest(excluded, lock)));
+    setResult(evaluateBuild(slots, makeRequest(excluded, lock)));
   };
 
   const unlock = (slot: BuildSlot) =>
@@ -745,6 +752,7 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
                         <li key={k} className={v < 0 ? 'neg' : ''}>{v > 0 ? '+' : ''}{v} {STAT_LABELS[k] ?? k}</li>
                       ))}
                     </ul>
+                    <ItemConds item={item} slots={result.slots} totals={sheetResult.totals} classId={request.classId} />
                     <div className="item-actions">
                       <button className="btn" onClick={() => setPicker(s.id)}>{t('common.change')}</button>
                       <button className="btn ghost" title={t('equip.excludeHint')} onClick={() => onExclude(item.id)}>
@@ -806,6 +814,30 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
         <SlotPicker slot={picker} items={items} result={result} request={request}
           onPick={(item) => { onSwap(picker, item); setPicker(null); }} onClose={() => setPicker(null)} />
       )}
+    </div>
+  );
+}
+
+// Condiciones para equipar la pieza: en verde si se cumplen, en rojo si no, en gris si la app no puede comprobarlas.
+function ItemConds({ item, slots, totals, classId }: {
+  item: Item; slots: BuildSlots; totals: Record<string, number>; classId: string;
+}) {
+  if (!item.cond?.length) return null;
+  const equipped = Object.values(slots);
+  const state = { equipped: (id: number) => equipped.some((i) => i?.id === id), total: (k: string) => totals[k] ?? 0, classId };
+  const met = item.cond.map((c) => condMet(c, state));
+  return (
+    <div className="item-conds">
+      <span className="eyebrow">{t('cond.title')}</span>
+      <ul>
+        {item.cond.map((c, i) => (
+          <li key={i} className={met[i] === false ? 'neg' : met[i] ? 'ok' : 'muted'}
+            title={met[i] === undefined ? t('cond.unchecked') : undefined}>
+            {met[i] === false ? '✕' : met[i] ? '✓' : '?'} {condLabel(c)}
+          </li>
+        ))}
+      </ul>
+      {met.includes(false) && <p className="neg small">{t('cond.broken')}</p>}
     </div>
   );
 }
@@ -943,6 +975,14 @@ function SlotPicker({ slot, items, result, request, onPick, onClose }: {
                   <span key={k} className={v < 0 ? 'neg' : ''}>{v > 0 ? '+' : ''}{v} {STAT_LABELS[k] ?? k}</span>
                 ))}
               </div>
+              {(!!item.cond?.length || !reason && requiredItems(result.slots, item).length > 0) && (
+                <div className="alt-conds">
+                  {item.cond?.map((c, i) => <span key={i}>{condLabel(c)}</span>)}
+                  {!reason && requiredItems(result.slots, item).length > 0 && (
+                    <span className="also">{t('picker.alsoEquips', { items: requiredItems(result.slots, item).map((i) => i.name).join(', ') })}</span>
+                  )}
+                </div>
+              )}
             </div>
             <div className="alt-delta">
               {r ? (

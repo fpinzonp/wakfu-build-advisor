@@ -260,7 +260,29 @@ async function fetchWiki() {
     if (depth > 0) for (const e of states[id].effects) for (const m of String(e).matchAll(/\{\{st\|(\d+)/g)) add(m[1], depth - 1);
   };
   for (const id of wanted) add(id, 1);
-  return { source: WIKI, license: 'CC BY-SA', fetchedAt: new Date().toISOString(), states, sources, spells: await fetchSpells() };
+  return {
+    source: WIKI, license: 'CC BY-SA', fetchedAt: new Date().toISOString(), states, sources,
+    spells: await fetchSpells(), conditions: await fetchConditions(),
+  };
+}
+
+// Condiciones para equipar cada objeto (tabla Cargo "Items" de la wiki; Ankama no las publica).
+async function fetchConditions() {
+  const rows = [];
+  for (let offset = 0; ; offset += 500) {
+    const params = new URLSearchParams({
+      action: 'cargoquery', format: 'json', limit: '500', offset: String(offset),
+      tables: 'Items', fields: 'name,level,type,conditions', where: "conditions__full <> ''",
+    });
+    const res = await (await fetch(`${WIKI}/api.php?${params}`, { headers: wikiHeaders })).json();
+    if (!res.cargoquery) throw new Error(res.error?.info ?? 'respuesta inesperada de Items');
+    rows.push(...res.cargoquery.map((r) => r.title));
+    if (res.cargoquery.length < 500) break;
+  }
+  // Solo equipamiento: los planos, la comida o los disfraces comparten a veces el nombre con un objeto.
+  const NOT_GEAR = /Recipe|Food|Transformation|Tool|Bag|Sidekick|Costume|Emote|Title|Teleport|Harvest|Quest|Profession|Torch|Aura/;
+  return rows.filter((r) => r.conditions && !NOT_GEAR.test(r.type ?? ''))
+    .map((r) => ({ name: r.name, level: r.level, conditions: r.conditions }));
 }
 
 // Hechizos y pasivas de clase (tabla Cargo "Class_spells" de la wiki), sin los retirados del juego.
@@ -303,6 +325,15 @@ if (wiki && !wiki.spells) {
     console.log(`Wiki: añadidos ${wiki.spells.length} hechizos a la copia local`);
   } catch (e) {
     console.warn(`No se pudieron descargar los hechizos (${e.message}); la baraja irá vacía.`);
+  }
+}
+if (wiki && !wiki.conditions) {
+  try {
+    wiki.conditions = await fetchConditions();
+    await writeFile(WIKI_CACHE, JSON.stringify(wiki, null, 1));
+    console.log(`Wiki: añadidas las condiciones de ${wiki.conditions.length} objetos a la copia local`);
+  } catch (e) {
+    console.warn(`No se pudieron descargar las condiciones de los objetos (${e.message}).`);
   }
 }
 const wikiStates = wiki?.states ?? {};
@@ -468,6 +499,72 @@ for (const list of [spellsOut.common, ...Object.values(spellsOut.classes)]) {
   list.sort((a, b) => a.lvl - b.lvl || a.name.localeCompare(b.name));
 }
 if (unusedStats.size) console.warn(`Aviso: pasivas de data/spell-stats.json que ya no están en la wiki: ${[...unusedStats].join(', ')}`);
+
+// ---------- Condiciones para equipar ----------
+// Se enlazan por nombre inglés (y nivel si hay varias versiones con el mismo nombre).
+const COND_STATS = {
+  'CH': 'crit', 'Lock': 'tackle', 'Dodge': 'dodge', 'Distance Mastery': 'mastDist', 'Melee Mastery': 'mastMelee',
+  'MP Max': 'mp', 'AP Max': 'ap', 'WP Max': 'wp', 'RA': 'range', 'Block': 'block', 'Force of Will': 'will',
+  'Initiative': 'init',
+};
+const unknownConds = new Set();
+function parseConditions(text) {
+  const out = [];
+  const stat = new Map();
+  for (const raw of text.split('\n')) {
+    const line = raw.trim();
+    let m;
+    if (!line || line === 'Unique' || /^Not to be on a Battlefield$/.test(line)) continue;
+    if ((m = line.match(/^(.+?)\s*(<=|>=|<|>)\s*(-?\d+)$/)) && COND_STATS[m[1]]) {
+      const key = COND_STATS[m[1]];
+      const v = Number(m[3]);
+      const c = stat.get(key) ?? { s: key };
+      if (m[2] === '>=') c.min = v; else if (m[2] === '>') c.min = v + 1;
+      else if (m[2] === '<=') c.max = v; else c.max = v - 1;
+      if (!stat.has(key)) { stat.set(key, c); out.push(c); }
+    } else if ((m = line.match(/^Has (.+) equipped$/))) {
+      out.push({ needs: m[1] });
+    } else if ((m = line.match(/^Only usable by (\w+)$/)) && WIKI_CLASS[m[1]]) {
+      out.push({ cls: WIKI_CLASS[m[1]] });
+    } else if ((m = line.match(/^Troupe Rank >= (\d+)$/))) {
+      out.push({ x: 'troupe', v: Number(m[1]) });
+    } else if ((m = line.match(/^Citizen points >= (\d+)$/))) {
+      out.push({ x: 'citizen', v: Number(m[1]) });
+    } else if ((m = line.match(/^Have finished: (.+)$/))) {
+      out.push({ x: 'quest', v: m[1] });
+    } else {
+      unknownConds.add(line);
+      out.push({ x: 'raw', v: line });
+    }
+  }
+  return out;
+}
+{
+  const norm = (n) => String(n ?? '').toLowerCase().replace(/[’`]/g, "'").replace(/\s+/g, ' ').trim();
+  const enTitle = new Map(items.map((i) => [i.definition.item.id, i.title?.en]));
+  const byName = new Map();
+  for (const r of wiki?.conditions ?? []) {
+    const k = norm(r.name);
+    if (!byName.has(k)) byName.set(k, []);
+    byName.get(k).push(r);
+  }
+  const idByName = new Map(out.map((i) => [norm(enTitle.get(i.id)), i.id]));
+  let linked = 0;
+  for (const item of out) {
+    const rows = byName.get(norm(enTitle.get(item.id)));
+    if (!rows) continue;
+    const row = rows.find((r) => Number(r.level) === item.lvl) ?? (new Set(rows.map((r) => r.conditions)).size === 1 ? rows[0] : null);
+    if (!row) continue;
+    const cond = parseConditions(row.conditions).map((c) => {
+      if (!('needs' in c)) return c;
+      const id = idByName.get(norm(c.needs));
+      return id ? { needs: id } : { x: 'raw', v: `Has ${c.needs} equipped` };
+    });
+    if (cond.length) { item.cond = cond; linked++; }
+  }
+  console.log(`Condiciones para equipar: ${linked} objetos`);
+  if (unknownConds.size) console.warn(`Aviso: condiciones sin interpretar (se muestran tal cual): ${[...unknownConds].join(' | ')}`);
+}
 
 await mkdir(OUT_DIR, { recursive: true });
 await writeFile(new URL('spells.json', OUT_DIR), JSON.stringify({ version, source: WIKI, ...spellsOut }));

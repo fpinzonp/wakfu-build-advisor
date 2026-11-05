@@ -51,6 +51,10 @@ Si la wiki no responde, se mantiene la copia anterior.
 
   El rango de manada, los puntos de ciudadanía y las misiones solo se muestran como aviso.
 
+- `src/lib/teams.ts` y sección **Equipos**: a partir de una clase propone un grupo de 6 o de 3 según el contenido, explica qué
+  aporta cada clase, avisa de lo perdido al cambiar una por gusto y marca los 3 mejores del grupo de 6. Lo que aporta cada
+  clase está curado a mano en `KIT` a partir de los textos de los hechizos; son recomendaciones, no un meta comprobado.
+
 ## Idiomas (español, inglés y francés)
 
 - Interfaz: `src/locales/{es,en,fr}.ts` (`es.ts` define todas las claves) y `src/lib/i18n.ts` (`t()`, selector y

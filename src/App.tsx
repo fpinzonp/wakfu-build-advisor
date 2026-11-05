@@ -8,6 +8,7 @@ import {
   evaluateBuild, rankAlternatives, recommend, requiredItems, swapItem,
   type BuildRequest, type BuildResult, type BuildSlots,
 } from './lib/optimizer';
+import TeamsPanel from './TeamsPanel';
 import { condLabel, condMet, registerItems } from './lib/conditions';
 import { materialsFor, upgradeChain } from './lib/materials';
 import { planRunes, runeBonus, runeGroups } from './lib/runes';
@@ -72,6 +73,7 @@ export default function App() {
   const [stored, setStored] = useState<StoredBuild[]>(() => loadStored());
   const [dialog, setDialog] = useState<'share' | 'save' | 'library' | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [section, setSection] = useState<'builds' | 'teams'>('builds');
   const resultsRef = useRef<HTMLElement>(null);
 
   const notify = useCallback((text: string) => {
@@ -176,6 +178,12 @@ export default function App() {
     setBerserk(!!c.berserk);
     setCritFocus(!!c.focus?.includes('crit'));
     setBackFocus(!!c.focus?.includes('back'));
+  };
+
+  const buildFromTeam = (id: string, r: Role) => {
+    chooseClass(id);
+    changeRole(r);
+    setSection('builds');
   };
 
   const toggleElement = (e: Element) =>
@@ -287,7 +295,19 @@ export default function App() {
         </div>
       </header>
 
-      <main className="layout">
+      <nav className="tabs section-tabs" role="tablist" aria-label={t('section.aria')}>
+        {(['builds', 'teams'] as const).map((id) => (
+          <button key={id} role="tab" aria-selected={section === id} className={section === id ? 'on' : ''} onClick={() => setSection(id)}>
+            {t(`section.${id}`)}
+          </button>
+        ))}
+      </nav>
+
+      <div hidden={section !== 'teams'}>
+        <TeamsPanel spellData={spellData} initialClass={classId} onBuild={buildFromTeam} />
+      </div>
+
+      <main className="layout" hidden={section !== 'builds'}>
         <aside className="panel form" aria-label={t('form.aria')}>
           <div className="form-scroll">
             <FormStep n={1} title={t('form.character')}>

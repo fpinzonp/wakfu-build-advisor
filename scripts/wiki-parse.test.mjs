@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseInfobox, parseMob, parseRange, parseSpellCast, pickSpellPage, spellTitleCandidates } from './wiki-parse.mjs';
+import { parseInfobox, parseMob, parseRange, parseSpellCast, parseZone, pickSpellPage, spellTitleCandidates } from './wiki-parse.mjs';
 
 // Textos reales de wakfu.wiki.gg (action=raw), recortados tras la ficha.
 const ARROW = String.raw`{{Spell
@@ -137,9 +137,9 @@ describe('parseSpellCast', () => {
   });
   it('formato real de Berserk y de armadura de la wiki', () => {
     const fx = "'''Normal Effects'''\nSwitches places\n{{gui|caster}} {{gui|armor}} 4-18 {{gui|air}} Armor\n\n'''Effects if {{gui|caster}} {{gui|berserk}} {{st|9315}}'''\nCosts {{gui|wp}} 1 extra WP\n{{gui|enemy}} {{gui|air}} Damage: 2-60";
-    const c = parseSpellCast({ target: 'st', range: '1', effects: fx, criteffects: fx }, { spell: 'Y', ap: 1, mp: 0, wp: 0 });
+    const c = parseSpellCast({ target: 'st', range: '1', effects: fx, criteffects: fx.replace('2-60', '3-75') }, { spell: 'Y', ap: 1, mp: 0, wp: 0 });
     expect(c.lines).toEqual([{ kind: 'armor', side: 'caster', min: 4, max: 18, critMin: 4, critMax: 18 }]);
-    expect(c.berserkLines).toEqual([{ kind: 'damage', side: 'enemy', min: 2, max: 60, critMin: 2, critMax: 60 }]);
+    expect(c.berserkLines).toEqual([{ kind: 'damage', side: 'enemy', min: 2, max: 60, critMin: 3, critMax: 75 }]);
     expect(c.partial).toBe(true); // "1 extra WP" no se interpreta
   });
 });
@@ -173,9 +173,10 @@ describe('parseSpellCast: efectos condicionales', () => {
   });
   it('Thunderbolt: el golpe de "reaches 100" queda aparte y su rama no se mezcla con los golpes', () => {
     const c = cast({ effects: THUNDER, criteffects: '{{gui|enemy}} {{gui|fire}} Damage: 2-82 {{gui|area hline}}' });
-    expect(c.lines).toEqual([{ kind: 'damage', side: 'enemy', min: 3, max: 93, critMin: 2, critMax: 82 }]);
+    expect(c.lines).toEqual([{ kind: 'damage', side: 'enemy', min: 3, max: 93, critMin: 4, critMax: 116 }]);  // el crítico de la wiki es de otro hechizo
     expect(c.conditional[0].lines).toHaveLength(1);
-    expect(c.reasons).toEqual(['conditional', 'secondary']); // la rama condicional no tiene crítico equivalente
+    expect(c.conditional[0].lines[0].noCrit).toBe(true);  // la rama condicional no tiene crítico equivalente
+    expect(c.reasons).toEqual(['conditional', 'secondary', 'noCrit', 'critFixed']);
   });
   it('una línea "instead" va a conditional con su propia condición', () => {
     const c = cast({ effects: '{{gui|air}} Damage: 3-91\n{{gui|arrow}} {{gui|exalted}} {{st|3303}}: {{gui|earth}} Damage: 4-131 instead' });
@@ -215,8 +216,8 @@ describe('parseSpellCast: cabeceras de estructura', () => {
   });
   it('Colonnades: el icono "ally" en un daño no cambia el lado y "Per target hit" lo hereda del lanzador', () => {
     const f = "In a square {{gui|area square}} area of effect:\n{{gui|arrow}} {{gui|enemy}}\n{{gui|arrow}} {{gui|ally}} {{gui|earth}} Damage: 4-131\n\nPer target hit:\n{{gui|arrow}} {{gui|caster}} {{gui|earth}} Damage: 4-131\n{{gui|armor}} 1-20 {{gui|earth}} Armor {{gui|area squarering}}";
-    const c = cast({ target: 'aoe', effects: f, criteffects: f });
-    expect(c.lines).toEqual([dmg(4, 131, 4, 131)]);
+    const c = cast({ target: 'aoe', effects: f, criteffects: f.replace('4-131', '5-164') });
+    expect(c.lines).toEqual([dmg(4, 131, 5, 164)]);
     expect(c.conditional[0].lines.map((l) => [l.kind, l.side])).toEqual([['damage', 'caster'], ['armor', 'caster']]);
   });
   it('Watchdog y Capering: "For each enemy affected" y "Along the path" son estructura', () => {
@@ -266,13 +267,13 @@ describe('parseSpellCast: estados y críticos', () => {
     expect(c.partial).toBe(false);
     expect(c.lines).toEqual([{ kind: 'damage', side: 'enemy', min: 3, max: 93, critMin: 3, critMax: 93 }]);
   });
-  it('críticos que no cuadran con el normal marcan secondary', () => {
+  it('críticos que no cuadran con el normal marcan secondary y noCrit', () => {
     const c = cast({ effects: '{{gui|fire}} Damage: 3-93\n{{gui|water}} Damage: 1-9', criteffects: '{{gui|fire}} Damage: 4-100' });
-    expect(c.reasons).toEqual(['secondary']);
+    expect(c.reasons).toEqual(['secondary', 'noCrit']);
     expect(c.partial).toBe(true);
   });
   it('otros efectos numéricos sin leer marcan secondary', () => {
-    const c = cast({ effects: '{{gui|fire}} Damage: 3-93\nPushes back 2 cells', criteffects: '{{gui|fire}} Damage: 4-100\nPushes back 2 cells' });
+    const c = cast({ effects: '{{gui|fire}} Damage: 3-93\nPushes back 2 cells', criteffects: '{{gui|fire}} Damage: 4-116\nPushes back 2 cells' });
     expect(c.reasons).toEqual(['secondary']);
   });
 });
@@ -285,7 +286,146 @@ describe('parseMob', () => {
       res: { water: [287, 299], earth: [52, 64], air: [169, 181], fire: [169, 181] },
     });
   });
+  it('un mob de un solo nivel usa ese nivel como máximo', () => {
+    expect(parseMob('{{Infobox monster|minlevel=55|HP=595}}')).toMatchObject({ minLevel: 55, maxLevel: 55 });
+  });
+  it('lee un nivel escrito como rango en minlevel', () => {
+    expect(parseMob('{{Infobox monster|minlevel=65 to 80|HP=2800}}')).toMatchObject({ minLevel: 65, maxLevel: 80 });
+  });
   it('sin PV ni resistencias no es un mob utilizable', () => {
     expect(parseMob('{{Infobox monster|title=X}}')).toBeNull();
+  });
+});
+
+describe('parseZone', () => {
+  it('lee cada forma de la zona, con y sin tamaño', () => {
+    expect(parseZone('{{gui|fire}} Damage: 6-182 {{gui|area ring}}')).toEqual({ shape: 'ring', min: 1, max: 1 });
+    expect(parseZone('{{gui|fire}} Damage 4-151 {{gui|area circlering|text=Size: 1 - 1}}')).toEqual({ shape: 'circlering', min: 1, max: 1 });
+    expect(parseZone('Damage: 3-98 {{gui|area squarering|text=Size: 1-1 x 1-1}}')).toEqual({ shape: 'squarering', min: 1, max: 1 });
+    expect(parseZone('Damage: 4-121 {{gui|area square|text=Size: 3}}')).toEqual({ shape: 'square', min: 0, max: 3 });
+    expect(parseZone('Damage: 1-2 {{gui|area circlering|text=Size: 1-3}}')).toEqual({ shape: 'circlering', min: 1, max: 3 });
+    expect(parseZone('Damage: 1-2 {{gui|area cross|Size: 2}}')).toEqual({ shape: 'cross', min: 0, max: 2 });
+    expect(parseZone('Damage: 1-2 {{gui|area vline|text=Size: 3 x 0}}')).toEqual({ shape: 'vline', min: 0, max: 3 });
+    expect(parseZone('damage: 2-60 {{gui|area circle}} (3)')).toEqual({ shape: 'circle', min: 0, max: 3 });
+    expect(parseZone('In a 2-cell {{gui|area circle}} circle:')).toEqual({ shape: 'circle', min: 0, max: 2 });
+    expect(parseZone('Damage: 1-2 {{gui|area cross}}')).toEqual({ shape: 'cross', min: 0, max: 1 });
+  });
+  it('sin zona no hay nada, y "se convierte en" no es la zona del hechizo', () => {
+    expect(parseZone('{{gui|fire}} Damage: 3-93')).toBeUndefined();
+    expect(parseZone('{{gui|arrow}} The area of effect becomes {{gui|area cone}}')).toBeUndefined();
+  });
+  it('se guarda en la ficha del hechizo', () => {
+    const c = cast({ target: 'aoe', range: '0', effects: '{{gui|fire}} Damage: 6-182 {{gui|area ring}}', criteffects: '{{gui|fire}} Damage: 8-228 {{gui|area ring}}' });
+    expect(c.zone).toEqual({ shape: 'ring', min: 1, max: 1 });
+    expect(c.rangeMax).toBe(0);
+  });
+});
+
+describe('parseSpellCast: coletillas tras el valor', () => {
+  it.each([
+    ['{{gui|earth}} Damage: 4-121, penetrates Armor', 4, 121],
+    ['{{gui|fire}} Damage: 4-131 and {{gui|range}} -2 Range (1 turn)', 4, 131],
+    ['{{gui|enemy}} {{gui|earth}} Damage: 2-65 and {{gui|mp}} -2 MP {{gui|area cross}}', 2, 65],
+    ['{{gui|enemy}} {{gui|fire}} Damage: 3-83 and {{gui|dodge}} -{{se|base=1|scale=1}} Dodge', 3, 83],
+    ['{{gui|earth}} Damage: 3-105 and applies {{gui|enemy}} {{st|7794}} (Lvl 1-13)', 3, 105],
+    ['{{gui|light}} Damage: 6-153 and {{st|7744}}', 6, 153],
+    ['{{gui|air}} Damage: 3-83 and steals 100%', 3, 83],
+    ['{{gui|air}} Damage: 3-83 {{gui|area square}} (except on {{gui|summon}})', 3, 83],
+    ["{{gui|water}} Damage: 6-182 at end of the target's turn", 6, 182],
+    ['{{gui|enemy}} {{gui|water}} Damage: 4-111 (to the targeted cell)', 4, 111],
+    ['{{gui|enemy}} {{gui|earth}} damage: 2-60 {{gui|area circle}} (3)', 2, 60],
+    ['{{gui|air}} Damage: 1-25 (indirect damage)', 1, 25],
+  ])('%s cuenta como efecto y marca secondary', (effects, min, max) => {
+    const c = cast({ effects, criteffects: effects.replace(String(max), String(Math.round(max * 1.25))) });
+    expect(c.lines).toHaveLength(1);
+    expect(c.lines[0]).toMatchObject({ kind: 'damage', min, max });
+    expect(c.reasons).toEqual(['secondary']);
+  });
+  it('la coletilla dentro de una condición sigue siendo condicional', () => {
+    const text = 'If the target has more than 80% of max HP:\n{{gui|arrow}} {{gui|air}} Damage: 5-152 (penetrates Armor)';
+    const c = cast({ effects: text, criteffects: text.replace('5-152', '6-190') });
+    expect(c.lines).toEqual([]);
+    expect(c.conditional[0].lines).toHaveLength(1);
+    expect(c.reasons).toContain('conditional');
+  });
+  it.each([
+    '{{gui|enemy}} {{gui|earth}} damage: 4-121 (+5% per MP, 30% max)',
+    '{{gui|fire}} Damage: 4-121 on summons',
+    '{{gui|ally}} {{gui|water}} Damage: 3-105 around the target {{gui|area circlering|text=Size: 1 - 1}}',
+    'Twice: {{gui|light}} Damage: 2-51',
+    '{{st|7757}}: {{gui|earth}} Damage: 11-353',
+  ])('%s cambia el valor o depende de algo: no entra en lines y se avisa', (effects) => {
+    const c = cast({ effects, criteffects: effects });
+    expect(c.lines).toEqual([]);
+    expect(c.reasons).toContain('conditional');
+  });
+  it('el icono de lado seguido de dos puntos no oculta el daño (Luminous Arrow)', () => {
+    const c = cast({ effects: '{{gui|enemy}}: {{gui|light}} Damage: 2-65', criteffects: '{{gui|enemy}}: {{gui|light}} Damage: 3-81' });
+    expect(c.lines).toEqual([{ kind: 'damage', side: 'enemy', min: 2, max: 65, critMin: 3, critMax: 81 }]);
+  });
+});
+
+describe('parseSpellCast: críticos fuera de rango', () => {
+  it.each([
+    ['Thunderbolt', 3, 93, 2, 82, 4, 116],
+    ['Smashes', 5, 176, 7, 330, 6, 220],
+    ['Dislocation', 4, 131, 5, 1164, 5, 164],
+    ['Brawl', 9, 251, 9, 341, 11, 314],
+  ])('%s: usa ×1,25 y lo marca critFixed', (_, min, max, cMin, cMax, fixedMin, fixedMax) => {
+    const fixes = [];
+    const c = parseSpellCast(
+      { effects: `{{gui|fire}} Damage: ${min}-${max}`, criteffects: `{{gui|fire}} Damage: ${cMin}-${cMax}` },
+      { spell: 'X', ap: '3' }, fixes,
+    );
+    expect(c.lines[0]).toMatchObject({ critMin: fixedMin, critMax: fixedMax });
+    expect(c.reasons).toEqual(['critFixed']);
+    expect(c.partial).toBe(false);
+    expect(fixes).toEqual([{ kind: 'damage', max, critMax: cMax, fixedMax }]);
+  });
+  it('un crítico razonable y los rangos pequeños no se tocan', () => {
+    const ok = cast({ effects: 'Damage: 4-121', criteffects: 'Damage: 5-152' });
+    expect(ok.lines[0]).toMatchObject({ critMin: 5, critMax: 152 });
+    expect(ok.reasons).toEqual([]);
+    const small = cast({ effects: 'Damage: 1-2', criteffects: 'Damage: 1-3' });
+    expect(small.lines[0]).toMatchObject({ critMin: 1, critMax: 3 });
+    expect(small.reasons).toEqual([]);
+  });
+  it('también corrige los efectos condicionales', () => {
+    const text = (v) => `If X:\n{{gui|arrow}} {{gui|earth}} Damage: ${v} instead`;
+    const c = cast({ effects: text('9-251'), criteffects: text('9-341') });
+    expect(c.conditional[0].lines[0]).toMatchObject({ critMax: 314 });
+    expect(c.reasons).toContain('critFixed');
+  });
+  it('sin bloque de críticos no hay nada que corregir', () => {
+    expect(cast({ effects: 'Damage: 3-93' }).reasons).toEqual(['noCrit']);
+  });
+});
+
+describe('parseSpellCast: críticos sin emparejar', () => {
+  it('Flood: las líneas sin pareja llevan noCrit y la ficha también', () => {
+    const c = cast({
+      effects: '{{gui|enemy}} {{gui|water}} Damage: 3-105\n{{gui|ally}} {{gui|water}} Healing: 6-57',
+      criteffects: '{{gui|enemy}} {{gui|water}} Damage: 4-132',
+    });
+    expect(c.lines.every((l) => l.noCrit)).toBe(true);
+    expect(c.lines[0]).toMatchObject({ critMin: 3, critMax: 105 });
+    expect(c.reasons).toEqual(['secondary', 'noCrit']);
+  });
+  it('un bloque condicional sin pareja no quita el crítico de las líneas normales', () => {
+    const c = cast({
+      effects: '{{gui|fire}} Damage: 3-93\n\nIf X:\n{{gui|arrow}} Damage: 2-55',
+      criteffects: '{{gui|fire}} Damage: 4-116',
+    });
+    expect(c.lines[0].noCrit).toBeUndefined();
+    expect(c.lines[0].critMax).toBe(116);
+    expect(c.conditional[0].lines[0].noCrit).toBe(true);
+  });
+  it('"Normal Effects:" con dos puntos no abre una condición (Attraction)', () => {
+    const c = cast({
+      effects: "'''Normal Effects'''\n{{gui|caster}} {{gui|armor}} 6-26 {{gui|fire}} Armor",
+      criteffects: "'''Normal Effects:'''\n{{gui|caster}} {{gui|armor}} 7-32 {{gui|fire}} Armor",
+    });
+    expect(c.lines[0]).toMatchObject({ kind: 'armor', critMin: 7, critMax: 32 });
+    expect(c.reasons).toEqual([]);
   });
 });

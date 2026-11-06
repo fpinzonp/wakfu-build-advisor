@@ -573,7 +573,7 @@ const trSpell = (lang, kind, text) => {
 const spellsOut = { common: [], classes: {} };
 const usedIds = new Map();
 const unusedStats = new Set(Object.keys(spellStats));
-const castStats = { active: 0, cast: 0, partial: 0, noPage: 0, missing: {} };
+const castStats = { active: 0, cast: 0, partial: 0, noPage: 0, missing: {}, critFixed: [] };
 for (const r of wiki?.spells ?? []) {
   const classId = r.class === 'Common' ? 'common' : WIKI_CLASS[r.class];
   if (!classId) continue;
@@ -601,7 +601,9 @@ for (const r of wiki?.spells ?? []) {
     const page = pickSpellPage(wiki?.spellPages ?? {}, r);
     // Sin ficha propia de su clase ni con los títulos alternativos: no se simula.
     if (page) {
-      spell.cast = parseSpellCast(page, r);
+      const critFixes = [];
+      spell.cast = parseSpellCast(page, r, critFixes);
+      for (const f of critFixes) castStats.critFixed.push(`${r.class} / ${r.spell} (${f.kind}): máx. ${f.max}, crítico ${f.critMax} -> ${f.fixedMax}`);
       castStats.cast++;
       if (spell.cast.partial) castStats.partial++;
     } else {
@@ -693,6 +695,8 @@ console.log(`${usedIds.size} hechizos y pasivas escritos en public/data/spells.j
 console.log(`Simulador: ${castStats.cast} de ${castStats.active} hechizos activos con ficha (${castStats.partial} parciales, ${castStats.noPage} sin página propia o de otra clase)`);
 
 for (const [cls, names] of Object.entries(castStats.missing)) console.log(`  Sin ficha (${cls}): ${names.join(', ')}`);
+console.log(`Críticos corregidos con ×1,25 (${castStats.critFixed.length} líneas):`);
+for (const line of castStats.critFixed) console.log(`  ${line}`);
 
 // Monstruos para el simulador: se descartan las fichas sin PV ni resistencias.
 {
@@ -701,7 +705,10 @@ for (const [cls, names] of Object.entries(castStats.missing)) console.log(`  Sin
   for (const r of wiki?.mobs ?? []) {
     const mob = parseMob(r.infobox);
     if (!mob) { dropped++; continue; }
-    mobs.push({ ...mob, name: r.name || mob.name, family: mob.family || r.family || '', type: mob.type || r.type || '' });
+    // La ficha manda; sin nivel en ella, vale el de la tabla Cargo.
+    const minLevel = mob.minLevel || Number(r.minLevel) || 0;
+    const maxLevel = mob.maxLevel || Number(r.maxLevel) || minLevel;
+    mobs.push({ ...mob, minLevel, maxLevel, name: r.name || mob.name, family: mob.family || r.family || '', type: mob.type || r.type || '' });
   }
   await writeFile(new URL('mobs.json', OUT_DIR), JSON.stringify({ version, mobs }));
   console.log(`Mobs: ${mobs.length} guardados y ${dropped} descartados (sin PV ni resistencias) en public/data/mobs.json`);

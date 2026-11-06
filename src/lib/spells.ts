@@ -9,21 +9,28 @@ export interface SpellLine {
   kind: 'damage' | 'heal' | 'armor';
   side: 'enemy' | 'ally' | 'caster';  // a quién afecta; sin icono, el daño va al enemigo y la cura/armadura al objetivo aliado
   min: number; max: number; critMin: number; critMax: number;
+  noCrit?: boolean;     // su crítico no se pudo emparejar con la wiki: vale lo mismo que el golpe normal
 }
 
-/** Por qué una ficha no es completa: efectos condicionales, otros efectos numéricos sin leer o sin bloque de críticos. */
-export type CastReason = 'conditional' | 'secondary' | 'noCrit';
+/** Zona de efecto: forma de la wiki (ring, circle, square, cross...) y casillas que cubre desde el centro. */
+export interface Zone { shape: string; min: number; max: number }
+
+/**
+ * Por qué una ficha no es completa: efectos condicionales, otros efectos numéricos sin leer, sin crítico utilizable
+ * (no hay bloque, o el suyo no empareja) o con un crítico imposible que se sustituyó por ×1,25.
+ */
+export type CastReason = 'conditional' | 'secondary' | 'noCrit' | 'critFixed';
 
 /** Coste y efectos de un hechizo activo para el simulador (de la ficha de la wiki). */
 export interface SpellCast {
   key: string;                 // nombre inglés de la wiki: identificador estable (name se traduce)
   ap: number; mp: number; wp: number;
   rangeMin: number; rangeMax: number; rangeMod: boolean; los: boolean;
-  perTurn: number | null; target: 'st' | 'aoe';
+  perTurn: number | null; target: 'st' | 'aoe'; zone?: Zone;
   lines: SpellLine[]; berserkLines?: SpellLine[];
   conditional: { when: string; lines: SpellLine[] }[];  // efectos bajo una condición: no están en `lines`
   stateGains: { state: number; levels: number }[];  // de "{{st|id}} (+N Lvl.)", solo si son incondicionales
-  reasons: CastReason[];       // 'noCrit' (sin bloque de críticos: el crítico vale lo normal) no hace partial
+  reasons: CastReason[];       // 'noCrit' y 'critFixed' no hacen partial por sí solos
   partial: boolean;            // reasons incluye 'conditional' o 'secondary'
 }
 

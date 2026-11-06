@@ -460,6 +460,11 @@ const es = {
   "sim.tag.back": "Por la espalda",
   "sim.tag.berserk": "Berserker",
   "sim.tag.combo": "Daño extra de combo",
+  "sim.tag.unconfirmed": "Sin confirmar",
+  "sim.tag.preparation": "Preparación",
+  "sim.tag.push": "Empuje de combo",
+  "sim.tag.lifesteal": "Robo de vida de combo",
+  "sim.warn.collision": "El daño de colisión del empuje no se calcula.",
 };
 
 export default es;

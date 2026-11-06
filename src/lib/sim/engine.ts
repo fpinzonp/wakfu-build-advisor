@@ -10,6 +10,7 @@ import {
   SPELL_MAX_LEVEL, addArmor, addHealRes, armorValue, baseAtLevel, damageValue, distance, healValue,
   isBerserk, isMelee, positionOf, type Cell, type Facing, type Position,
 } from './formulas';
+import { iopRules } from './rules/iop';
 
 export type ActorId = 'main' | 'ally';
 
@@ -17,6 +18,7 @@ export interface SimActor {
   id: ActorId; name: string; classId: string; level: number;
   stats: Record<string, number>; mastery: Record<Element, number>; maxHp: number;
   ap: number; mp: number; wp: number; spells: Spell[]; start: Cell;
+  passives?: string[];  // pasivas equipadas, por su nombre inglés de la wiki (`spells` solo trae los activos)
 }
 
 export interface SimTarget {
@@ -44,6 +46,7 @@ export interface StepRow {
 export interface ActorState {
   cell: Cell; ap: number; mp: number; wp: number; hp: number; armor: number;
   healRes: number; states: Record<string, number>; uses: Record<number, number>;
+  history?: string[];  // costes de los hechizos del turno, para los combos de clase; se vacía al terminar el turno
 }
 
 export interface SimState {
@@ -58,7 +61,10 @@ type Kind = StepRow['kind'];
 export interface SimResult { steps: StepResult[]; totals: Partial<Record<ActorId, Record<Kind, Triple>>> }
 
 /** Ajustes que una regla de clase aplica a un lanzamiento. `lines` aporta efectos condicionales ya resueltos. */
-export interface CastMods { dmgPct?: number; tags?: TKey[]; warnings?: TKey[]; lines?: SpellLine[] }
+export interface CastMods {
+  dmgPct?: number; tags?: TKey[]; warnings?: TKey[]; lines?: SpellLine[];
+  lifeStealPct?: number;  // el lanzador se cura este % del daño infligido (fila de cura aparte)
+}
 
 export interface ClassRules {
   beforeCast?(state: ActorState, actor: SimActor, spell: Spell, input: SimInput): CastMods;
@@ -66,8 +72,8 @@ export interface ClassRules {
   onEndTurn?(state: ActorState): void;
 }
 
-/** Reglas por clase. Vacío por ahora: cada clase se añade en su propia tarea. */
-export const CLASS_RULES: Partial<Record<string, ClassRules>> = {};
+/** Reglas por clase: cada clase se añade en su propia tarea. */
+export const CLASS_RULES: Partial<Record<string, ClassRules>> = { yopuka: iopRules };
 
 const MAP_SIZE = 11;
 const ELEMENT_ORDER: Element[] = ['fire', 'water', 'earth', 'air'];
@@ -170,6 +176,8 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
         : supportRow({ l, nBase, cBase, critPct, el, actor, me, rState, rActor, onSelf: rId === step.actor, berserk, mods, warn: rowWarn });
       rows.push(row);
     }
+    const steal = mods.lifeStealPct ? lifeStealRow(rows, mods.lifeStealPct, me, actor) : undefined;
+    if (steal) rows.push(steal);
   }
   rules?.afterCast?.(me, actor, spell);
   return done(rows);
@@ -194,7 +202,8 @@ function damageRow(c: RowCtx & { st: SimState; input: SimInput }): StepRow {
     + (c.berserk ? stat(actor.stats, 'mastBerserk') : 0)
     + (position === 'back' ? stat(actor.stats, 'mastBack') : 0)
     + (actor.mastery[c.el] ?? 0);
-  const dmgPct = Math.max(-100, stat(actor.stats, 'dmgPct') + (mods.dmgPct ?? 0) + input.comboExtraPct);
+  // El daño extra de combo lo aporta la regla de clase en `mods.dmgPct`, solo en el último hechizo del combo.
+  const dmgPct = Math.max(-100, stat(actor.stats, 'dmgPct') + (mods.dmgPct ?? 0));
   const res = (mob.res[c.el] ?? 0) + (position === 'back' ? mob.resBack : 0);
   const hit = (base: number, mastery: number, extraRes: number) => Math.max(0, damageValue({
     base, mastery: Math.max(-100, mastery), position, dmgPct, resPct: Math.min(100, resistancePct(res + extraRes)),
@@ -209,7 +218,6 @@ function damageRow(c: RowCtx & { st: SimState; input: SimInput }): StepRow {
   if (position === 'side') tags.push('sim.tag.side');
   if (position === 'back') tags.push('sim.tag.back');
   if (c.berserk) tags.push('sim.tag.berserk');
-  if (input.comboExtraPct) tags.push('sim.tag.combo');
   tags.push(...(mods.tags ?? []));
   return { kind: 'damage', value, position, tags: unique(tags), warnings: c.warn };
 }
@@ -253,6 +261,19 @@ function supportRow(c: RowCtx & {
   }
   tags.push(...(mods.tags ?? []));
   return { kind: l.kind, value, raw, tags: unique(tags), warnings: c.warn };
+}
+
+/** Robo de vida: cura al lanzador un % del daño de las filas, limitada a los PV que faltan. */
+function lifeStealRow(rows: StepRow[], pct: number, me: ActorState, actor: SimActor): StepRow | undefined {
+  const hits = rows.filter((r) => r.kind === 'damage' && !r.uncalculated);
+  if (hits.length === 0) return undefined;
+  const sum = (k: keyof Triple) => floor(hits.reduce((s, r) => s + r.value[k], 0) * pct / 100);
+  const raw: Triple = { normal: sum('normal'), crit: sum('crit'), avg: sum('avg') };
+  const room = Math.max(0, actor.maxHp - me.hp);
+  const value: Triple = { normal: Math.min(raw.normal, room), crit: Math.min(raw.crit, room), avg: Math.min(raw.avg, room) };
+  me.hp += value.avg;
+  me.healRes = addHealRes(me.healRes, value.avg, actor.maxHp);
+  return { kind: 'heal', value, raw, tags: ['sim.tag.lifesteal'], warnings: [] };
 }
 
 function moveStep(step: Extract<SimStep, { type: 'move' }>, st: SimState, input: SimInput): Outcome {

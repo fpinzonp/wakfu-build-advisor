@@ -95,9 +95,10 @@ describe('simulate: daño', () => {
     expect(hurt.steps[1].rows[0].tags).toContain('sim.tag.berserk');
   });
 
-  it('aplica el daño extra de combos y de las reglas de clase', () => {
+  it('aplica el daño extra de las reglas de clase (no el comboExtraPct global)', () => {
+    // el % de combo lo aplica la regla de clase solo en el último hechizo del combo
     const input = { ...fixture(), comboExtraPct: 10, steps: jab() };
-    expect(simulate(input).steps[0].rows[0].value.normal).toBe(Math.floor(105 * 7 * 1.1));
+    expect(simulate(input).steps[0].rows[0].value.normal).toBe(735);
     CLASS_RULES.test = { beforeCast: () => ({ dmgPct: 10, tags: ['sim.tag.combo'], warnings: ['sim.warn.secondary'] }) };
     try {
       const r = simulate({ ...fixture(), steps: jab() });

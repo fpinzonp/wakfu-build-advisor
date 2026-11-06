@@ -462,6 +462,11 @@ const en: Dict = {
   "sim.tag.back": "Backstab",
   "sim.tag.berserk": "Berserk",
   "sim.tag.combo": "Combo extra damage",
+  "sim.tag.unconfirmed": "Unconfirmed",
+  "sim.tag.preparation": "Preparation",
+  "sim.tag.push": "Combo push",
+  "sim.tag.lifesteal": "Combo life steal",
+  "sim.warn.collision": "The push's collision damage is not calculated.",
 };
 
 export default en;

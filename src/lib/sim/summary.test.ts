@@ -34,3 +34,19 @@ describe('turnTotals', () => {
     expect(t2.heal.avg).toBe(30);
   });
 });
+
+describe('turnTotals por personaje', () => {
+  const by = (actor: 'main' | 'ally', rows: StepRow[]) => result({ type: 'cast', actor, spell: 1, target: 'mob' }, rows);
+  const steps = [by('main', [row(100)]), by('ally', [row(30, { kind: 'heal' })]), by('ally', [row(20)])];
+
+  it('con un personaje suma solo sus pasos', () => {
+    expect(turnTotals(steps, 1, 'main').damage.avg).toBe(100);
+    expect(turnTotals(steps, 1, 'main').heal.avg).toBe(0);
+    expect(turnTotals(steps, 1, 'ally').damage.avg).toBe(20);
+    expect(turnTotals(steps, 1, 'ally').heal.avg).toBe(30);
+  });
+
+  it('sin personaje suma a todos', () => {
+    expect(turnTotals(steps, 1).damage.avg).toBe(120);
+  });
+});

@@ -1,12 +1,12 @@
 import { cellText } from './SimMap';
 import { fmt, t } from './lib/i18n';
-import type { StepResult, StepRow } from './lib/sim/engine';
+import type { ActorId, StepResult, StepRow } from './lib/sim/engine';
 import { CONC_KEY, PREPARATION } from './lib/sim/rules/iop';
 
 /** Nombre del paso: hechizo, movimiento, fin de turno o ajuste. */
-function stepLabel(r: StepResult, spellName: (id: number) => string | undefined): string {
+function stepLabel(r: StepResult, spellName: (id: number, actor: ActorId) => string | undefined): string {
   const s = r.step;
-  if (s.type === 'cast') return spellName(s.spell) ?? t('sim.step.unknown');
+  if (s.type === 'cast') return spellName(s.spell, s.actor) ?? t('sim.step.unknown');
   if (s.type === 'move') return t('sim.step.move', { cell: cellText(s.to) });
   if (s.type === 'endTurn') return t('sim.step.endTurn');
   const parts: string[] = [];
@@ -20,6 +20,23 @@ function stepLabel(r: StepResult, spellName: (id: number) => string | undefined)
   return parts.join(' · ');
 }
 
+/** Nombres para indicar quién actúa y sobre quién; solo se pasan cuando hay aliado. */
+export interface StepNames { main: string; ally: string; mob: string }
+
+/** "Quién → a quién" en los hechizos; solo "quién" en los movimientos y ajustes. */
+function stepWho(r: StepResult, names: StepNames): string {
+  const s = r.step;
+  if (s.type === 'endTurn') return '';
+  const who: ActorId = s.type === 'adjust' ? s.actor ?? 'main' : s.actor;
+  if (s.type !== 'cast') return names[who];
+  const to = s.target === 'mob' ? names.mob : s.target === 'self' ? names[who] : names[who === 'main' ? 'ally' : 'main'];
+  return `${names[who]} → ${to}`;
+}
+
+/** Si la cura o la armadura se limitó (a los PV que faltan o al tope), se enseña también el valor bruto. */
+const capped = (row: StepRow) =>
+  !!row.raw && (row.raw.normal !== row.value.normal || row.raw.crit !== row.value.crit || row.raw.avg !== row.value.avg);
+
 function Why({ row }: { row: StepRow }) {
   return (
     <>
@@ -30,8 +47,8 @@ function Why({ row }: { row: StepRow }) {
 }
 
 /** Tabla de pasos: un bloque por paso, con una fila por efecto. Los pasos no válidos se quedan marcados. */
-export default function SimSteps({ steps, selected, spellName, onSelect, onRemove }: {
-  steps: StepResult[]; selected: number; spellName: (id: number) => string | undefined;
+export default function SimSteps({ steps, selected, spellName, names, onSelect, onRemove }: {
+  steps: StepResult[]; selected: number; spellName: (id: number, actor: ActorId) => string | undefined; names?: StepNames;
   onSelect: (i: number) => void; onRemove: (i: number) => void;
 }) {
   if (steps.length === 0) return <p className="muted">{t('sim.steps.empty')}</p>;
@@ -51,6 +68,7 @@ export default function SimSteps({ steps, selected, spellName, onSelect, onRemov
         </thead>
         {steps.map((r, i) => {
           const name = stepLabel(r, spellName);
+          const who = names ? stepWho(r, names) : '';
           const rows: (StepRow | null)[] = r.ok && r.rows.length ? r.rows : [null];
           return (
             <tbody key={i} className={`${i === selected ? 'sel' : ''} ${r.ok ? '' : 'invalid'}`}>
@@ -62,6 +80,7 @@ export default function SimSteps({ steps, selected, spellName, onSelect, onRemov
                       <td rowSpan={rows.length}>
                         <button type="button" className="sim-step-btn" aria-pressed={i === selected}
                           title={t('sim.step.select', { n: i + 1 })} onClick={() => onSelect(i)}>{name}</button>
+                        {who && <small className="muted sim-who">{who}</small>}
                       </td>
                     </>
                   )}
@@ -82,7 +101,7 @@ export default function SimSteps({ steps, selected, spellName, onSelect, onRemov
                           <td className="num">{fmt(row.value.normal)}</td>
                           <td className="num">{fmt(row.value.crit)}</td>
                           <td className="num"><b>{fmt(row.value.avg)}</b>
-                            {row.raw && row.raw.avg !== row.value.avg && <small className="muted"> ({t('sim.row.raw', { n: fmt(row.raw.avg) })})</small>}
+                            {row.raw && capped(row) && <small className="muted"> ({t('sim.row.raw', { n: fmt(row.raw.avg) })})</small>}
                           </td>
                         </>
                       )}

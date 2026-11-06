@@ -2,11 +2,12 @@
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import SimPanel from './SimPanel';
+import { AllyList } from './SimAlly';
 import SimSteps from './SimSteps';
 import { setLang } from './lib/i18n';
 import type { BuildResult } from './lib/optimizer';
 import type { StepResult } from './lib/sim/engine';
-import type { Spell } from './lib/spells';
+import type { Spell, SpellData } from './lib/spells';
 
 // Sin navegador: setLang toca document, así que se simula para fijar el español.
 vi.stubGlobal('document', { documentElement: {} });
@@ -22,7 +23,11 @@ const result = {
   slots: {}, score: 0, aptitudes: { branches: [] }, derived: { hp: 5000 },
   totals: { ap: 12, mp: 5, wp: 6, mastFire: 800, mastMelee: 300, crit: 20, range: 0 },
 } as unknown as BuildResult;
-const props = { result, classId: 'yopuka', level: 245, elements: ['fire' as const], spells, active: true, onGoToDeck: () => undefined };
+const spellData: SpellData = { version: '', common: [], classes: { yopuka: spells } };
+const props = {
+  result, classId: 'yopuka', level: 245, elements: ['fire' as const], spells, items: [], spellData: null,
+  active: true, onGoToDeck: () => undefined,
+};
 
 describe('SimPanel', () => {
   it('muestra el mapa y un botón por hechizo activo de la baraja', () => {
@@ -33,10 +38,42 @@ describe('SimPanel', () => {
     expect(html).toContain('Daño extra del combo');  // solo para yopuka
   });
 
+  it('el botón de añadir aliado espera a que lleguen los hechizos y no cambia el resto de la interfaz', () => {
+    const deck = { actives: [1, 2], passives: [] };
+    const sin = renderToString(<SimPanel {...props} deck={deck} />);
+    expect(sin).toMatch(/<button[^>]*disabled=""[^>]*>Añadir aliado/);
+    expect(sin).not.toContain('Quién actúa');
+    expect(sin).not.toContain('Objetivo del próximo hechizo');
+    const con = renderToString(<SimPanel {...props} items={[{ id: 1 } as never]} spellData={spellData} deck={deck} />);
+    expect(con).not.toMatch(/<button[^>]*disabled=""[^>]*>Añadir aliado/);
+    expect(con).toContain('Añadir aliado');
+  });
+
+  it('muestra PV y armadura como barras aparte', () => {
+    const html = renderToString(<SimPanel {...props} deck={{ actives: [1], passives: [] }} />);
+    expect(html).toContain('sim-bar hp');
+    expect(html).toContain('sim-bar armor');
+    expect(html).toContain('Armadura 0/2500');
+  });
+
   it('con la baraja vacía muestra el estado vacío con el botón a la baraja', () => {
     const html = renderToString(<SimPanel {...props} deck={{ actives: [], passives: [] }} />);
     expect(html).toContain('sim-empty');
     expect(html).not.toContain('sim-cell');
+  });
+});
+
+describe('AllyList', () => {
+  it('sin builds guardadas explica cómo guardar una y no ofrece nada más', () => {
+    const html = renderToString(<AllyList list={[]} onPick={() => undefined} />);
+    expect(html).toContain('Aún no tienes builds guardadas');
+    expect(html).toContain('Guardar');
+    expect(html).not.toContain('<button');
+  });
+
+  it('lista las builds guardadas', () => {
+    const html = renderToString(<AllyList list={[{ id: 'a', name: 'Mi curandero', date: '2026-01-01', summary: 'Aniripsa', code: '' }]} onPick={() => undefined} />);
+    expect(html).toContain('Mi curandero');
   });
 });
 
@@ -68,5 +105,23 @@ describe('SimSteps', () => {
     expect(html).toContain('El objetivo mira: Derecha');
     expect(html).toContain('Armadura fijada en 300');
     expect(html).toContain('Preparación fijada en 20');
+  });
+
+  it('con aliado indica quién actúa y a quién, y enseña el valor bruto de una cura limitada', () => {
+    const names = { main: 'Yo', ally: 'Curandero', mob: 'Maniquí' };
+    const rows: StepResult[] = [
+      {
+        step: { type: 'cast', actor: 'ally', spell: 1, target: 'ally' }, ok: true, state,
+        rows: [{ kind: 'heal', value: { normal: 20, crit: 20, avg: 20 }, raw: { normal: 2080, crit: 2500, avg: 2100 }, tags: [], warnings: [] }],
+      },
+      { step: { type: 'cast', actor: 'main', spell: 1, target: 'mob' }, ok: true, rows: [], state },
+      { step: { type: 'move', actor: 'ally', to: { x: 1, y: 1 } }, ok: true, rows: [], state },
+    ];
+    const html = renderToString(<SimSteps steps={rows} selected={0} spellName={() => 'Cura'} names={names} onSelect={() => undefined} onRemove={() => undefined} />);
+    expect(html).toContain('Curandero → Yo');
+    expect(html).toContain('Yo → Maniquí');
+    expect(html).toContain('bruto 2100');
+    const solo = renderToString(<SimSteps steps={rows} selected={0} spellName={() => 'Cura'} onSelect={() => undefined} onRemove={() => undefined} />);
+    expect(solo).not.toContain('→');
   });
 });

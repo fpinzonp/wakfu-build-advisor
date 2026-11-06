@@ -13,13 +13,14 @@ import { condLabel, condMet, registerItems } from './lib/conditions';
 import { materialsFor, upgradeChain } from './lib/materials';
 import { planRunes, runeBonus, runeGroups } from './lib/runes';
 import {
-  EMPTY_ENCHANT, decodeBuild, encodeBuild, loadStored, readHashCode, saveStored, shareUrl, slotIds, slotsFromIds,
+  EMPTY_ENCHANT, decodeBuild, encodeBuild, loadStored, readHashCode, saveStored, shareUrl, slotIds,
   type BuildSettings, type EnchantState, type SavedBuild, type StoredBuild,
 } from './lib/share';
 import { bestSublimation, sublimationBonus } from './lib/sublimations';
-import { EMPTY_DECK, NO_DECK_BONUS, classSpells, deckBonus, fitDeck, type Deck, type DeckBonus, type Spell, type SpellData } from './lib/spells';
+import { EMPTY_DECK, classSpells, type Deck, type DeckBonus, type Spell, type SpellData } from './lib/spells';
 import DeckPanel from './DeckPanel';
 import SimPanel from './SimPanel';
+import { bonusFor, requestFor as requestForSaved, resolveSaved } from './lib/savedBuild';
 import {
   LANGS, LangContext, fmt, initialLang, jobName, locale, pct, setLang as applyLang, setNames, t, tk, type Lang, type LangData,
 } from './lib/i18n';
@@ -34,13 +35,6 @@ const NO_EXTRA: Record<string, number> = {};
 interface Dataset { version: string; items: Item[] }
 
 
-/** Efecto de la baraja: solo cuentan las pasivas de la clase que caben a este nivel. */
-function bonusFor(data: SpellData | null, classId: string, deck: Deck, level: number): DeckBonus {
-  if (!data) return NO_DECK_BONUS;
-  const spells = classSpells(data, classId);
-  const byId = new Map(spells.map((s) => [s.id, s]));
-  return deckBonus(fitDeck(deck, spells, level).passives.map((id) => byId.get(id)!), level);
-}
 const elementLabel = (e: Element) => ELEMENTS.find((x) => x.id === e)!.label;
 const roleLabel = (r: Role) => ROLES.find((x) => x.id === r)!.label;
 
@@ -121,34 +115,22 @@ export default function App() {
     berserk, crit: critFocus, back: backFocus, excluded: [...excluded],
   };
 
-  const requestFor = (s: BuildSettings, lock: BuildSlots, deckEffect = bonusOfDeck): BuildRequest => {
-    const c = CLASSES.find((x) => x.id === s.classId)!;
-    // Las piezas fijadas por encima del nivel actual dejan de aplicarse.
-    const usable: BuildSlots = {};
-    for (const [slot, item] of Object.entries(lock)) if (item && item.lvl <= s.level) usable[slot as BuildSlot] = item;
-    return {
-      level: s.level, classId: s.classId, role: s.role, elements: s.elements, targets: s.targets, allowedRarities: s.rarities,
-      minLevel: s.minLevel, craftOnly: s.craftOnly, berserk: s.berserk && !!c.berserk, crit: s.crit, back: s.back,
-      excluded: new Set(s.excluded), locked: usable, deck: deckEffect,
-    };
-  };
+  const requestFor = (s: BuildSettings, lock: BuildSlots, deckEffect = bonusOfDeck): BuildRequest => requestForSaved(s, lock, deckEffect);
   const makeRequest = (excl = excluded, lock = locked) => requestFor({ ...settings, excluded: [...excl] }, lock);
 
   // Abre una build guardada o compartida tal cual (sin volver a optimizar).
   const openSaved = useCallback((saved: SavedBuild, items: Item[]) => {
+    const resolved = resolveSaved(saved, items, spellDataRef.current);
+    if (!resolved) return false;
     const s = saved.settings;
-    if (!CLASSES.some((c) => c.id === s.classId)) return false;
-    const slots = slotsFromIds(saved.slots, items);
-    const lock: BuildSlots = {};
-    for (const slot of saved.locked) if (slots[slot]) lock[slot] = slots[slot];
+    const { lock } = resolved;
     setLevel(s.level); setClassId(s.classId); setRole(s.role); setElements(s.elements); setTargets(s.targets);
     setRarities(s.rarities); setMinLevel(s.minLevel); setCraftOnly(s.craftOnly); setBerserk(s.berserk);
     setCritFocus(s.crit); setBackFocus(s.back); setExcluded(new Set(s.excluded)); setLocked(lock);
     setEnchant(saved.enchant);
     setDeck(saved.deck);
-    setResult(evaluateBuild(slots, requestFor(s, lock, bonusFor(spellDataRef.current, s.classId, saved.deck, s.level))));
+    setResult(resolved.result);
     return true;
-    // requestFor solo usa sus argumentos
   }, []);
 
   // Enlace compartido (#b=…): se abre en cuanto cargan los objetos.
@@ -444,7 +426,7 @@ export default function App() {
             <BuildView result={result} level={level} role={role} cls={cls.label} elements={elements}
               items={data.items} request={makeRequest()} locked={locked} busy={busy} names={names}
               enchant={enchant} onEnchant={setEnchant}
-              spells={spells} deck={deck} onDeck={setDeck} deckBonus={bonusOfDeck}
+              spells={spells} spellData={spellData} deck={deck} onDeck={setDeck} deckBonus={bonusOfDeck}
               onExclude={exclude} onSwap={swap} onUnlock={unlock}
               onShare={share} onSave={() => setDialog('save')} />
           )}
@@ -608,11 +590,11 @@ type ViewTab = 'equip' | 'stats' | 'deck' | 'sim' | 'enchant' | 'craft' | 'apt';
 const VIEW_TABS: ViewTab[] = ['equip', 'stats', 'deck', 'sim', 'enchant', 'craft', 'apt'];
 
 function BuildView({ result, level, role, cls, elements, items, request, locked, busy, enchant, onEnchant,
-  spells, deck, onDeck, deckBonus: deckEffect, names, onExclude, onSwap, onUnlock, onShare, onSave }: {
+  spells, spellData, deck, onDeck, deckBonus: deckEffect, names, onExclude, onSwap, onUnlock, onShare, onSave }: {
   result: BuildResult; level: number; role: Role; cls: string; elements: Element[];
   items: Item[]; request: BuildRequest; locked: BuildSlots; busy: boolean;
   enchant: EnchantState; onEnchant: (e: EnchantState) => void;
-  spells: Spell[] | null; deck: Deck; onDeck: (d: Deck) => void; deckBonus: DeckBonus; names: LangData | null;
+  spells: Spell[] | null; spellData: SpellData | null; deck: Deck; onDeck: (d: Deck) => void; deckBonus: DeckBonus; names: LangData | null;
   onExclude: (id: number) => void; onSwap: (slot: BuildSlot, item: Item) => void; onUnlock: (slot: BuildSlot) => void;
   onShare: () => void; onSave: () => void;
 }) {
@@ -845,7 +827,7 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
 
       <div hidden={tab !== 'sim'} className="tab-body">
         <SimPanel result={sheetResult} classId={request.classId} level={level} elements={elements} deck={deck}
-          spells={spells} active={tab === 'sim'} onGoToDeck={() => setTab('deck')} />
+          spells={spells} items={items} spellData={spellData} active={tab === 'sim'} onGoToDeck={() => setTab('deck')} />
       </div>
 
       <div hidden={tab !== 'enchant'} className="tab-body">

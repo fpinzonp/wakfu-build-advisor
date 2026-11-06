@@ -376,6 +376,69 @@ describe('simulate: apoyo', () => {
   });
 });
 
+describe('simulate: el aliado como lanzador', () => {
+  const heal = line({ kind: 'heal', side: 'ally', min: 100, max: 100, critMin: 100, critMax: 100 });
+  const armor = line({ kind: 'armor', side: 'ally', min: 100, max: 100, critMin: 100, critMax: 100 });
+
+  // El aliado es el curandero; el personaje principal recibe.
+  const support = (): SimInput => {
+    const input = fixture({ spells: [], actor: { stats: { healReceived: 20, armorReceived: 10, crit: 0 } } });
+    input.actors.push({
+      ...input.actors[0], id: 'ally', name: 'Curandero', start: { x: 4, y: 5 }, spells: [spellOf(1, {}, { lines: [heal, armor], perTurn: null })],
+      stats: { mastHeal: 100, mastMelee: 100, healPct: 10, armorGiven: 50, crit: 0 }, ap: 8,
+    });
+    return input;
+  };
+
+  it('el aliado cura al personaje principal con sus estadísticas y las de quien recibe', () => {
+    const r = simulate({ ...support(), steps: [{ type: 'adjust', hpPct: 50 }, castAt(1, 'ally', 'ally')] });
+    const [h, a] = r.steps[1].rows;
+    // cura: 100 × (1 + 700/100) × (1 + (10 + 20)/100) = 1040 (melé 100 + cura 100 + aire 500), limitada a los 500 PV que faltan
+    expect(h.raw!.normal).toBe(1040);
+    expect(h.value.normal).toBe(500);
+    // armadura: 100 × (1 + (50 + 10)/100) = 160, al principal, no al aliado
+    expect(a.value.normal).toBe(160);
+    const st = r.steps[1].state.actors;
+    expect([st.main!.hp, st.main!.armor]).toEqual([1000, 160]);
+    expect([st.ally!.hp, st.ally!.armor]).toEqual([1000, 0]);
+    expect(r.totals.ally!.heal.normal).toBe(500);
+    expect(r.totals.main!.heal.normal).toBe(0);
+  });
+
+  it("'self' del aliado se aplica al aliado y la armadura propia no suma % dada", () => {
+    const r = simulate({ ...support(), steps: [{ type: 'adjust', actor: 'ally', hpPct: 50 }, castAt(1, 'self', 'ally')] });
+    const st = r.steps[1].state.actors;
+    expect(st.ally!.armor).toBe(100);
+    expect(st.ally!.hp).toBe(1000);
+    expect(st.main!.armor).toBe(0);
+  });
+
+  it("el personaje principal con 'ally' llega al aliado", () => {
+    const input = support();
+    input.actors[0].spells = [spellOf(2, {}, { lines: [armor], perTurn: null })];
+    const r = simulate({ ...input, steps: [castAt(2, 'ally')] });
+    expect(r.steps[0].state.actors.ally!.armor).toBeGreaterThan(0);
+    expect(r.steps[0].state.actors.main!.armor).toBe(0);
+  });
+
+  it('fin de turno restaura los recursos de los dos personajes', () => {
+    const input = support();
+    input.actors[0].spells = [spellOf(2, {}, { perTurn: null })];
+    const r = simulate({ ...input, steps: [castAt(2, 'mob'), castAt(1, 'self', 'ally'), { type: 'endTurn' }] });
+    const before = r.steps[1].state.actors;
+    expect([before.main!.ap, before.ally!.ap]).toEqual([3, 5]);
+    const after = r.steps[2].state.actors;
+    expect([after.main!.ap, after.ally!.ap]).toEqual([6, 8]);
+    expect(after.ally!.uses).toEqual({});
+    expect(r.steps[2].state.turn).toBe(2);
+  });
+
+  it('los dos personajes no comparten casilla', () => {
+    const r = simulate({ ...support(), steps: [{ type: 'move', actor: 'main', to: { x: 4, y: 5 } }] });
+    expect(r.steps[0]).toMatchObject({ ok: false, reason: 'sim.err.cell' });
+  });
+});
+
 describe('simulate: ajustes manuales a mitad de secuencia', () => {
   it('girar al objetivo cambia solo los golpes siguientes', () => {
     const turn = (f: 'e' | 'w'): SimStep => ({ type: 'adjust', facing: f });

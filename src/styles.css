@@ -508,11 +508,26 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .sim-cell.back { outline: 1px dashed var(--gold); outline-offset: -2px; }
 .sim-cell.me { background: var(--accent); color: var(--accent-ink); }
 .sim-cell.mob { background: var(--neg); color: #2a0d0d; }
+.sim-cell.ally { background: var(--gold); color: #2a1d05; }
+.sim-cell.acting { outline: 2px solid var(--text); outline-offset: -2px; }
 .sim-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; z-index: 1; position: relative; }
 .sim-place { margin-top: 12px; align-items: center; font-size: 13px; }
 
-.sim-res { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 12px; }
-.sim-res span { background: var(--panel-3); border-radius: 6px; padding: 3px 9px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sim-res { display: flex; flex-direction: column; gap: 12px; padding: 10px 12px; }
+.sim-res-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.sim-res-row span { background: var(--panel-3); border-radius: 6px; padding: 3px 9px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sim-res-actor { display: flex; flex-direction: column; gap: 8px; padding-left: 8px; border-left: 3px solid transparent; }
+.sim-res-actor.acting { border-left-color: var(--accent); }
+.sim-bars { display: flex; gap: 12px; flex-wrap: wrap; }
+.sim-bar-item { flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sim-bar { height: 8px; border-radius: 4px; background: var(--panel-3); overflow: hidden; }
+.sim-bar i { display: block; height: 100%; }
+.sim-bar.hp i { background: var(--accent); }
+.sim-bar.armor i { background: var(--gold); }
+.sim-who-pick { display: flex; gap: 12px; flex-wrap: wrap; }
+.sim-who-pick .field { flex: 1 1 200px; min-width: 0; }
+.sim-who { display: block; margin-top: 2px; }
+.sim-ally .actions { align-items: center; }
 .sim-steps { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .sim-controls { display: flex; flex-direction: column; gap: 12px; }
 .sim-adjust { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }

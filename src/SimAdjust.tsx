@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { t } from './lib/i18n';
-import type { SimStep } from './lib/sim/engine';
+import type { ActorId, SimStep } from './lib/sim/engine';
 import type { Facing } from './lib/sim/formulas';
 import { CONC_KEY, PREPARATION } from './lib/sim/rules/iop';
 
@@ -22,15 +22,16 @@ function Adjust({ label, value, onChange, onApply, applyLabel, max, hint }: {
   );
 }
 
-/** Ajustes manuales que se añaden como pasos: PV, armadura, giro del objetivo y, en Yopuka, Concentración y Preparación. */
-export default function SimAdjust({ yopuka, comboExtraPct, onComboExtra, onAdd }: {
-  yopuka: boolean; comboExtraPct: number; onComboExtra: (n: number) => void; onAdd: (s: SimStep) => void;
+/** Ajustes manuales que se añaden como pasos: PV, armadura, giro del objetivo y, en Yopuka, Concentración y Preparación.
+ * PV, armadura y estados son del personaje que actúa (`actor`). */
+export default function SimAdjust({ actor, yopuka, comboExtraPct, onComboExtra, onAdd }: {
+  actor: ActorId; yopuka: boolean; comboExtraPct: number; onComboExtra: (n: number) => void; onAdd: (s: SimStep) => void;
 }) {
   const [hpPct, setHpPct] = useState(100);
   const [armor, setArmor] = useState(0);
   const [conc, setConc] = useState(0);
   const [prep, setPrep] = useState(0);
-  const adjust = (patch: Partial<Extract<SimStep, { type: 'adjust' }>>): SimStep => ({ type: 'adjust', actor: 'main', ...patch });
+  const adjust = (patch: Partial<Extract<SimStep, { type: 'adjust' }>>): SimStep => ({ type: 'adjust', actor, ...patch });
 
   return (
     <div className="sim-adjust">

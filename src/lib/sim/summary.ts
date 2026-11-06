@@ -1,6 +1,6 @@
 // Totales por turno a partir de los resultados del motor (el motor ya da el total de toda la secuencia).
 
-import type { StepResult, StepRow, Triple } from './engine';
+import type { ActorId, StepResult, StepRow, Triple } from './engine';
 
 type Kind = StepRow['kind'];
 
@@ -14,14 +14,14 @@ export function turnOfSteps(steps: StepResult[]): number[] {
   });
 }
 
-/** Suma de los pasos válidos de un turno; las filas sin calcular no cuentan, igual que en el motor. */
-export function turnTotals(steps: StepResult[], turn: number): Record<Kind, Triple> {
+/** Suma de los pasos válidos de un turno (de un personaje si se indica); las filas sin calcular no cuentan, igual que en el motor. */
+export function turnTotals(steps: StepResult[], turn: number, actor?: ActorId): Record<Kind, Triple> {
   const totals: Record<Kind, Triple> = {
     damage: { normal: 0, crit: 0, avg: 0 }, heal: { normal: 0, crit: 0, avg: 0 }, armor: { normal: 0, crit: 0, avg: 0 },
   };
   const turns = turnOfSteps(steps);
   steps.forEach((s, i) => {
-    if (turns[i] !== turn || !s.ok || s.step.type !== 'cast') return;
+    if (turns[i] !== turn || !s.ok || s.step.type !== 'cast' || (actor && s.step.actor !== actor)) return;
     for (const row of s.rows) {
       if (row.uncalculated) continue;
       for (const k of ['normal', 'crit', 'avg'] as const) totals[row.kind][k] += row.value[k];

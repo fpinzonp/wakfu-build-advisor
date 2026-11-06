@@ -70,12 +70,12 @@ const hasDissipation = (actor: SimActor) => actor.passives?.includes('Dissipatio
 const hasShowOff = (actor: SimActor) => actor.passives?.includes('Show Off') ?? false;
 
 /** Golpe de la rama "When the Iop reaches 100 state 3442" (Trueno, Ira de Yopuka): se guarda hasta ese evento. */
+const DELAYED_WHEN = /reaches 100 state 3442/i;
 const delayedLine = (spell: Spell) =>
-  spell.cast?.conditional.find((c) => /reaches 100 state 3442/i.test(c.when))?.lines.find((l) => l.kind === 'damage' && l.side === 'enemy');
+  spell.cast?.conditional.find((c) => DELAYED_WHEN.test(c.when))?.lines.find((l) => l.kind === 'damage' && l.side === 'enemy');
 
-/** Juicio: "Cast on an enemy" es su daño y "Cast on an ally" da Preparación; ninguna de las ramas es una condición real. */
+/** Juicio: "Cast on an enemy" es su daño (el motor lo aplica) y "Cast on an ally" da Preparación. */
 const isJudgment = (spell: Spell) => spell.cast?.key === 'Judgment';
-const judgmentHit = (spell: Spell) => spell.cast?.conditional.find((c) => /on an enemy/i.test(c.when))?.lines ?? [];
 
 /** Si este lanzamiento daña al mob: es lo que gasta la Preparación. */
 const hitsMob = (spell: Spell, target: CastTarget) => target === 'mob' && (dealsDamage(spell) || isJudgment(spell));
@@ -93,7 +93,6 @@ function beforeCast(state: ActorState, _actor: SimActor, spell: Spell, input: Si
   if (dealsDmg && prep > 0) { dmgPct += prep; tags.push('sim.tag.preparation'); }
 
   if (isJudgment(spell)) {
-    mods.instead = target === 'mob' ? judgmentHit(spell) : [];
     // Sobre el mob, el estado que le deja no se calcula; sobre un aliado no hay valor que enseñar.
     warnings.push(target === 'mob' ? 'sim.warn.secondary' : 'sim.warn.prepGiven');
   }
@@ -107,7 +106,7 @@ function beforeCast(state: ActorState, _actor: SimActor, spell: Spell, input: Si
     tags.push('sim.tag.combo', 'sim.tag.unconfirmed');
   }
 
-  if (delayedLine(spell)) mods.resolvedConditional = true;
+  if (delayedLine(spell)) mods.resolvedConditional = (when) => DELAYED_WHEN.test(when);
   if (dmgPct) mods.dmgPct = dmgPct;
   if (tags.length) mods.tags = tags;
   if (warnings.length) mods.warnings = warnings;

@@ -79,7 +79,8 @@ export interface CastMods {
   dmgPct?: number; tags?: TKey[]; tagVars?: Record<string, number>; warnings?: TKey[]; lines?: SpellLine[];
   instead?: SpellLine[];  // efectos "en su lugar": sustituyen a los normales y a los de berserker; [] = sin filas de valor
   lifeStealPct?: number;  // el lanzador se cura este % del daño infligido (fila de cura aparte)
-  resolvedConditional?: boolean;  // la regla ya resuelve la rama condicional del hechizo: no se avisa de ella
+  // La regla ya resuelve las ramas condicionales cuya condición reconoce: de ellas no se avisa. Las demás siguen avisando.
+  resolvedConditional?: (when: string) => boolean;
 }
 
 /** Recursos extra que cuesta un hechizo según el estado del lanzador (p. ej. en berserker). */
@@ -99,6 +100,23 @@ export interface ClassRules {
 
 /** Reglas por clase: cada clase se añade en su propia tarea. */
 export const CLASS_RULES: Partial<Record<string, ClassRules>> = { yopuka: iopRules, sacrogrito: sacrierRules };
+
+/** Qué hace una rama condicional en este lanzamiento: se aplica, no corresponde, o el motor no sabe decidirlo. */
+type Branch = 'apply' | 'skip' | 'unknown';
+
+// "Cast on an enemy", "Cast on ally"...: la rama depende solo de a quién va el hechizo. Lista cerrada: "Cast on KO'd ally"
+// o "Cast on the turret" dependen de algo más y no se deciden.
+const CAST_ON = /^cast on(?: an?| the)?(?: target)? (?:(enem(?:y|ies))|(all(?:y|ies)))$/i;
+
+/** `melee` es si el lanzador está a 1-2 casillas del mob; solo cuenta cuando el hechizo va al mob. */
+function branchOf(when: string, target: CastTarget, melee: boolean): Branch {
+  const w = when.trim();
+  const range = /^(melee|distance)$/i.exec(w)?.[1].toLowerCase();
+  if (range) return target === 'mob' && melee === (range === 'melee') ? 'apply' : 'skip';
+  const castOn = CAST_ON.exec(w);
+  if (castOn) return (castOn[1] ? target === 'mob' : target !== 'mob') ? 'apply' : 'skip';
+  return 'unknown';
+}
 
 const MAP_SIZE = 11;
 const ELEMENT_ORDER: Element[] = ['fire', 'water', 'earth', 'air'];
@@ -177,8 +195,15 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
 
   // Avisos comunes a todas las filas del hechizo.
   const warn: TKey[] = [];
-  const hasInjected = (mods.lines?.length ?? 0) > 0 || mods.instead !== undefined || !!mods.resolvedConditional;
-  if (cast.reasons.includes('conditional') && !hasInjected) warn.push('sim.warn.conditional');
+  const hasInjected = (mods.lines?.length ?? 0) > 0 || mods.instead !== undefined;
+  // Las ramas que decide el paso (a quién va, melé o distancia) se aplican o se descartan sin avisar; solo avisan las que
+  // quedan sin decidir. Sin ramas, el motivo viene de un efecto que no se pudo leer y se avisa siempre.
+  const melee = isMelee(me.cell, input.target.cell);
+  const branches = cast.conditional.map((b) => ({ b, r: branchOf(b.when, step.target, melee) }));
+  const applied = branches.filter((x) => x.r === 'apply').map((x) => x.b);
+  const undecided = branches.filter((x) => x.r === 'unknown' && !mods.resolvedConditional?.(x.b.when));
+  if (cast.reasons.includes('conditional') && !hasInjected && (branches.length === 0 || undecided.length > 0)) warn.push('sim.warn.conditional');
+  if (applied.some((b) => b.unread)) warn.push('sim.warn.secondary');
   if (cast.reasons.includes('secondary')) warn.push('sim.warn.secondary');
   if (cast.reasons.includes('noCrit')) warn.push('sim.warn.noCrit');
   if (cast.reasons.includes('critFixed')) warn.push('sim.warn.critFixed');
@@ -191,7 +216,7 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
   const caster: SimActor = rules?.statsFor ? { ...actor, stats: rules.statsFor(actor, berserk) } : actor;
   const applies = (l: SpellLine) =>
     l.side === 'caster' ? l.kind !== 'damage' : l.side === 'enemy' ? step.target === 'mob' : step.target !== 'mob';
-  const offered = [...base, ...(mods.lines ?? [])];
+  const offered = [...base, ...(mods.lines ?? []), ...applied.flatMap((b) => b.lines)];
   const lines = offered.filter(applies);
   // Las líneas de daño propio nunca dan fila, pero no dependen del objetivo elegido.
   if (offered.some((l) => !applies(l) && l.side !== 'caster')) warn.push('sim.warn.targetDropped');

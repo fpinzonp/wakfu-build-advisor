@@ -631,3 +631,77 @@ describe('simulate: PW entre turnos', () => {
     expect(r.steps[2].reason).toBe('sim.err.wp');
   });
 });
+
+describe('simulate: ramas condicionales que el paso decide', () => {
+  const heal = (over: Partial<SpellLine> = {}) => line({ kind: 'heal', side: 'ally', ...over });
+  const spellWith = (conditional: SpellCast['conditional'], over: Partial<SpellCast> = {}) =>
+    fixture({ spells: [spellOf(1, {}, { lines: [], conditional, reasons: ['conditional'], partial: true, rangeMax: 6, ...over })] });
+  const allyOf = (input: SimInput): SimActor => ({ ...input.actors[0], id: 'ally', start: { x: 5, y: 4 } });
+  const blocks = [{ when: 'Cast on an enemy', lines: [line()] }, { when: 'Cast on an ally', lines: [heal()] }];
+
+  it('"Cast on an enemy" se aplica sobre el mob y no avisa de rama condicional', () => {
+    const r = simulate({ ...spellWith(blocks), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows).toHaveLength(1);
+    expect(r.steps[0].rows[0]).toMatchObject({ kind: 'damage', value: { normal: 735 } });
+    expect(r.steps[0].rows[0].uncalculated).toBeUndefined();
+    expect(r.steps[0].rows[0].warnings).toEqual([]);
+  });
+
+  it('"Cast on an ally" se aplica sobre el aliado y sobre uno mismo, y la del enemigo no', () => {
+    const input = spellWith(blocks);
+    const onAlly = simulate({ ...input, actors: [input.actors[0], allyOf(input)], steps: [castAt(1, 'ally')] });
+    expect(onAlly.steps[0].rows.map((x) => x.kind)).toEqual(['heal']);
+    expect(onAlly.steps[0].rows[0].warnings).toEqual([]);
+    const onSelf = simulate({ ...input, steps: [castAt(1, 'self')] });
+    expect(onSelf.steps[0].rows.map((x) => x.kind)).toEqual(['heal']);
+  });
+
+  it('las variantes del texto ("Cast on enemy", "Cast on an enemy:") se reconocen', () => {
+    for (const when of ['Cast on enemy', 'Cast on an enemy', 'Cast on target enemy']) {
+      const r = simulate({ ...spellWith([{ when, lines: [line()] }]), steps: [castAt(1, 'mob')] });
+      expect(r.steps[0].rows[0].value.normal).toBe(735);
+    }
+  });
+
+  it('"melee" se aplica a una casilla y "distance" a tres o más', () => {
+    const both = [{ when: 'melee', lines: [line({ min: 10, max: 20, critMin: 10, critMax: 20 })] }, { when: 'distance', lines: [line()] }];
+    const near = simulate({ ...spellWith(both), steps: [castAt(1, 'mob')] });
+    expect(near.steps[0].rows).toHaveLength(1);
+    expect(near.steps[0].rows[0].tags).toContain('sim.tag.melee');
+    expect(near.steps[0].rows[0].value.normal).toBe(20 * 7);  // solo la rama de melé
+    expect(near.steps[0].rows[0].warnings).toEqual([]);
+    const far = spellWith(both);
+    far.actors[0].start = { x: 2, y: 5 };
+    const r = simulate({ ...far, steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows).toHaveLength(1);
+    expect(r.steps[0].rows[0].tags).toContain('sim.tag.dist');
+  });
+
+  it('un bloque sin decidir sigue avisando aunque otros se hayan aplicado', () => {
+    const mixed = [...blocks, { when: 'If the target has Armor', lines: [line()] }];
+    const r = simulate({ ...spellWith(mixed), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows).toHaveLength(1);
+    expect(r.steps[0].rows[0].warnings).toContain('sim.warn.conditional');
+  });
+
+  it('un bloque aplicado que trae números sin leer avisa de que hay otros efectos', () => {
+    const r = simulate({ ...spellWith([{ when: 'Cast on an enemy', lines: [line()], unread: true }]), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows[0].warnings).toEqual(['sim.warn.secondary']);
+  });
+
+  it('una regla de clase solo resuelve los bloques que dice, no todo el hechizo', () => {
+    const input = spellWith([
+      { when: 'When X happens', lines: [line()] },
+      { when: 'If the target has Armor', lines: [line()] },
+    ]);
+    CLASS_RULES.test = { beforeCast: () => ({ resolvedConditional: (when: string) => /X happens/.test(when) }) };
+    try {
+      const r = simulate({ ...input, steps: [castAt(1, 'mob')] });
+      expect(r.steps[0].rows[0].warnings).toContain('sim.warn.conditional');
+      const solo = spellWith([{ when: 'When X happens', lines: [line()] }], { lines: [line()] });
+      expect(simulate({ ...solo, steps: [castAt(1, 'mob')] }).steps[0].rows[0].warnings).not.toContain('sim.warn.conditional');
+    } finally {
+      delete CLASS_RULES.test;
+    }
+  });
+});

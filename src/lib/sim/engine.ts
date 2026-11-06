@@ -7,8 +7,8 @@ import type { Element } from '../game';
 import type { TKey } from '../i18n';
 import type { Spell, SpellLine } from '../spells';
 import {
-  SPELL_MAX_LEVEL, addArmor, addHealRes, armorValue, baseAtLevel, damageValue, distance, healValue,
-  isBerserk, isMelee, positionOf, type Cell, type Facing, type Position,
+  SPELL_MAX_LEVEL, addArmor, addHealRes, armorValue, baseAtLevel, casterZone, damageValue, distance, healValue,
+  inZone, isBerserk, isCasterCentred, isMelee, positionOf, type Cell, type Facing, type Position,
 } from './formulas';
 import { iopRules } from './rules/iop';
 import { sacrierRules } from './rules/sacrier';
@@ -41,6 +41,7 @@ export interface StepRow {
   raw?: Triple;              // cura y armadura: valor antes de limitarlo a los PV que faltan o al tope
   position?: Position;       // solo daño
   tags: TKey[]; warnings: TKey[];
+  tagVars?: Record<string, number>;  // valores que usan los textos de las etiquetas (p. ej. el % de PV)
   uncalculated?: boolean;    // el hechizo no se pudo calcular: valor cero y no suma a los totales
 }
 
@@ -66,8 +67,8 @@ export type CastTarget = 'mob' | 'ally' | 'self';
 
 /** Ajustes que una regla de clase aplica a un lanzamiento. `lines` aporta efectos condicionales ya resueltos. */
 export interface CastMods {
-  dmgPct?: number; tags?: TKey[]; warnings?: TKey[]; lines?: SpellLine[];
-  instead?: SpellLine[];  // efectos "en su lugar": sustituyen a los normales y a los de berserker
+  dmgPct?: number; tags?: TKey[]; tagVars?: Record<string, number>; warnings?: TKey[]; lines?: SpellLine[];
+  instead?: SpellLine[];  // efectos "en su lugar": sustituyen a los normales y a los de berserker; [] = sin filas de valor
   lifeStealPct?: number;  // el lanzador se cura este % del daño infligido (fila de cura aparte)
 }
 
@@ -81,7 +82,8 @@ export interface ClassRules {
   statsFor?(actor: SimActor, berserk: boolean): Record<string, number>;
   /** `mobHpPct` es el % de PV que le queda al objetivo respecto a los que tenía al empezar. */
   beforeCast?(state: ActorState, actor: SimActor, spell: Spell, input: SimInput, target: CastTarget, mobHpPct: number): CastMods;
-  afterCast?(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget): void;
+  /** `recipient` es quien recibe el hechizo cuando no va al mob: el aliado o el propio lanzador. */
+  afterCast?(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget, recipient?: ActorState): void;
   onEndTurn?(state: ActorState): void;
 }
 
@@ -139,9 +141,14 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
     if (me.wp < cast.wp + (extra.wp ?? 0)) return fail('sim.err.wp');
     if (step.target !== 'self') {
       const to = step.target === 'mob' ? input.target.cell : recipient!.cell;
-      const d = distance(me.cell, to);
-      const max = Math.max(cast.rangeMin, cast.rangeMax + (cast.rangeMod ? stat(actor.stats, 'range') : 0));
-      if (d < cast.rangeMin || d > max) return fail('sim.err.range');
+      if (isCasterCentred(cast)) {
+        // Se lanza sobre la propia casilla: lo que cuenta es que el objetivo quede dentro de la zona.
+        if (!inZone(casterZone(cast), me.cell, to)) return fail('sim.err.zone');
+      } else {
+        const d = distance(me.cell, to);
+        const max = Math.max(cast.rangeMin, cast.rangeMax + (cast.rangeMod ? stat(actor.stats, 'range') : 0));
+        if (d < cast.rangeMin || d > max) return fail('sim.err.range');
+      }
     }
   }
 
@@ -151,8 +158,8 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
   if (!cast) {
     me.ap -= extra.ap ?? 0; me.mp -= extra.mp ?? 0; me.wp -= extra.wp ?? 0;
     me.uses[spell.id] = (me.uses[spell.id] ?? 0) + 1;
-    rules?.afterCast?.(me, actor, spell, step.target);
-    return done([uncalculatedRow(['sim.warn.noData', ...(mods.warnings ?? [])])]);
+    rules?.afterCast?.(me, actor, spell, step.target, recipient);
+    return done([uncalculatedRow(['sim.warn.noData', ...(mods.warnings ?? [])], mods)]);
   }
 
   me.ap -= cast.ap + (extra.ap ?? 0); me.mp -= cast.mp + (extra.mp ?? 0); me.wp -= cast.wp + (extra.wp ?? 0);
@@ -160,10 +167,11 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
 
   // Avisos comunes a todas las filas del hechizo.
   const warn: TKey[] = [];
-  const hasInjected = (mods.lines?.length ?? 0) > 0 || (mods.instead?.length ?? 0) > 0;
+  const hasInjected = (mods.lines?.length ?? 0) > 0 || mods.instead !== undefined;
   if (cast.reasons.includes('conditional') && !hasInjected) warn.push('sim.warn.conditional');
   if (cast.reasons.includes('secondary')) warn.push('sim.warn.secondary');
   if (cast.reasons.includes('noCrit')) warn.push('sim.warn.noCrit');
+  if (cast.reasons.includes('critFixed')) warn.push('sim.warn.critFixed');
   warn.push(...(mods.warnings ?? []));
 
   // Berserker: sus efectos sustituyen a los normales cuando hay.
@@ -173,13 +181,15 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
   const caster: SimActor = rules?.statsFor ? { ...actor, stats: rules.statsFor(actor, berserk) } : actor;
   const applies = (l: SpellLine) =>
     l.side === 'caster' ? l.kind !== 'damage' : l.side === 'enemy' ? step.target === 'mob' : step.target !== 'mob';
-  const lines = [...base, ...(mods.lines ?? [])].filter(applies);
+  const offered = [...base, ...(mods.lines ?? [])];
+  const lines = offered.filter(applies);
+  // Las líneas de daño propio nunca dan fila, pero no dependen del objetivo elegido.
+  if (offered.some((l) => !applies(l) && l.side !== 'caster')) warn.push('sim.warn.targetDropped');
 
   let rows: StepRow[];
   if (lines.length === 0) {
-    // Sin líneas utilizables: si hay efectos solo condicionales, no se calculan pero se avisan.
-    const hasConditional = cast.conditional.some((c) => c.lines.length > 0);
-    rows = hasConditional ? [uncalculatedRow(unique(warn))] : [];
+    // Sin líneas utilizables: si hay algo que avisar, se dice en su fila en lugar de callarlo.
+    rows = warn.length ? [uncalculatedRow(unique(warn), mods)] : [];
   } else {
     const level = clamp(floor(actor.level) || 1, 1, SPELL_MAX_LEVEL);
     const critPct = clamp(stat(actor.stats, 'crit'), 0, 100);
@@ -190,29 +200,35 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
       const rId = toCaster ? step.actor : recipientId;
       const rState = rId ? st.actors[rId] : undefined;
       const rActor = rId ? input.actors.find((a) => a.id === rId) : undefined;
-      const noCrit = cast.reasons.includes('noCrit');
+      // Sin crítico utilizable, el golpe crítico es el normal: tampoco suma maestría ni resistencia críticas.
+      const noCrit = !!l.noCrit || cast.reasons.includes('noCrit');
       const nBase = baseAtLevel(l.min, l.max, level);
       const cBase = noCrit ? nBase : baseAtLevel(l.critMin, l.critMax, level);
-      const rowWarn: TKey[] = unique(spell.el === 'neutral' && l.kind !== 'armor' ? [...warn, 'sim.warn.element'] : warn);
+      const rowWarn: TKey[] = unique([
+        ...warn, ...(l.noCrit ? ['sim.warn.noCrit' as const] : []),
+        ...(spell.el === 'neutral' && l.kind !== 'armor' ? ['sim.warn.element' as const] : []),
+      ]);
       const row = l.kind === 'damage'
-        ? damageRow({ nBase, cBase, critPct, el, actor: caster, me, st, input, berserk, mods, warn: rowWarn })
-        : supportRow({ l, nBase, cBase, critPct, el, actor: caster, me, rState, rActor, onSelf: rId === step.actor, berserk, mods, warn: rowWarn });
+        ? damageRow({ nBase, cBase, noCrit, critPct, el, actor: caster, me, st, input, berserk, mods, warn: rowWarn })
+        : supportRow({ l, nBase, cBase, noCrit, critPct, el, actor: caster, me, rState, rActor, onSelf: rId === step.actor, berserk, mods, warn: rowWarn });
       rows.push(row);
     }
     const steal = mods.lifeStealPct ? lifeStealRow(rows, mods.lifeStealPct, me, actor) : undefined;
     if (steal) rows.push(steal);
   }
-  rules?.afterCast?.(me, actor, spell, step.target);
+  rules?.afterCast?.(me, actor, spell, step.target, recipient);
   return done(rows);
 }
 
 const unique = <T,>(xs: T[]): T[] => [...new Set(xs)];
 
-const uncalculatedRow = (warnings: TKey[]): StepRow =>
-  ({ kind: 'damage', value: zero(), tags: [], warnings, uncalculated: true });
+const uncalculatedRow = (warnings: TKey[], mods?: CastMods): StepRow =>
+  ({ kind: 'damage', value: zero(), tags: mods?.tags ?? [], ...withTagVars(mods), warnings, uncalculated: true });
+
+const withTagVars = (mods?: CastMods) => (mods?.tagVars ? { tagVars: mods.tagVars } : {});
 
 interface RowCtx {
-  nBase: number; cBase: number; critPct: number; el: Element; actor: SimActor; me: ActorState;
+  nBase: number; cBase: number; noCrit: boolean; critPct: number; el: Element; actor: SimActor; me: ActorState;
   berserk: boolean; mods: CastMods; warn: TKey[];
 }
 
@@ -231,18 +247,15 @@ function damageRow(c: RowCtx & { st: SimState; input: SimInput }): StepRow {
   const hit = (base: number, mastery: number, extraRes: number) => Math.max(0, damageValue({
     base, mastery: Math.max(-100, mastery), position, dmgPct, resPct: Math.min(100, resistancePct(res + extraRes)),
   }));
-  const value = triple(
-    hit(c.nBase, common, 0),
-    hit(c.cBase, common + stat(actor.stats, 'mastCrit'), mob.resCrit),
-    c.critPct,
-  );
+  const normal = hit(c.nBase, common, 0);
+  const value = triple(normal, c.noCrit ? normal : hit(c.cBase, common + stat(actor.stats, 'mastCrit'), mob.resCrit), c.critPct);
   st.mobHp = Math.max(0, st.mobHp - value.avg);
   const tags: TKey[] = [melee ? 'sim.tag.melee' : 'sim.tag.dist'];
   if (position === 'side') tags.push('sim.tag.side');
   if (position === 'back') tags.push('sim.tag.back');
   if (c.berserk) tags.push('sim.tag.berserk');
   tags.push(...(mods.tags ?? []));
-  return { kind: 'damage', value, position, tags: unique(tags), warnings: c.warn };
+  return { kind: 'damage', value, position, tags: unique(tags), ...withTagVars(mods), warnings: c.warn };
 }
 
 function supportRow(c: RowCtx & {
@@ -251,7 +264,7 @@ function supportRow(c: RowCtx & {
   const { actor, me, mods, l, rState, rActor } = c;
   const tags: TKey[] = [];
   // Receptor ausente solo ocurre con datos incoherentes: se avisa en lugar de omitirse.
-  if (!rState || !rActor) return { ...uncalculatedRow(c.warn), kind: l.kind };
+  if (!rState || !rActor) return { ...uncalculatedRow(c.warn, mods), kind: l.kind };
 
   let raw: Triple;
   let value: Triple;
@@ -267,7 +280,8 @@ function supportRow(c: RowCtx & {
       healReceived: stat(rActor.stats, 'healReceived'), healRes: clamp(rState.healRes, 0, 100),
       incurable: clamp(rState.states.incurable ?? 0, 0, 100),
     }));
-    raw = triple(heal(c.nBase, 0), heal(c.cBase, stat(actor.stats, 'mastCrit')), c.critPct);
+    const normal = heal(c.nBase, 0);
+    raw = triple(normal, c.noCrit ? normal : heal(c.cBase, stat(actor.stats, 'mastCrit')), c.critPct);
     const room = Math.max(0, rActor.maxHp - rState.hp);
     value = triple(Math.min(raw.normal, room), Math.min(raw.crit, room), c.critPct);
     rState.hp += value.avg;
@@ -283,7 +297,7 @@ function supportRow(c: RowCtx & {
     rState.armor = addArmor(rState.armor, value.avg, rActor.maxHp);
   }
   tags.push(...(mods.tags ?? []));
-  return { kind: l.kind, value, raw, tags: unique(tags), warnings: c.warn };
+  return { kind: l.kind, value, raw, tags: unique(tags), ...withTagVars(mods), warnings: c.warn };
 }
 
 /** Robo de vida: cura al lanzador un % del daño de las filas, limitada a los PV que faltan. */
@@ -350,6 +364,7 @@ export function simulate(input: SimInput): SimResult {
 
   const steps: StepResult[] = input.steps.map((step) => {
     const next = structuredClone(state);
+    const mobWasDown = state.mobHp <= 0;
     const out =
       step.type === 'cast' ? castStep(step, next, input)
         : step.type === 'move' ? moveStep(step, next, input)
@@ -358,6 +373,8 @@ export function simulate(input: SimInput): SimResult {
     // Un paso rechazado no cambia nada: se conserva el estado anterior.
     if (out.ok) state = next;
     if (out.ok && step.type === 'cast') {
+      // Los totales siguen sumando: la secuencia no se corta, pero el golpe se marca como de más.
+      if (mobWasDown) for (const row of out.rows) if (row.kind === 'damage') row.tags = unique([...row.tags, 'sim.tag.mobDown']);
       const sum = totals[step.actor];
       for (const row of out.rows) {
         if (row.uncalculated || !sum) continue;

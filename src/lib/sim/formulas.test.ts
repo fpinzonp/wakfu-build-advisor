@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   SPELL_MAX_LEVEL, addArmor, addHealRes, armorValue, baseAtLevel, damageValue,
-  distance, healValue, isBerserk, isMelee, positionOf,
+  distance, healValue, inZone, isBerserk, isCasterCentred, isMelee, positionOf,
 } from './formulas';
 
 describe('damageValue', () => {
@@ -74,5 +74,40 @@ describe('baseAtLevel', () => {
   it('interpola entre el nivel 1 y el máximo', () => {
     expect(baseAtLevel(2, 60, 1)).toBe(2);
     expect(baseAtLevel(2, 60, SPELL_MAX_LEVEL)).toBe(60);
+  });
+});
+
+describe('inZone', () => {
+  const o = { x: 5, y: 5 };
+  it('anillo: solo las casillas a esa distancia', () => {
+    const ring = { shape: 'ring', min: 1, max: 1 };
+    expect(inZone(ring, o, { x: 6, y: 5 })).toBe(true);
+    expect(inZone(ring, o, { x: 6, y: 6 })).toBe(false);
+    expect(inZone(ring, o, { x: 7, y: 5 })).toBe(false);
+  });
+  it('círculo: distancia en casillas', () => {
+    const circle = { shape: 'circle', min: 0, max: 2 };
+    expect(inZone(circle, o, { x: 6, y: 6 })).toBe(true);
+    expect(inZone(circle, o, { x: 7, y: 6 })).toBe(false);
+  });
+  it('cuadrado y anillo cuadrado: las diagonales están dentro', () => {
+    expect(inZone({ shape: 'square', min: 0, max: 3 }, o, { x: 8, y: 8 })).toBe(true);
+    expect(inZone({ shape: 'square', min: 0, max: 3 }, o, { x: 9, y: 5 })).toBe(false);
+    expect(inZone({ shape: 'squarering', min: 1, max: 1 }, o, { x: 6, y: 6 })).toBe(true);
+    expect(inZone({ shape: 'squarering', min: 1, max: 1 }, o, { x: 7, y: 6 })).toBe(false);
+  });
+  it('cruz: solo en línea recta; cruz diagonal: solo en diagonal', () => {
+    expect(inZone({ shape: 'cross', min: 0, max: 2 }, o, { x: 7, y: 5 })).toBe(true);
+    expect(inZone({ shape: 'cross', min: 0, max: 2 }, o, { x: 6, y: 6 })).toBe(false);
+    expect(inZone({ shape: 'crossdiagonal', min: 0, max: 1 }, o, { x: 6, y: 6 })).toBe(true);
+    expect(inZone({ shape: 'crossdiagonal', min: 0, max: 1 }, o, { x: 6, y: 5 })).toBe(false);
+  });
+});
+
+describe('isCasterCentred', () => {
+  it('es de zona y con alcance 0', () => {
+    expect(isCasterCentred({ target: 'aoe', rangeMax: 0 })).toBe(true);
+    expect(isCasterCentred({ target: 'st', rangeMax: 0 })).toBe(false);
+    expect(isCasterCentred({ target: 'aoe', rangeMax: 3 })).toBe(false);
   });
 });

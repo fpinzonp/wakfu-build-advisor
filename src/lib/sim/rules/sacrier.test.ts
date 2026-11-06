@@ -319,3 +319,32 @@ describe('registro', () => {
     expect(CLASS_RULES.sacrogrito).toBe(sacrierRules);
   });
 });
+
+describe('Sacrogrito: etiqueta del coste de PV', () => {
+  it('sobre los PV máximos, antes o después del golpe', () => {
+    const blood = run([cast(BLOOD_BURN)]).steps[0].rows[0];
+    expect(blood.tags).toContain('sim.tag.hpCost');
+    expect(blood.tagVars).toEqual({ pct: 10 });
+    const fist = run([cast(FIST)]).steps[0].rows[0];
+    expect(fist.tags).toContain('sim.tag.hpCost');
+    expect(fist.tagVars).toEqual({ pct: 5 });
+  });
+
+  it('sobre los PV actuales (Gash), también en su fila sin calcular', () => {
+    const row = run([cast(GASH)]).steps[0].rows[0];
+    expect(row.uncalculated).toBe(true);
+    expect(row.tags).toContain('sim.tag.hpCostCurrent');
+    expect(row.tagVars).toEqual({ pct: 51 });
+  });
+
+  it('Punición fija los PV en un porcentaje', () => {
+    const row = run([cast(PUNITION)]).steps[0].rows[0];
+    expect(row.tags).toContain('sim.tag.hpSet');
+    expect(row.tagVars).toEqual({ pct: 20 });
+  });
+
+  it('un hechizo sin coste de PV no lleva etiqueta', () => {
+    const row = run([cast(PLAIN)]).steps[0].rows[0];
+    expect(row.tags.some((t) => t.startsWith('sim.tag.hp'))).toBe(false);
+  });
+});

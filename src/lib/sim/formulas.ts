@@ -1,5 +1,7 @@
-// Fórmulas puras del simulador: daño, cura, armadura, posición y berserker.
+// Fórmulas puras del simulador: daño, cura, armadura, posición, zona y berserker.
 // La resistencia en % se calcula fuera, con `resistancePct` de characteristics.ts.
+
+import type { SpellCast, Zone } from '../spells';
 
 export type Position = 'front' | 'side' | 'back';
 export type Facing = 'n' | 'e' | 's' | 'w';
@@ -18,6 +20,29 @@ export const distance = (a: Cell, b: Cell): number => Math.abs(a.x - b.x) + Math
 
 /** Melé a 1-2 casillas; a 3 o más es distancia. */
 export const isMelee = (a: Cell, b: Cell): boolean => distance(a, b) <= 2;
+
+/** Hechizo de zona con alcance 0: se lanza sobre la propia casilla y alcanza lo que quede dentro de su zona. */
+export const isCasterCentred = (c: Pick<SpellCast, 'target' | 'rangeMax'>): boolean => c.target === 'aoe' && c.rangeMax === 0;
+
+// Sin tamaño en la ficha, la zona llega a las casillas de al lado.
+const DEFAULT_ZONE: Zone = { shape: 'circle', min: 0, max: 1 };
+
+/** Zona de un hechizo centrado en el lanzador. */
+export const casterZone = (c: Pick<SpellCast, 'zone'>): Zone => c.zone ?? DEFAULT_ZONE;
+
+/**
+ * Si `to` cae en una zona centrada en `from`. Los cuadrados cuentan las diagonales como una casilla; las cruces
+ * solo llegan en línea recta o en diagonal. Las líneas y los conos dependen de hacia dónde se lanzan: como ningún
+ * hechizo centrado en el lanzador los usa, se miden como un círculo.
+ */
+export function inZone(zone: Zone, from: Cell, to: Cell): boolean {
+  const dx = Math.abs(from.x - to.x);
+  const dy = Math.abs(from.y - to.y);
+  if (zone.shape === 'cross' && dx !== 0 && dy !== 0) return false;
+  if (zone.shape === 'crossdiagonal' && dx !== dy) return false;
+  const d = zone.shape.startsWith('square') || zone.shape === 'crossdiagonal' ? Math.max(dx, dy) : dx + dy;
+  return d >= zone.min && d <= zone.max;
+}
 
 const FACING_VECTOR: Record<Facing, Cell> = {
   n: { x: 0, y: -1 },

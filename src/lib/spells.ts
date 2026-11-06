@@ -16,8 +16,8 @@ export interface SpellLine {
 export interface Zone { shape: string; min: number; max: number }
 
 /**
- * Por qué una ficha no es completa: efectos condicionales, otros efectos numéricos sin leer, sin crítico utilizable
- * (no hay bloque, o el suyo no empareja) o con un crítico imposible que se sustituyó por ×1,25.
+ * Por qué una ficha no es completa: efectos condicionales, otros efectos numéricos sin leer, sin bloque de críticos
+ * o con un crítico imposible que se sustituyó por ×1,25. Un crítico sin pareja se marca en su línea (`noCrit`).
  */
 export type CastReason = 'conditional' | 'secondary' | 'noCrit' | 'critFixed';
 

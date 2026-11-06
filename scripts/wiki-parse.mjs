@@ -248,8 +248,7 @@ export function parseSpellCast(fields, row, critFixes = []) {
   const reasons = [];
   if (e.conditional.length || e.unreadEffect || c.unreadEffect) reasons.push('conditional');
   if (e.secondary || c.secondary || !normal.ok || !berserk.ok || !cond.ok) reasons.push('secondary');
-  const unpaired = [...lines, ...berserkLines, ...conditional.flatMap((b) => b.lines)].some((l) => l.noCrit);
-  if (noCrit || unpaired) reasons.push('noCrit');
+  if (noCrit) reasons.push('noCrit');
   if (fixes.length) reasons.push('critFixed');
   const zone = parseZone(fields.effects);
   const [rangeMin, rangeMax] = parseRange(fields.range);

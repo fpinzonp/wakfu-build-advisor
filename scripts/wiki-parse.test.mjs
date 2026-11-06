@@ -176,7 +176,7 @@ describe('parseSpellCast: efectos condicionales', () => {
     expect(c.lines).toEqual([{ kind: 'damage', side: 'enemy', min: 3, max: 93, critMin: 4, critMax: 116 }]);  // el crítico de la wiki es de otro hechizo
     expect(c.conditional[0].lines).toHaveLength(1);
     expect(c.conditional[0].lines[0].noCrit).toBe(true);  // la rama condicional no tiene crítico equivalente
-    expect(c.reasons).toEqual(['conditional', 'secondary', 'noCrit', 'critFixed']);
+    expect(c.reasons).toEqual(['conditional', 'secondary', 'critFixed']);
   });
   it('una línea "instead" va a conditional con su propia condición', () => {
     const c = cast({ effects: '{{gui|air}} Damage: 3-91\n{{gui|arrow}} {{gui|exalted}} {{st|3303}}: {{gui|earth}} Damage: 4-131 instead' });
@@ -267,9 +267,9 @@ describe('parseSpellCast: estados y críticos', () => {
     expect(c.partial).toBe(false);
     expect(c.lines).toEqual([{ kind: 'damage', side: 'enemy', min: 3, max: 93, critMin: 3, critMax: 93 }]);
   });
-  it('críticos que no cuadran con el normal marcan secondary y noCrit', () => {
+  it('críticos que no cuadran con el normal marcan secondary', () => {
     const c = cast({ effects: '{{gui|fire}} Damage: 3-93\n{{gui|water}} Damage: 1-9', criteffects: '{{gui|fire}} Damage: 4-100' });
-    expect(c.reasons).toEqual(['secondary', 'noCrit']);
+    expect(c.reasons).toEqual(['secondary']);
     expect(c.partial).toBe(true);
   });
   it('otros efectos numéricos sin leer marcan secondary', () => {
@@ -402,14 +402,14 @@ describe('parseSpellCast: críticos fuera de rango', () => {
 });
 
 describe('parseSpellCast: críticos sin emparejar', () => {
-  it('Flood: las líneas sin pareja llevan noCrit y la ficha también', () => {
+  it('Flood: las líneas sin pareja llevan noCrit', () => {
     const c = cast({
       effects: '{{gui|enemy}} {{gui|water}} Damage: 3-105\n{{gui|ally}} {{gui|water}} Healing: 6-57',
       criteffects: '{{gui|enemy}} {{gui|water}} Damage: 4-132',
     });
     expect(c.lines.every((l) => l.noCrit)).toBe(true);
     expect(c.lines[0]).toMatchObject({ critMin: 3, critMax: 105 });
-    expect(c.reasons).toEqual(['secondary', 'noCrit']);
+    expect(c.reasons).toEqual(['secondary']);
   });
   it('un bloque condicional sin pareja no quita el crítico de las líneas normales', () => {
     const c = cast({

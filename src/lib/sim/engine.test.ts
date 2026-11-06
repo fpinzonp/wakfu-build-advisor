@@ -360,8 +360,9 @@ describe('simulate: apoyo', () => {
       spellOf(2, {}, { lines: [heal()], perTurn: null }),
     ]);
     const r = simulate({ ...input, steps: [castAt(1, 'ally'), castAt(2, 'mob')] });
-    expect(r.steps[0].rows).toEqual([]);
-    expect(r.steps[1].rows).toEqual([]);
+    for (const step of r.steps) {
+      expect(step.rows).toEqual([expect.objectContaining({ uncalculated: true, warnings: ['sim.warn.targetDropped'] })]);
+    }
   });
 
   it('el aliado actúa con sus propios recursos y baraja', () => {
@@ -458,5 +459,135 @@ describe('simulate: ajustes manuales a mitad de secuencia', () => {
     });
     expect(r.steps[0].state.actors.main!.states['3462']).toBe(12);
     expect(r.steps[1].state.actors.main!.states['9']).toBe(0);
+  });
+});
+
+describe('simulate: hechizos centrados en el lanzador', () => {
+  const ring = { target: 'aoe' as const, rangeMin: 0, rangeMax: 0, zone: { shape: 'ring', min: 1, max: 1 } };
+  const square = { target: 'aoe' as const, rangeMin: 0, rangeMax: 0, zone: { shape: 'square', min: 0, max: 3 } };
+
+  it('golpea al mob adyacente aunque el alcance sea 0', () => {
+    const r = simulate({ ...fixture({ spells: [spellOf(1, {}, ring)] }), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].ok).toBe(true);
+    expect(r.steps[0].rows[0].value.normal).toBe(735);
+  });
+
+  it('fuera de la zona se rechaza con su motivo y no gasta nada', () => {
+    const input = fixture({ spells: [spellOf(1, {}, ring)], target: { cell: { x: 8, y: 5 } } });
+    const r = simulate({ ...input, steps: [castAt(1, 'mob')] });
+    expect(r.steps[0]).toMatchObject({ ok: false, reason: 'sim.err.zone', rows: [] });
+    expect(r.steps[0].state.actors.main!.ap).toBe(6);
+  });
+
+  it('la posición del golpe sale de la casilla del lanzador', () => {
+    const r = simulate({ ...fixture({ spells: [spellOf(1, {}, ring)], target: { facing: 'e' } }), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows[0].position).toBe('back');
+  });
+
+  it('una zona cuadrada cuenta las diagonales y un anillo no incluye el centro lejano', () => {
+    const diag = fixture({ spells: [spellOf(1, {}, square)], target: { cell: { x: 8, y: 8 } } });
+    expect(simulate({ ...diag, steps: [castAt(1, 'mob')] }).steps[0].ok).toBe(true);
+    const far = fixture({ spells: [spellOf(1, {}, square)], target: { cell: { x: 9, y: 5 } } });
+    expect(simulate({ ...far, steps: [castAt(1, 'mob')] }).steps[0].reason).toBe('sim.err.zone');
+  });
+
+  it('el aliado también tiene que estar en la zona', () => {
+    const heal = line({ kind: 'heal', side: 'ally' });
+    const base = fixture({ spells: [spellOf(1, {}, { ...ring, lines: [heal] })] });
+    const ally = (start: { x: number; y: number }): SimActor => ({ ...base.actors[0], id: 'ally', start });
+    const near = simulate({ ...base, actors: [base.actors[0], ally({ x: 5, y: 4 })], steps: [castAt(1, 'ally')] });
+    expect(near.steps[0].ok).toBe(true);
+    const far = simulate({ ...base, actors: [base.actors[0], ally({ x: 5, y: 1 })], steps: [castAt(1, 'ally')] });
+    expect(far.steps[0].reason).toBe('sim.err.zone');
+  });
+
+  it('sin zona en la ficha usa la casilla adyacente', () => {
+    const { zone: _, ...noZone } = ring;
+    const r = simulate({ ...fixture({ spells: [spellOf(1, {}, noZone)] }), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].ok).toBe(true);
+  });
+});
+
+describe('simulate: efectos sin leer', () => {
+  it('un hechizo con avisos y sin líneas da una fila sin calcular, aunque no tenga condicionales', () => {
+    const r = simulate({ ...fixture({ spells: [spellOf(1, {}, { lines: [], reasons: ['secondary'], partial: true })] }), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows).toEqual([
+      expect.objectContaining({ uncalculated: true, warnings: ['sim.warn.secondary'] }),
+    ]);
+    expect(r.totals.main!.damage.normal).toBe(0);
+  });
+
+  it('sin avisos y sin líneas no hay fila', () => {
+    const r = simulate({ ...fixture({ spells: [spellOf(1, {}, { lines: [] })] }), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows).toEqual([]);
+  });
+
+  it('avisa de un crítico corregido', () => {
+    const r = simulate({ ...fixture({ spells: [spellOf(1, {}, { reasons: ['critFixed'] })] }), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows[0].warnings).toEqual(['sim.warn.critFixed']);
+  });
+});
+
+describe('simulate: crítico igual al normal', () => {
+  const same = line({ critMin: 50, critMax: 105 });
+
+  it('sin bloque de críticos el crítico no suma maestría crítica ni resistencia crítica', () => {
+    const input = fixture({ spells: [spellOf(1, {}, { lines: [same], reasons: ['noCrit'] })], target: { resCrit: 100 } });
+    const row = simulate({ ...input, steps: [castAt(1, 'mob')] }).steps[0].rows[0];
+    expect(row.value).toEqual({ normal: 735, crit: 735, avg: 735 });
+    expect(row.warnings).toEqual(['sim.warn.noCrit']);
+  });
+
+  it('una línea sin pareja se trata igual y lo avisa, sin tocar las demás', () => {
+    const input = fixture({ spells: [spellOf(1, {}, { lines: [{ ...same, noCrit: true }, line()], reasons: ['secondary'] })] });
+    const [a, b] = simulate({ ...input, steps: [castAt(1, 'mob')] }).steps[0].rows;
+    expect(a.value).toEqual({ normal: 735, crit: 735, avg: 735 });
+    expect(a.warnings).toContain('sim.warn.noCrit');
+    expect(b.value.crit).toBe(1056);
+    expect(b.warnings).not.toContain('sim.warn.noCrit');
+  });
+
+  it('una cura sin crítico tampoco suma maestría crítica', () => {
+    const heal = line({ kind: 'heal', side: 'ally', critMin: 50, critMax: 105 });
+    const input = fixture({ spells: [spellOf(1, {}, { lines: [heal], reasons: ['noCrit'] })], actor: { maxHp: 100000 } });
+    const steps: SimStep[] = [{ type: 'adjust', hpPct: 10 }, castAt(1, 'self')];
+    const row = simulate({ ...input, steps }).steps[1].rows[0];
+    expect(row.value.crit).toBe(row.value.normal);
+    expect(row.raw!.crit).toBe(row.raw!.normal);
+  });
+});
+
+describe('simulate: efectos que el objetivo deja fuera', () => {
+  const heal = line({ kind: 'heal', side: 'ally' });
+
+  it('lanzado al mob, avisa de la cura descartada en la fila de daño', () => {
+    const input = fixture({ spells: [spellOf(1, {}, { lines: [line(), heal] })] });
+    const { rows } = simulate({ ...input, steps: [castAt(1, 'mob')] }).steps[0];
+    expect(rows).toHaveLength(1);
+    expect(rows[0].warnings).toEqual(['sim.warn.targetDropped']);
+    expect(rows[0].value.normal).toBe(735);
+  });
+
+  it('un hechizo solo de daño lanzado sobre uno mismo da una fila sin calcular con el aviso', () => {
+    const r = simulate({ ...fixture(), steps: [castAt(JABS, 'self')] });
+    expect(r.steps[0].ok).toBe(true);
+    expect(r.steps[0].rows).toEqual([
+      expect.objectContaining({ uncalculated: true, warnings: ['sim.warn.targetDropped'] }),
+    ]);
+  });
+
+  it('el daño propio no es un efecto descartado por el objetivo', () => {
+    const input = fixture({ spells: [spellOf(1, {}, { lines: [line(), line({ side: 'caster' })] })] });
+    const { rows } = simulate({ ...input, steps: [castAt(1, 'mob')] }).steps[0];
+    expect(rows[0].warnings).toEqual([]);
+  });
+});
+
+describe('simulate: mob derribado', () => {
+  it('marca los golpes de los pasos posteriores a dejarlo a 0 PV', () => {
+    const r = simulate({ ...fixture({ target: { hp: 700 } }), steps: jab(2) });
+    expect(r.steps[0].state.mobHp).toBe(0);
+    expect(r.steps[0].rows[0].tags).not.toContain('sim.tag.mobDown');
+    expect(r.steps[1].rows[0].tags).toContain('sim.tag.mobDown');
   });
 });

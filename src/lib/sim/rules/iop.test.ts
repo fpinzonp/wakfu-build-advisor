@@ -298,3 +298,60 @@ describe('Yopuka: Preparación ajustada a mano', () => {
     expect(r.steps[2].rows[0].value.normal).toBe(NORMAL);
   });
 });
+
+describe('Yopuka: Juicio', () => {
+  const judgment = (over: Partial<SpellCast> = {}) => spell(BIG, costs.ap1, {
+    key: 'Judgment', reasons: ['conditional'],
+    conditional: [{ when: 'Cast on an enemy', lines: [dmg()] }, { when: 'Cast on an ally', lines: [] }],
+    stateGains: [{ state: 3442, levels: 5 }], ...over,
+  });
+  const allyActor = (input: SimInput): SimActor => ({ ...input.actors[0], id: 'ally', start: { x: 5, y: 4 } });
+  const on = (target: 'mob' | 'ally' | 'self'): SimStep => ({ type: 'cast', actor: 'main', spell: BIG, target });
+
+  it('sobre el mob hace su daño, sin el aviso condicional', () => {
+    const r = simulate({ ...fixture({ spells: [judgment()] }), steps: [on('mob')] });
+    const row = r.steps[0].rows[0];
+    expect(row.uncalculated).toBeUndefined();
+    expect(row.value.normal).toBe(NORMAL);
+    expect(row.warnings).not.toContain('sim.warn.conditional');
+    expect(row.warnings).toContain('sim.warn.secondary');  // el estado que deja en el mob no se calcula
+    expect(r.steps[0].state.actors.main!.states[CONC]).toBe(5);
+  });
+
+  it('sobre el mob gasta la Preparación y la aprovecha', () => {
+    const steps: SimStep[] = [{ type: 'adjust', state: { id: PREP, levels: 20 } }, on('mob')];
+    const r = simulate({ ...fixture({ spells: [judgment()] }), steps });
+    expect(r.steps[1].rows[0].value.normal).toBe(Math.floor(105 * 7 * 1.2));
+    expect(r.steps[1].state.actors.main!.states[PREP]).toBe(0);
+  });
+
+  it('sobre un aliado le da 10 de Preparación y 5 de Concentración al lanzador, y lo dice en su fila', () => {
+    const input = fixture({ spells: [judgment()] });
+    const r = simulate({ ...input, actors: [input.actors[0], allyActor(input)], steps: [on('ally')] });
+    const after = r.steps[0].state.actors;
+    expect(after.ally!.states[PREP]).toBe(10);
+    expect(after.main!.states[PREP] ?? 0).toBe(0);
+    expect(after.main!.states[CONC]).toBe(5);
+    expect(r.steps[0].rows).toEqual([expect.objectContaining({ uncalculated: true, warnings: ['sim.warn.prepGiven'] })]);
+    expect(r.totals.main!.damage.normal).toBe(0);
+  });
+
+  it('sobre un aliado no gasta la Preparación del lanzador', () => {
+    const input = fixture({ spells: [judgment()] });
+    const steps: SimStep[] = [{ type: 'adjust', state: { id: PREP, levels: 20 } }, on('ally')];
+    const r = simulate({ ...input, actors: [input.actors[0], allyActor(input)], steps });
+    expect(r.steps[1].state.actors.main!.states[PREP]).toBe(20);
+  });
+});
+
+describe('Yopuka: etiquetas de combo', () => {
+  it('el combo de Preparación se indica en la fila', () => {
+    const r = simulate({ ...fixture(), steps: seq(['mp1', 'mp1', 'wp1']) });
+    expect(r.steps[2].rows[0].tags).toContain('sim.tag.comboPrep');
+  });
+
+  it('el combo de PA se indica en la fila', () => {
+    const r = simulate({ ...fixture(), steps: seq(['wp1', 'ap3', 'wp1', 'ap1']) });
+    expect(r.steps[3].rows[0].tags).toContain('sim.tag.comboAp');
+  });
+});

@@ -2,6 +2,7 @@
 // Punición, ramas por armadura (Pie Rocoso y Aplastar), Aversión y la pasiva Corazón de Sacrogrito.
 // El motor ya suma la maestría berserker y cambia a `berserkLines`; aquí solo va lo propio de la clase.
 
+import type { TKey } from '../../i18n';
 import type { Spell, SpellLine } from '../../spells';
 import type { ActorState, CastMods, CastTarget, ClassRules, ExtraCost, SimActor, SimInput } from '../engine';
 import { isBerserk } from '../formulas';
@@ -102,7 +103,15 @@ function beforeCast(
     setHp(state, target);
   }
   applySelfCost(state, actor, key, 'before');
-  return mods;
+  return withHpTag(mods, key);
+}
+
+/** Etiqueta el coste de PV del hechizo, con su porcentaje. */
+function withHpTag(mods: CastMods, key: string): CastMods {
+  const cost = SELF_COST[key];
+  const tag: TKey | undefined = key in HP_SET ? 'sim.tag.hpSet' : cost && (cost.pctOf === 'max' ? 'sim.tag.hpCost' : 'sim.tag.hpCostCurrent');
+  if (!tag) return mods;
+  return { ...mods, tags: [...(mods.tags ?? []), tag], tagVars: { pct: HP_SET[key] ?? cost.pct } };
 }
 
 function afterCast(state: ActorState, actor: SimActor, spell: Spell): void {

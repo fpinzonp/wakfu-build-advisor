@@ -31,6 +31,7 @@ const PREP_PER_COMBO = 20;
 const COMBO_CONC = 5;
 const COMBO_AP = 2;
 const LIFE_STEAL_PCT = 150;
+const JUDGMENT_PREP = 10;  // Preparación que da Juicio a un aliado
 
 /** Combo que completa el final del historial, o null. */
 export function matchCombo(history: readonly Cost[]): ComboId | null {
@@ -65,10 +66,17 @@ const dealsDamage = (spell: Spell) =>
 
 const hasDissipation = (actor: SimActor) => actor.passives?.includes('Dissipation') ?? false;
 
+/** Juicio: "Cast on an enemy" es su daño y "Cast on an ally" da Preparación; ninguna de las ramas es una condición real. */
+const isJudgment = (spell: Spell) => spell.cast?.key === 'Judgment';
+const judgmentHit = (spell: Spell) => spell.cast?.conditional.find((c) => /on an enemy/i.test(c.when))?.lines ?? [];
+
+/** Si este lanzamiento daña al mob: es lo que gasta la Preparación. */
+const hitsMob = (spell: Spell, target: CastTarget) => target === 'mob' && (dealsDamage(spell) || isJudgment(spell));
+
 function beforeCast(state: ActorState, _actor: SimActor, spell: Spell, input: SimInput, target: CastTarget): CastMods {
   if (!spell.cast) return {};
   const combo = matchCombo(historyWith(state, spell));
-  const dealsDmg = dealsDamage(spell) && target === 'mob';
+  const dealsDmg = hitsMob(spell, target);
   const mods: CastMods = {};
   const tags: TKey[] = [];
   const warnings: TKey[] = [];
@@ -77,8 +85,16 @@ function beforeCast(state: ActorState, _actor: SimActor, spell: Spell, input: Si
   const prep = state.states[PREPARATION] ?? 0;
   if (dealsDmg && prep > 0) { dmgPct += prep; tags.push('sim.tag.preparation'); }
 
+  if (isJudgment(spell)) {
+    mods.instead = target === 'mob' ? judgmentHit(spell) : [];
+    // Sobre el mob, el estado que le deja no se calcula; sobre un aliado no hay valor que enseñar.
+    warnings.push(target === 'mob' ? 'sim.warn.secondary' : 'sim.warn.prepGiven');
+  }
+
   if (combo === 'healSteal') mods.lifeStealPct = LIFE_STEAL_PCT;
   if (combo === 'push') { tags.push('sim.tag.push'); warnings.push('sim.warn.collision'); }
+  if (combo === 'prep') tags.push('sim.tag.comboPrep');
+  if (combo === 'ap') tags.push('sim.tag.comboAp');
   if (combo === 'extra' && dealsDmg) {
     dmgPct += input.comboExtraPct;
     tags.push('sim.tag.combo', 'sim.tag.unconfirmed');
@@ -90,7 +106,7 @@ function beforeCast(state: ActorState, _actor: SimActor, spell: Spell, input: Si
   return mods;
 }
 
-function afterCast(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget): void {
+function afterCast(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget, recipient?: ActorState): void {
   const cast = spell.cast;
   if (!cast) { state.history = []; return; }
   const history = historyWith(state, spell);
@@ -98,7 +114,8 @@ function afterCast(state: ActorState, actor: SimActor, spell: Spell, target: Cas
   state.history = combo === null ? history : [];  // un combo completado consume sus pasos
 
   // La Preparación acumulada se gasta aquí; la que den este hechizo o su combo queda para el siguiente.
-  if (dealsDamage(spell) && target === 'mob') state.states[PREPARATION] = 0;
+  if (hitsMob(spell, target)) state.states[PREPARATION] = 0;
+  if (isJudgment(spell) && target !== 'mob' && recipient) addPreparation(recipient, JUDGMENT_PREP);
 
   let conc = cast.stateGains.filter((g) => g.state === CONCENTRATION).reduce((s, g) => s + g.levels, 0);
   if (combo && !hasDissipation(actor)) conc += COMBO_CONC;

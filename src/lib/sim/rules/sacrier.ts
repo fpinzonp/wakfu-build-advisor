@@ -18,7 +18,18 @@ export const SELF_COST: Record<string, SelfCost> = {
   'Burning Blood': { pctOf: 'max', pct: 10, when: 'before' },
   'Lethal Punishment': { pctOf: 'max', pct: 20, when: 'before' },
   "Sacrier's Fist": { pctOf: 'max', pct: 5, when: 'after' },
+  // Lanzado sobre el propio Sacrogrito o sobre un aliado, el lanzador paga lo mismo.
+  Gash: { pctOf: 'current', pct: 51, when: 'before' },
 };
+
+/**
+ * Hechizos que la wiki no fichó para el Sacrogrito (su página es de otra clase) y llegan sin `cast`:
+ * se reconocen por su id estable de public/data/spells.json. El coste sale de la fila de la wiki (WP 1).
+ */
+const KEY_BY_ID: Record<number, string> = { 3084921951: 'Gash' };
+const NO_CARD_COST: Record<string, ExtraCost> = { Gash: { wp: 1 } };
+
+const keyOf = (spell: Spell): string | undefined => spell.cast?.key ?? KEY_BY_ID[spell.id];
 
 /** Hechizos que fijan los PV en un % de los máximos antes del golpe. */
 const HP_SET: Record<string, number> = { Punition: 20 };
@@ -55,13 +66,16 @@ function beforeCast(
   state: ActorState, actor: SimActor, spell: Spell, _input: SimInput, _target: CastTarget, mobHpPct: number,
 ): CastMods {
   const cast = spell.cast;
-  if (!cast) return {};
-  const key = cast.key;
+  const key = keyOf(spell);
+  if (!key) return {};
   const mods: CastMods = {};
   const casterPct = hpPct(state, actor);
 
   // Pie Rocoso y Aplastar dependen de la armadura; Aversión, de los PV relativos. Se decide antes de gastar PV.
-  if (key === 'Rocky Foot') {
+  if (!cast) {
+    // Hechizo sin ficha (Gash): solo se cobra el coste de PV; sus demás efectos no se calculan.
+    mods.warnings = ['sim.warn.conditional'];
+  } else if (key === 'Rocky Foot') {
     const withArmor = state.armor > 0;
     const lines = branch(spell, withArmor ? /has Armor/i : /no Armor/i);
     if (lines) {
@@ -77,24 +91,31 @@ function beforeCast(
     }  // sin armadura suficiente: golpe normal; la armadura que da "Otherwise" no se calcula y el motor lo avisa
   } else if (key === 'Aversion') {
     const higher = mobHpPct > casterPct;
-    const lines = higher ? branch(spell, /higher/i) : cast.lines;
+    const lines = higher ? branch(spell, /higher/i) : cast!.lines;
     if (lines?.length) mods.instead = lines;
   }
 
   // Punición: la condición de Furia no se modela, así que el cambio de PV se aplica siempre (el motor avisa).
-  if (key in HP_SET) setHp(state, pctOfMax(actor, HP_SET[key]));
+  if (key in HP_SET) {
+    const target = pctOfMax(actor, HP_SET[key]);
+    if (state.hp < target) mods.warnings = [...(mods.warnings ?? []), 'sim.warn.hpRaised'];
+    setHp(state, target);
+  }
   applySelfCost(state, actor, key, 'before');
   return mods;
 }
 
 function afterCast(state: ActorState, actor: SimActor, spell: Spell): void {
-  if (spell.cast) applySelfCost(state, actor, spell.cast.key, 'after');
+  const key = keyOf(spell);
+  if (key) applySelfCost(state, actor, key, 'after');
 }
 
 /** Coste añadido en berserker: se mira antes de cobrar nada, con los PV de ese momento. */
 function extraCost(state: ActorState, actor: SimActor, spell: Spell): ExtraCost {
-  const key = spell.cast?.key;
-  return key && isBerserk(hpPct(state, actor)) ? BERSERK_EXTRA[key] ?? {} : {};
+  const key = keyOf(spell);
+  if (!key) return {};
+  if (!spell.cast) return NO_CARD_COST[key] ?? {};
+  return isBerserk(hpPct(state, actor)) ? BERSERK_EXTRA[key] ?? {} : {};
 }
 
 /** Corazón de Sacrogrito: en berserker, la maestría de melé y la de distancia se suman entre sí. */

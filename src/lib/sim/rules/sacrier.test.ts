@@ -44,6 +44,15 @@ const PUNITION = spell(7, 'Punition', 3, {
   conditional: [{ when: "If the Sacrier doesn't have 100 Fury", lines: [] }],
 });
 const PLAIN = spell(8, 'Plain', 1);
+// Gash llega sin ficha (`cast`): el id es el real de public/data/spells.json.
+const GASH: Spell = { id: 3084921951, name: 'Gash', el: 'neutral', lvl: 35, icon: 0, text: [] };
+const LETHAL = spell(10, 'Lethal Punishment', 0, { lines: [line('damage', 3, 91)] });
+const LIGHT_SPEED = spell(11, 'Light Speed', 2, { lines: [line('armor', 6, 28)], berserkLines: [line('damage', 3, 91)] });
+const ATTRACTION = spell(12, 'Attraction', 1, { lines: [line('armor', 6, 26)], berserkLines: [line('damage', 3, 83)] }, 1);
+const TEMPEST = spell(13, 'Spiritual Tempest', 4, {
+  lines: [line('damage', 4, 131)], reasons: ['conditional'],
+  conditional: [{ when: 'For each movement spell used during the turn', lines: [] }],
+});
 const MOTION = spell(9, 'Motion Sickness', 2, { lines: [], berserkLines: [line('damage', 2, 60)] });
 
 function fixture(over: { actor?: Partial<SimActor>; mobHp?: number; mobCell?: { x: number; y: number } } = {}): SimInput {
@@ -51,7 +60,7 @@ function fixture(over: { actor?: Partial<SimActor>; mobHp?: number; mobCell?: { 
     id: 'main', name: 'Yo', classId: 'sacrogrito', level: 245,
     stats: { mastMelee: 100, mastDist: 0, mastBerserk: 300, crit: 0 },
     mastery: { fire: 0, water: 0, earth: 0, air: 500 }, maxHp: 1000, ap: 20, mp: 5, wp: 5,
-    spells: [ROCKY, SMASHES, AVERSION, ASSAULT, FIST, BLOOD_BURN, PUNITION, PLAIN, MOTION],
+    spells: [ROCKY, SMASHES, AVERSION, ASSAULT, FIST, BLOOD_BURN, PUNITION, PLAIN, MOTION, GASH, LETHAL, LIGHT_SPEED, ATTRACTION, TEMPEST],
     start: { x: 5, y: 5 }, ...over.actor,
   };
   return {
@@ -159,6 +168,77 @@ describe('Sacrogrito: coste de PV', () => {
   });
 });
 
+describe('Sacrogrito: Gash y otros costes', () => {
+  const withAlly = () => {
+    const input = fixture();
+    input.actors.push({ ...input.actors[0], id: 'ally', name: 'Aliado', start: { x: 5, y: 7 } });
+    return input;
+  };
+
+  it('Gash cuesta el 51 % de los PV actuales y el golpe siguiente ya va en berserker', () => {
+    const r = run([cast(GASH), cast(PLAIN)]);
+    expect(mainOf(r, 0).hp).toBe(490);
+    expect(mainOf(r, 0).wp).toBe(4);
+    expect(r.steps[0].rows[0].warnings).toEqual(expect.arrayContaining(['sim.warn.noData', 'sim.warn.conditional']));
+    expect(r.steps[1].rows[0].tags).toContain('sim.tag.berserk');
+    expect(r.steps[1].rows[0].value.normal).toBe(BERSERK);
+  });
+
+  it('Gash sobre un aliado también lo paga el lanzador', () => {
+    const r = simulate({ ...withAlly(), steps: [{ type: 'cast', actor: 'main', spell: GASH.id, target: 'ally' }] });
+    expect(r.steps[0].ok).toBe(true);
+    expect(r.steps[0].state.actors.main!.hp).toBe(490);
+    expect(r.steps[0].state.actors.ally!.hp).toBe(1000);
+  });
+
+  it('Gash sin PW se rechaza y no cobra PV', () => {
+    const r = run([cast(GASH)], fixture({ actor: { wp: 0 } }));
+    expect(r.steps[0].ok).toBe(false);
+    expect(r.steps[0].reason).toBe('sim.err.wp');
+    expect(mainOf(r, 0).hp).toBe(1000);
+  });
+
+  it('un ajuste de PV al 0 % deja 1 PV', () => {
+    expect(mainOf(run([hp(0)]), 0).hp).toBe(1);
+  });
+
+  it('Castigo Letal cuesta el 20 % antes del golpe', () => {
+    const r = run([hp(60), cast(LETHAL)]);  // 600 → 400 antes de pegar: berserker
+    expect(mainOf(r, 1).hp).toBe(400);
+    expect(r.steps[1].rows[0].tags).toContain('sim.tag.berserk');
+    expect(r.steps[1].rows[0].value.normal).toBe(91 * 10);
+    expect(run([cast(LETHAL)]).steps[0].rows[0].value.normal).toBe(91 * 7);  // 1000 → 800: sin berserker
+  });
+
+  it('Velocidad de la Luz en berserker daña y cuesta 1 PW más', () => {
+    const calm = run([cast(LIGHT_SPEED)]);
+    expect(calm.steps[0].rows[0].kind).toBe('armor');
+    expect(mainOf(calm, 0).wp).toBe(5);
+    const hurt = run([hp(40), cast(LIGHT_SPEED)]);
+    expect(hurt.steps[1].rows[0].value.normal).toBe(91 * 10);
+    expect(mainOf(hurt, 1).wp).toBe(4);
+  });
+
+  it('Atracción en berserker cuesta 1 PW más que el suyo', () => {
+    expect(mainOf(run([cast(ATTRACTION)]), 0).wp).toBe(4);
+    const hurt = run([hp(40), cast(ATTRACTION)]);
+    expect(hurt.steps[1].rows[0].value.normal).toBe(83 * 10);
+    expect(mainOf(hurt, 1).wp).toBe(3);
+    expect(run([hp(40), cast(ATTRACTION)], fixture({ actor: { wp: 1 } })).steps[1].reason).toBe('sim.err.wp');
+  });
+
+  it('Punición avisa si sube los PV al 20 %', () => {
+    expect(run([hp(10), cast(PUNITION)]).steps[1].rows[0].warnings).toContain('sim.warn.hpRaised');
+    expect(run([hp(50), cast(PUNITION)]).steps[1].rows[0].warnings).not.toContain('sim.warn.hpRaised');
+  });
+
+  it('Tempestad Espiritual avisa de que su coste de PV no se calcula', () => {
+    const r = run([cast(TEMPEST)]);
+    expect(r.steps[0].rows[0].warnings).toContain('sim.warn.conditional');
+    expect(mainOf(r, 0).hp).toBe(1000);
+  });
+});
+
 describe('Sacrogrito: armadura y condiciones', () => {
   it('Pie Rocoso sin armadura usa 3-91 y da armadura', () => {
     const r = run([cast(ROCKY)]);
@@ -203,7 +283,7 @@ describe('Sacrogrito: armadura y condiciones', () => {
     // El mob empieza con 1000 y el golpe previo lo deja a 0: tiene menos % de PV que el Sacrogrito (50 %).
     const input = fixture({ mobHp: 1000 });
     const r = run([hp(60), cast(BLOOD_BURN), cast(AVERSION)], input);
-    expect(r.steps[1].state.mobHp).toBeLessThan(600);
+    expect(r.steps[1].state.mobHp).toBe(0);
     expect(r.steps[2].rows[0].value.normal).toBe(Math.floor(98 * 7));
   });
 });

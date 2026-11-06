@@ -467,6 +467,7 @@ const en: Dict = {
   "sim.tag.push": "Combo push",
   "sim.tag.lifesteal": "Combo life steal",
   "sim.warn.collision": "The push's collision damage is not calculated.",
+  "sim.warn.hpRaised": "HP was below 20% and the spell raises it to that value.",
 };
 
 export default en;

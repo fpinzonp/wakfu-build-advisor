@@ -126,8 +126,13 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
 
   const cast = spell.cast;
   const rules = CLASS_RULES[actor.classId];
-  const extra: ExtraCost = (cast && rules?.extraCost?.(me, actor, spell)) || {};
-  if (cast) {
+  // Coste extra de la clase; también cubre hechizos sin ficha (`cast`), cuyo coste la regla conoce por otra vía.
+  const extra: ExtraCost = rules?.extraCost?.(me, actor, spell) ?? {};
+  if (!cast) {
+    if (me.ap < (extra.ap ?? 0)) return fail('sim.err.ap');
+    if (me.mp < (extra.mp ?? 0)) return fail('sim.err.mp');
+    if (me.wp < (extra.wp ?? 0)) return fail('sim.err.wp');
+  } else {
     if (cast.perTurn !== null && (me.uses[spell.id] ?? 0) >= cast.perTurn) return fail('sim.err.uses');
     if (me.ap < cast.ap + (extra.ap ?? 0)) return fail('sim.err.ap');
     if (me.mp < cast.mp + (extra.mp ?? 0)) return fail('sim.err.mp');
@@ -144,6 +149,7 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
   const mods: CastMods = rules?.beforeCast?.(me, actor, spell, input, step.target, mobHpPct) ?? {};
 
   if (!cast) {
+    me.ap -= extra.ap ?? 0; me.mp -= extra.mp ?? 0; me.wp -= extra.wp ?? 0;
     me.uses[spell.id] = (me.uses[spell.id] ?? 0) + 1;
     rules?.afterCast?.(me, actor, spell, step.target);
     return done([uncalculatedRow(['sim.warn.noData', ...(mods.warnings ?? [])])]);
@@ -313,7 +319,7 @@ function adjustStep(step: Extract<SimStep, { type: 'adjust' }>, st: SimState, in
   const me = st.actors[id];
   const actor = input.actors.find((a) => a.id === id);
   if (!me || !actor) return fail('sim.err.actor');
-  if (step.hpPct !== undefined) me.hp = floor(clamp(step.hpPct, 0, 100) / 100 * actor.maxHp);
+  if (step.hpPct !== undefined) me.hp = Math.max(1, floor(clamp(step.hpPct, 0, 100) / 100 * actor.maxHp));
   if (step.armor !== undefined) me.armor = clamp(floor(step.armor), 0, addArmor(0, Infinity, actor.maxHp));
   if (step.facing) st.facing = step.facing;
   return done();

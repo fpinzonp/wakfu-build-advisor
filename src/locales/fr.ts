@@ -467,6 +467,7 @@ const fr: Dict = {
   "sim.tag.push": "Poussée de combo",
   "sim.tag.lifesteal": "Vol de vie de combo",
   "sim.warn.collision": "Les dégâts de collision de la poussée ne sont pas calculés.",
+  "sim.warn.hpRaised": "Les PV étaient sous 20 % et le sort les remonte à cette valeur.",
 };
 
 export default fr;

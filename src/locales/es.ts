@@ -465,6 +465,7 @@ const es = {
   "sim.tag.push": "Empuje de combo",
   "sim.tag.lifesteal": "Robo de vida de combo",
   "sim.warn.collision": "El daño de colisión del empuje no se calcula.",
+  "sim.warn.hpRaised": "Los PV estaban por debajo del 20 % y el hechizo los sube a ese valor.",
 };
 
 export default es;

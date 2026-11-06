@@ -115,6 +115,8 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
   const [placing, setPlacing] = useState(false);
   const [steps, setSteps] = useState<SimStep[]>([]);
   const [comboExtraPct, setComboExtraPct] = useState(0);
+  // PW que cada personaje recupera por turno: depende de su clase y pasivas, así que se fija a mano.
+  const [wpPerTurn, setWpPerTurn] = useState<Record<ActorId, number>>({ main: 0, ally: 0 });
   const [preview, setPreview] = useState<Spell | null>(null);
   // `view` es el paso mostrado; null sigue el último (en vivo) y -1 es antes del primer paso.
   const [view, setView] = useState<number | null>(null);
@@ -129,7 +131,10 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
   const mainActor: SimActor = useMemo(() => actorFromBuild('main', result, {
     classId, level, elements, deck, spells: spells ?? [], start: START, name: t('sim.me'),
   }), [result, classId, level, elements, deck, spells, lang]);
-  const actors: SimActor[] = useMemo(() => (ally ? [mainActor, ally] : [mainActor]), [mainActor, ally]);
+  const actors: SimActor[] = useMemo(
+    () => (ally ? [mainActor, ally] : [mainActor]).map((a) => ({ ...a, wpPerTurn: wpPerTurn[a.id] })),
+    [mainActor, ally, wpPerTurn],
+  );
   const actor = actors.find((a) => a.id === acting) ?? mainActor;
   const mobName = target.mob?.name ?? t('sim.dummy');
 
@@ -291,9 +296,16 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
                   <span>{st?.ap ?? a.ap}/{a.ap} {t('stat.ap')}</span>
                   <span>{st?.mp ?? a.mp}/{a.mp} {t('stat.mp')}</span>
                   <span>{st?.wp ?? a.wp}/{a.wp} {t('stat.wp')}</span>
+                  <label className="sim-wp-turn">
+                    <span>{t('sim.wpPerTurn')}</span>
+                    <input className="input" type="number" min={0} max={a.wp} value={wpPerTurn[a.id]}
+                      aria-describedby={`sim-wp-hint-${a.id}`}
+                      onChange={(e) => setWpPerTurn({ ...wpPerTurn, [a.id]: Math.max(0, Math.min(a.wp, Number(e.target.value) || 0)) })} />
+                  </label>
                   {yopuka && <span>{t('sim.res.conc', { n: st?.states[CONC_KEY] ?? 0 })}</span>}
                   {yopuka && prep > 0 && <span>{t('sim.res.prep', { n: prep })}</span>}
                 </div>
+                <small className="muted" id={`sim-wp-hint-${a.id}`}>{t('sim.wpPerTurn.hint')}</small>
                 <div className="sim-bars">
                   <Bar kind="hp" value={hp} max={a.maxHp} label={`${t('sim.res.hp', { pct: hpPct })} · ${fmt(hp)}/${fmt(a.maxHp)}`} />
                   <Bar kind="armor" value={st?.armor ?? 0} max={armorMax}

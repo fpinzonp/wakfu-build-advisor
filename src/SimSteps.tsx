@@ -12,6 +12,7 @@ function stepLabel(r: StepResult, spellName: (id: number, actor: ActorId) => str
   const parts: string[] = [];
   if (s.hpPct !== undefined) parts.push(t('sim.step.hp', { pct: Math.round(s.hpPct) }));
   if (s.armor !== undefined) parts.push(t('sim.step.armor', { n: fmt(s.armor) }));
+  if (s.wp !== undefined) parts.push(t('sim.step.wp', { n: fmt(s.wp) }));
   if (s.facing) parts.push(t('sim.step.facing', { facing: t(`sim.facing.${s.facing}`) }));
   if (s.state) {
     const name = s.state.id === CONC_KEY ? t('sim.state.conc') : s.state.id === PREPARATION ? t('sim.state.prep') : s.state.id;

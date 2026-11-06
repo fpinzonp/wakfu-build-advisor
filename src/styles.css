@@ -516,6 +516,9 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .sim-res { display: flex; flex-direction: column; gap: 12px; padding: 10px 12px; }
 .sim-res-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .sim-res-row span { background: var(--panel-3); border-radius: 6px; padding: 3px 9px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sim-wp-turn { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; }
+.sim-res-row .sim-wp-turn span { background: none; padding: 0; font-weight: 400; }
+.sim-wp-turn .input { width: 64px; padding: 3px 6px; }
 .sim-res-actor { display: flex; flex-direction: column; gap: 8px; padding-left: 8px; border-left: 3px solid transparent; }
 .sim-res-actor.acting { border-left-color: var(--accent); }
 .sim-bars { display: flex; gap: 12px; flex-wrap: wrap; }

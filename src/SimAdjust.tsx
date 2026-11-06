@@ -32,6 +32,7 @@ export default function SimAdjust({ actor, yopuka, comboExtraPct, onComboExtra, 
 }) {
   const [hpPct, setHpPct] = useState(100);
   const [armor, setArmor] = useState(0);
+  const [wp, setWp] = useState(0);
   const [conc, setConc] = useState(0);
   const [prep, setPrep] = useState(0);
   const adjust = (patch: Partial<Extract<SimStep, { type: 'adjust' }>>): SimStep => ({ type: 'adjust', actor, ...patch });
@@ -42,6 +43,8 @@ export default function SimAdjust({ actor, yopuka, comboExtraPct, onComboExtra, 
         onApply={() => onAdd(adjust({ hpPct }))} />
       <Adjust label={t('sim.armorSet')} value={armor} onChange={setArmor} applyLabel={t('sim.armorApply')}
         onApply={() => onAdd(adjust({ armor }))} />
+      <Adjust label={t('sim.wpSet')} value={wp} onChange={setWp} applyLabel={t('sim.wpApply')}
+        onApply={() => onAdd(adjust({ wp }))} />
       <div className="field">
         <span className="label" id="sim-turn-target">{t('sim.turnTarget')}</span>
         <div className="seg" role="group" aria-labelledby="sim-turn-target">

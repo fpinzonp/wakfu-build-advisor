@@ -27,6 +27,7 @@ export interface StepNames { main: string; ally: string; mob: string }
 function stepWho(r: StepResult, names: StepNames): string {
   const s = r.step;
   if (s.type === 'endTurn') return '';
+  if (s.type === 'adjust' && !s.actor) return '';  // el giro del objetivo no es de ningún personaje
   const who: ActorId = s.type === 'adjust' ? s.actor ?? 'main' : s.actor;
   if (s.type !== 'cast') return names[who];
   const to = s.target === 'mob' ? names.mob : s.target === 'self' ? names[who] : names[who === 'main' ? 'ally' : 'main'];
@@ -40,7 +41,7 @@ const capped = (row: StepRow) =>
 function Why({ row }: { row: StepRow }) {
   return (
     <>
-      {row.tags.map((k) => <span key={k} className={`tag ${k === 'sim.tag.unconfirmed' ? 'unconfirmed' : ''}`}>{t(k)}</span>)}
+      {row.tags.map((k) => <span key={k} className={`tag ${k === 'sim.tag.unconfirmed' ? 'unconfirmed' : ''}`}>{t(k, row.tagVars)}</span>)}
       {row.warnings.map((k) => <span key={k} className="sim-warn">{t(k)}</span>)}
     </>
   );

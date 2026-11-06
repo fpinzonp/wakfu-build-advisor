@@ -19,6 +19,11 @@ export function targetOf(mob: Mob, level: number): TargetState {
   return { mob, level, hp: s.hp, res: s.res, resBack: 0, resCrit: 0 };
 }
 
+/** Texto de un mob en la lista; unos pocos no traen nivel en la wiki. */
+export const mobOption = (m: Mob) => (m.minLevel
+  ? t('sim.mob.option', { name: m.name, family: m.family, min: m.minLevel, max: m.maxLevel })
+  : t('sim.mob.optionNoLevel', { name: m.name, family: m.family }));
+
 const MAX_SHOWN = 50;
 const FACINGS: Facing[] = ['n', 'e', 's', 'w'];
 const FACING_ARROW: Record<Facing, string> = { n: '▲', e: '▶', s: '▼', w: '◀' };
@@ -82,10 +87,11 @@ export default function SimTarget({ load, target, facing, onTarget, onFacing, on
             </label>
             {shown.length === 0 ? <p className="muted small" role="status">{t('sim.mob.none')}</p> : (
               <ul className="sim-mobs" aria-label={t('sim.mob.list')}>
-                {shown.map((m) => (
-                  <li key={`${m.name}|${m.family}|${m.minLevel}`}>
+                {shown.map((m, i) => (
+                  // La wiki repite nombre, familia y nivel (Chaos Deckhand tiene una página por clase): se añade la posición.
+                  <li key={`${m.name}|${m.family}|${m.minLevel}|${i}`}>
                     <button type="button" aria-pressed={target.mob === m} onClick={() => onTarget(targetOf(m, m.minLevel))}>
-                      {t('sim.mob.option', { name: m.name, family: m.family, min: m.minLevel, max: m.maxLevel })}
+                      {mobOption(m)}
                     </button>
                   </li>
                 ))}

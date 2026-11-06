@@ -22,6 +22,9 @@ function Adjust({ label, value, onChange, onApply, applyLabel, max, hint }: {
   );
 }
 
+/** El giro es del objetivo, no de un personaje: no lleva `actor` y sobrevive a quitar el aliado. */
+export const facingStep = (facing: Facing): SimStep => ({ type: 'adjust', facing });
+
 /** Ajustes manuales que se añaden como pasos: PV, armadura, giro del objetivo y, en Yopuka, Concentración y Preparación.
  * PV, armadura y estados son del personaje que actúa (`actor`). */
 export default function SimAdjust({ actor, yopuka, comboExtraPct, onComboExtra, onAdd }: {
@@ -43,7 +46,7 @@ export default function SimAdjust({ actor, yopuka, comboExtraPct, onComboExtra, 
         <span className="label" id="sim-turn-target">{t('sim.turnTarget')}</span>
         <div className="seg" role="group" aria-labelledby="sim-turn-target">
           {FACINGS.map((f) => (
-            <button key={f} type="button" title={t('sim.turnTarget.aria')} onClick={() => onAdd(adjust({ facing: f }))}>
+            <button key={f} type="button" title={t('sim.turnTarget.aria')} onClick={() => onAdd(facingStep(f))}>
               {t(`sim.facing.${f}`)}
             </button>
           ))}

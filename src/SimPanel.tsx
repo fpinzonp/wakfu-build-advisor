@@ -4,15 +4,15 @@ import SimAlly from './SimAlly';
 import SimMap from './SimMap';
 import SimSteps from './SimSteps';
 import SimTarget, { DUMMY, type MobLoad, type TargetState } from './SimTarget';
-import { fmt, t } from './lib/i18n';
+import { fmt, t, useLang } from './lib/i18n';
 import type { Element, Item } from './lib/game';
 import type { BuildResult } from './lib/optimizer';
 import type { StoredBuild } from './lib/share';
 import { spellImage, type Deck, type Spell, type SpellData } from './lib/spells';
 import { allyFromStored } from './lib/sim/ally';
-import { simulate, type ActorId, type CastTarget, type SimActor, type SimStep, type Triple } from './lib/sim/engine';
+import { simulate, type ActorId, type CastTarget, type SimActor, type SimState, type SimStep, type Triple } from './lib/sim/engine';
 import { actorFromBuild } from './lib/sim/fromBuild';
-import { addArmor, distance, type Cell, type Facing } from './lib/sim/formulas';
+import { addArmor, casterZone, distance, inZone, isCasterCentred, type Cell, type Facing } from './lib/sim/formulas';
 import type { MobData } from './lib/sim/mobs';
 import { CONC_KEY, PREPARATION } from './lib/sim/rules/iop';
 import { turnOfSteps, turnTotals } from './lib/sim/summary';
@@ -32,10 +32,13 @@ const costText = (s: Spell) => {
 
 /**
  * Los hechizos sin efecto sobre enemigos (armaduras, curas) se lanzan sobre uno mismo; el resto, al mob.
- * Con aliado, los que tienen efectos sobre aliados van al otro personaje.
+ * Con aliado, los que tienen efectos sobre aliados van al otro personaje. Con alcance 0 y sin zona solo se pueden
+ * lanzar sobre uno mismo.
  */
-const castTarget = (s: Spell, hasAlly: boolean): CastTarget => {
-  const lines = [...(s.cast?.lines ?? []), ...(s.cast?.berserkLines ?? [])];
+export const castTarget = (s: Spell, hasAlly: boolean): CastTarget => {
+  const c = s.cast;
+  if (c && c.rangeMax === 0 && !isCasterCentred(c)) return 'self';
+  const lines = [...(c?.lines ?? []), ...(c?.berserkLines ?? [])];
   if (lines.length === 0 || lines.some((l) => l.side === 'enemy')) return 'mob';
   return hasAlly && lines.some((l) => l.side === 'ally') ? 'ally' : 'self';
 };
@@ -49,8 +52,11 @@ function freeCell(pref: Cell, taken: Cell[]): Cell {
   return all.find((c) => !taken.some((o) => same(c, o)))!;
 }
 
+/** Orientación que enseña el mapa: la del paso mostrado, que un ajuste puede haber cambiado. */
+export const shownFacing = (shown: SimState | null, facing: Facing): Facing => shown?.facing ?? facing;
+
 /** Pasos que dejan de tener sentido sin aliado: los suyos y los hechizos dirigidos a él. */
-function needsAlly(s: SimStep): boolean {
+export function needsAlly(s: SimStep): boolean {
   if (s.type === 'endTurn') return false;
   if (s.type === 'cast') return s.actor === 'ally' || s.target === 'ally';
   return s.actor === 'ally';
@@ -118,10 +124,11 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
   const [acting, setActing] = useState<ActorId>('main');
   // Objetivo elegido para el próximo hechizo; null = el que corresponde al hechizo.
   const [castTo, setCastTo] = useState<CastTarget | null>(null);
+  const { lang } = useLang();  // el nombre del personaje se traduce
 
   const mainActor: SimActor = useMemo(() => actorFromBuild('main', result, {
     classId, level, elements, deck, spells: spells ?? [], start: START, name: t('sim.me'),
-  }), [result, classId, level, elements, deck, spells]);
+  }), [result, classId, level, elements, deck, spells, lang]);
   const actors: SimActor[] = useMemo(() => (ally ? [mainActor, ally] : [mainActor]), [mainActor, ally]);
   const actor = actors.find((a) => a.id === acting) ?? mainActor;
   const mobName = target.mob?.name ?? t('sim.dummy');
@@ -180,6 +187,7 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
     if (!spell) return undefined;
     const max = Math.max(spell.rangeMin, spell.rangeMax + (spell.rangeMod ? actor.stats.range ?? 0 : 0));
     const from = (acting === 'ally' ? allyNow?.cell : me?.cell) ?? actor.start;
+    if (isCasterCentred(spell)) return (c: Cell) => inZone(casterZone(spell), from, c);
     return (c: Cell) => { const d = distance(from, c); return d >= spell.rangeMin && d <= max; };
   }, [preview, actor, acting, me?.cell, allyNow?.cell]);
 
@@ -216,7 +224,7 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
         <div className="panel">
           <h2>{t('sim.map')}</h2>
           <SimMap me={me?.cell ?? START} ally={ally ? allyNow?.cell ?? ally.start : undefined}
-            acting={ally ? acting : undefined} allyName={ally?.name} mob={mobCell} facing={facing} inRange={inRange} onCell={onCell} />
+            acting={ally ? acting : undefined} allyName={ally?.name} mob={mobCell} facing={shownFacing(shown, facing)} inRange={inRange} onCell={onCell} />
           <label className="check sim-place">
             <input type="checkbox" checked={placing} onChange={(e) => setPlacing(e.target.checked)} />
             <span>{t('sim.map.place')}</span>

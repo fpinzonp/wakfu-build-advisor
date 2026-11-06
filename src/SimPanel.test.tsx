@@ -1,13 +1,17 @@
 // Pruebas de renderizado en servidor: comprueban que el panel monta y que la tabla no oculta nada.
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import SimPanel from './SimPanel';
+import SimMap from './SimMap';
+import SimPanel, { castTarget, needsAlly, shownFacing } from './SimPanel';
+import { facingStep } from './SimAdjust';
 import { AllyList } from './SimAlly';
 import SimSteps from './SimSteps';
+import { mobOption } from './SimTarget';
 import { setLang } from './lib/i18n';
 import type { BuildResult } from './lib/optimizer';
+import type { Mob } from './lib/sim/mobs';
 import type { StepResult } from './lib/sim/engine';
-import type { Spell, SpellData } from './lib/spells';
+import type { Spell, SpellCast, SpellData, SpellLine } from './lib/spells';
 
 // Sin navegador: setLang toca document, así que se simula para fijar el español.
 vi.stubGlobal('document', { documentElement: {} });
@@ -123,5 +127,65 @@ describe('SimSteps', () => {
     expect(html).toContain('bruto 2100');
     const solo = renderToString(<SimSteps steps={rows} selected={0} spellName={() => 'Cura'} onSelect={() => undefined} onRemove={() => undefined} />);
     expect(solo).not.toContain('→');
+  });
+});
+
+describe('SimPanel: funciones de apoyo', () => {
+  const castOf = (over: Partial<SpellCast>): Spell => ({ ...spells[0], cast: { ...spells[0].cast!, ...over } });
+  const dmg: SpellLine = { kind: 'damage', side: 'enemy', min: 1, max: 2, critMin: 1, critMax: 2 };
+
+  it('un hechizo centrado en el lanzador va al mob; uno de alcance 0 sin zona, a uno mismo', () => {
+    expect(castTarget(castOf({ target: 'aoe', rangeMin: 0, rangeMax: 0, lines: [dmg] }), false)).toBe('mob');
+    expect(castTarget(castOf({ rangeMin: 0, rangeMax: 0, lines: [] }), false)).toBe('self');
+    expect(castTarget(castOf({ rangeMin: 0, rangeMax: 0, lines: [] }), true)).toBe('self');
+  });
+
+  it('la orientación del mapa es la del paso mostrado', () => {
+    expect(shownFacing({ actors: {}, mobHp: 1, facing: 'e', turn: 1 }, 'w')).toBe('e');
+    expect(shownFacing(null, 'w')).toBe('w');
+  });
+
+  it('un giro del objetivo no es de ningún personaje: sobrevive a quitar el aliado', () => {
+    const step = facingStep('e');
+    expect(step).toEqual({ type: 'adjust', facing: 'e' });
+    expect(needsAlly(step)).toBe(false);
+    expect(needsAlly({ type: 'adjust', actor: 'ally', hpPct: 50 })).toBe(true);
+  });
+});
+
+describe('SimMap', () => {
+  it('dibuja y rotula la orientación que recibe', () => {
+    const html = renderToString(<SimMap me={{ x: 0, y: 0 }} mob={{ x: 5, y: 5 }} facing="e" onCell={() => undefined} />);
+    expect(html).toContain('▶');
+    expect(html).toContain('mira Derecha');
+  });
+});
+
+describe('SimSteps: etiquetas con valor', () => {
+  const state = { actors: {}, mobHp: 0, facing: 'w' as const, turn: 1 };
+
+  it('el coste de PV enseña su porcentaje', () => {
+    const steps: StepResult[] = [{
+      step: { type: 'cast', actor: 'main', spell: 1, target: 'mob' }, ok: true, state,
+      rows: [{ kind: 'damage', value: { normal: 1, crit: 1, avg: 1 }, tags: ['sim.tag.hpCost'], tagVars: { pct: 10 }, warnings: [] }],
+    }];
+    const html = renderToString(<SimSteps steps={steps} selected={0} spellName={() => 'Sangre'} onSelect={() => undefined} onRemove={() => undefined} />);
+    expect(html).toContain('10 % de los PV máximos');
+  });
+
+  it('un giro del objetivo no indica quién actúa', () => {
+    const steps: StepResult[] = [{ step: { type: 'adjust', facing: 'e' }, ok: true, rows: [], state }];
+    const names = { main: 'Yo', ally: 'Curandero', mob: 'Maniquí' };
+    const html = renderToString(<SimSteps steps={steps} selected={0} spellName={() => undefined} names={names} onSelect={() => undefined} onRemove={() => undefined} />);
+    expect(html).not.toContain('sim-who');
+  });
+});
+
+describe('mobOption', () => {
+  const mob = (minLevel: number, maxLevel: number) => ({ name: 'Tofu', family: 'Tofus', minLevel, maxLevel }) as Mob;
+
+  it('rotula el nivel, y lo omite si la wiki no lo da', () => {
+    expect(mobOption(mob(35, 35))).toBe('Tofu · Tofus · nv. 35-35');
+    expect(mobOption(mob(0, 0))).toBe('Tofu · Tofus');
   });
 });

@@ -2,6 +2,7 @@
 // un archivo compacto con solo el equipamiento y sus estadísticas ya interpretadas.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { parseLuaTable } from './lua-table.mjs';
+import { parseInfobox, parseMob, parseSpellCast } from './wiki-parse.mjs';
 
 const CDN = 'https://wakfu.cdn.ankama.com/gamedata';
 const OUT_DIR = new URL('../public/data/', import.meta.url);
@@ -260,10 +261,88 @@ async function fetchWiki() {
     if (depth > 0) for (const e of states[id].effects) for (const m of String(e).matchAll(/\{\{st\|(\d+)/g)) add(m[1], depth - 1);
   };
   for (const id of wanted) add(id, 1);
+  const spells = await fetchSpells();
   return {
     source: WIKI, license: 'CC BY-SA', fetchedAt: new Date().toISOString(), states, sources,
-    spells: await fetchSpells(), conditions: await fetchConditions(),
+    spells, conditions: await fetchConditions(),
+    spellPages: await fetchSpellPages(spells), mobs: await fetchMobs(),
   };
+}
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Petición a la wiki con un reintento; si vuelve a fallar, la descarga entera falla y se conserva la copia anterior.
+async function wikiJson(url) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const res = await fetch(url, { headers: wikiHeaders });
+      if (!res.ok) throw new Error(`${res.status} al pedir ${url.slice(0, 120)}`);
+      return await res.json();
+    } catch (e) {
+      if (attempt >= 1) throw e;
+      await sleep(2000);
+    }
+  }
+}
+
+// Wikitext de varias páginas, en lotes de 50 títulos y con pausa entre lotes. Devuelve título pedido -> wikitext
+// (las páginas que no existen no aparecen).
+async function fetchWikitext(titles) {
+  const out = new Map();
+  for (let i = 0; i < titles.length; i += 50) {
+    if (i) await sleep(400);
+    const batch = titles.slice(i, i + 50);
+    const params = new URLSearchParams({
+      action: 'query', format: 'json', formatversion: '2', prop: 'revisions', rvprop: 'content', rvslots: 'main',
+      titles: batch.join('|'),
+    });
+    const res = await wikiJson(`${WIKI}/api.php?${params}`);
+    if (!res.query) throw new Error(res.error?.info ?? 'respuesta inesperada de la consulta de páginas');
+    // La wiki normaliza los títulos (mayúscula inicial, guiones bajos): se vuelve al título pedido.
+    const asked = new Map(batch.map((t) => [t, t]));
+    for (const n of res.query.normalized ?? []) if (asked.has(n.from)) asked.set(n.to, n.from);
+    for (const p of res.query.pages ?? []) {
+      const text = p.revisions?.[0]?.slots?.main?.content;
+      const title = asked.get(p.title);
+      if (!p.missing && text !== undefined && title !== undefined) out.set(title, text);
+    }
+  }
+  return out;
+}
+
+// Ficha {{Spell}} de cada hechizo activo (por nombre inglés). Solo se guardan sus campos.
+const SPELL_FIELDS = ['class', 'AP', 'target', 'range', 'los', 'mod', 'effects', 'criteffects', 'conditions'];
+async function fetchSpellPages(spells) {
+  const names = [...new Set(spells.filter((s) => s.type !== 'Passive').map((s) => s.spell))];
+  const texts = await fetchWikitext(names);
+  const pages = {};
+  for (const [name, text] of texts) {
+    const f = parseInfobox(text, 'Spell');
+    if (!Object.keys(f).length) continue; // redirección o página de desambiguación
+    pages[name] = Object.fromEntries(SPELL_FIELDS.filter((k) => f[k] !== undefined).map((k) => [k, f[k]]));
+  }
+  return pages;
+}
+
+// Monstruos (tabla Cargo "Monsters"): PV y resistencias solo están en la ficha de cada página.
+async function fetchMobs() {
+  const rows = [];
+  for (let offset = 0; ; offset += 500) {
+    const params = new URLSearchParams({
+      action: 'cargoquery', format: 'json', limit: '500', offset: String(offset),
+      tables: 'Monsters,_pageData', join_on: 'Monsters._pageID=_pageData._pageID',
+      fields: 'Monsters.name=name,Monsters.family=family,Monsters.type=type,Monsters.minLevel=minLevel,'
+        + 'Monsters.maxLevel=maxLevel,_pageData._pageName=page',
+    });
+    const res = await wikiJson(`${WIKI}/api.php?${params}`);
+    if (!res.cargoquery) throw new Error(res.error?.info ?? 'respuesta inesperada de Monsters');
+    rows.push(...res.cargoquery.map((r) => r.title));
+    if (res.cargoquery.length < 500) break;
+    await sleep(400);
+  }
+  const texts = await fetchWikitext([...new Set(rows.map((r) => r.page))]);
+  // De cada página solo se guarda la ficha {{Infobox monster}} (sin hechizos ni botín).
+  return rows.map((r) => ({ ...r, infobox: /\{\{Infobox monster[^{}]*\}\}/i.exec(texts.get(r.page) ?? '')?.[0] ?? '' }));
 }
 
 // Condiciones para equipar cada objeto (tabla Cargo "Items" de la wiki; Ankama no las publica).
@@ -293,7 +372,8 @@ async function fetchSpells() {
       action: 'cargoquery', format: 'json', limit: '500', offset: String(offset),
       tables: 'Class_spells,_pageData', join_on: 'Class_spells._pageID=_pageData._pageID',
       fields: 'Class_spells.class=class,Class_spells.spell=spell,Class_spells.type=type,Class_spells.element=element,'
-        + 'Class_spells.level=level,Class_spells.icon=icon,Class_spells.effects=effects,_pageData._categories__full=cats',
+        + 'Class_spells.level=level,Class_spells.icon=icon,Class_spells.effects=effects,'
+        + 'Class_spells.ap=ap,Class_spells.mp=mp,Class_spells.wp=wp,_pageData._categories__full=cats',
     });
     const res = await (await fetch(`${WIKI}/api.php?${params}`, { headers: wikiHeaders })).json();
     if (!res.cargoquery) throw new Error(res.error?.info ?? 'respuesta inesperada de Class_spells');
@@ -325,6 +405,19 @@ if (wiki && !wiki.spells) {
     console.log(`Wiki: añadidos ${wiki.spells.length} hechizos a la copia local`);
   } catch (e) {
     console.warn(`No se pudieron descargar los hechizos (${e.message}); la baraja irá vacía.`);
+  }
+}
+// Copias antiguas sin costes ni fichas de hechizos y mobs: se completan sin tocar el resto.
+if (wiki && (!wiki.spellPages || !wiki.mobs || wiki.spells?.some((s) => s.ap === undefined))) {
+  try {
+    const spells = await fetchSpells();
+    const spellPages = await fetchSpellPages(spells);
+    const mobs = await fetchMobs();
+    Object.assign(wiki, { spells, spellPages, mobs });
+    await writeFile(WIKI_CACHE, JSON.stringify(wiki, null, 1));
+    console.log(`Wiki: añadidas ${Object.keys(spellPages).length} fichas de hechizos y ${mobs.length} de mobs a la copia local`);
+  } catch (e) {
+    console.warn(`No se pudieron descargar las fichas de hechizos y mobs (${e.message}); el simulador irá sin ellas.`);
   }
 }
 if (wiki && !wiki.conditions) {
@@ -474,6 +567,7 @@ const trSpell = (lang, kind, text) => {
 const spellsOut = { common: [], classes: {} };
 const usedIds = new Map();
 const unusedStats = new Set(Object.keys(spellStats));
+const castStats = { active: 0, cast: 0, partial: 0, noPage: 0 };
 for (const r of wiki?.spells ?? []) {
   const classId = r.class === 'Common' ? 'common' : WIKI_CLASS[r.class];
   if (!classId) continue;
@@ -496,6 +590,18 @@ for (const r of wiki?.spells ?? []) {
     ...(curated && Object.keys(stats).length && { stats }),
     ...(zero?.length && { zero }),
   };
+  if (!passive) {
+    const page = wiki?.spellPages?.[r.spell];
+    // Sin ficha propia (redirección, desambiguación) o de otra clase: no se simula.
+    if (page && page.class === r.class) {
+      spell.cast = parseSpellCast(page, r);
+      castStats.cast++;
+      if (spell.cast.partial) castStats.partial++;
+    } else {
+      castStats.noPage++;
+    }
+    castStats.active++;
+  }
   for (const lang of LANGS) {
     spellNames[lang][id] = [trSpell(lang, 'names', spell.name), spell.text.map((l) => trSpell(lang, 'lines', l))];
   }
@@ -576,6 +682,20 @@ function parseConditions(text) {
 await mkdir(OUT_DIR, { recursive: true });
 await writeFile(new URL('spells.json', OUT_DIR), JSON.stringify({ version, source: WIKI, ...spellsOut }));
 console.log(`${usedIds.size} hechizos y pasivas escritos en public/data/spells.json`);
+console.log(`Simulador: ${castStats.cast} de ${castStats.active} hechizos activos con ficha (${castStats.partial} parciales, ${castStats.noPage} sin página propia o de otra clase)`);
+
+// Monstruos para el simulador: se descartan las fichas sin PV ni resistencias.
+{
+  const mobs = [];
+  let dropped = 0;
+  for (const r of wiki?.mobs ?? []) {
+    const mob = parseMob(r.infobox);
+    if (!mob) { dropped++; continue; }
+    mobs.push({ ...mob, name: r.name || mob.name, family: mob.family || r.family || '', type: mob.type || r.type || '' });
+  }
+  await writeFile(new URL('mobs.json', OUT_DIR), JSON.stringify({ version, mobs }));
+  console.log(`Mobs: ${mobs.length} guardados y ${dropped} descartados (sin PV ni resistencias) en public/data/mobs.json`);
+}
 await writeFile(new URL('enchant.json', OUT_DIR), JSON.stringify({ version, shards, sublimations }));
 console.log(`${shards.length} runas y ${sublimations.length} sublimaciones escritas en public/data/enchant.json`,
   `(${sublimations.filter((s) => s.effect.length).length} con efecto descrito)`);

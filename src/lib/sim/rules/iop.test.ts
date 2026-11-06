@@ -95,17 +95,17 @@ describe('Yopuka: Concentración', () => {
 
   it('a 100 de Concentración da 1 PW, 4 de Preparación y resta 100', () => {
     const input = fixture({ spells: [spell(BIG, costs.ap1, { stateGains: [{ state: 3442, levels: 130 }] })] });
-    const s = simulate({ ...input, steps: [cast(BIG)] }).steps[0].state.actors.main!;
-    expect(s.wp).toBe(6);
+    const s = simulate({ ...input, steps: [{ type: 'adjust', wp: 2 }, cast(BIG)] }).steps[1].state.actors.main!;
+    expect(s.wp).toBe(3);
     expect(s.states[PREP]).toBe(4);
     expect(s.states[CONC]).toBe(30);
   });
 
   it('respeta el tope de 400 de Concentración', () => {
     const input = fixture({ spells: [spell(BIG, costs.ap1, { stateGains: [{ state: 3442, levels: 900 }] })] });
-    const s = simulate({ ...input, steps: [cast(BIG)] }).steps[0].state.actors.main!;
+    const s = simulate({ ...input, steps: [{ type: 'adjust', wp: 0 }, cast(BIG)] }).steps[1].state.actors.main!;
     // 900 se topa en 400: cuatro eventos de 100
-    expect(s.wp).toBe(9);
+    expect(s.wp).toBe(4);
     expect(s.states[PREP]).toBe(16);
     expect(s.states[CONC]).toBe(0);
   });
@@ -146,7 +146,7 @@ describe('Yopuka: Preparación', () => {
     const steps = [cast(plain('mp1')), cast(plain('ap3')), cast(BIG), cast(withDamage('ap1'))];
     const r = simulate({ ...input, steps });
     const s = r.steps[2].state.actors.main!;
-    expect(s.wp).toBe(6);
+    expect(s.wp).toBe(5);  // ya estaba al máximo
     expect(s.states[PREP]).toBe(4);
     expect(s.states[CONC]).toBe(1);
     expect(r.steps[2].rows[0].tags).not.toContain('sim.tag.preparation');
@@ -273,11 +273,11 @@ describe('Yopuka: historial de costes', () => {
 });
 
 describe('Yopuka: hechizos condicionales', () => {
-  it('lo que depende de la Concentración sigue avisado', () => {
+  it('una condición que no es la de 100 de Concentración sigue avisada', () => {
     const input = fixture({
       spells: [spell(BIG, costs.ap3, {
         lines: [dmg()], reasons: ['conditional', 'secondary'],
-        conditional: [{ when: 'When the Iop reaches 100 state 3442', lines: [dmg()] }],
+        conditional: [{ when: 'If this spell kills a fighter', lines: [dmg()] }],
         stateGains: [{ state: 3442, levels: 100 }],
       })],
     });
@@ -353,5 +353,132 @@ describe('Yopuka: etiquetas de combo', () => {
   it('el combo de PA se indica en la fila', () => {
     const r = simulate({ ...fixture(), steps: seq(['wp1', 'ap3', 'wp1', 'ap1']) });
     expect(r.steps[3].rows[0].tags).toContain('sim.tag.comboAp');
+  });
+});
+
+describe('Yopuka: PW de la Concentración', () => {
+  const gain100 = () => fixture({ spells: [spell(BIG, costs.ap1, { stateGains: [{ state: 3442, levels: 100 }] })] });
+
+  it('un evento con los PW al máximo los deja en el máximo', () => {
+    const s = simulate({ ...gain100(), steps: [cast(BIG)] }).steps[0].state.actors.main!;
+    expect(s.wp).toBe(5);
+    expect(s.states[PREP]).toBe(4);
+  });
+
+  it('Alarde: el evento no da PW pero conserva la Preparación', () => {
+    const input = gain100();
+    input.actors[0].passives = ['Show Off'];
+    const s = simulate({ ...input, steps: [{ type: 'adjust', wp: 2 }, cast(BIG)] }).steps[1].state.actors.main!;
+    expect(s.wp).toBe(2);
+    expect(s.states[PREP]).toBe(4);
+    expect(s.states[CONC]).toBe(0);
+  });
+});
+
+describe('Yopuka: golpe adicional a 100 de Concentración', () => {
+  const WHEN = 'When the Iop reaches 100 state 3442';
+  const HIT_N = 385;  // 55 × (1 + 600 / 100)
+  const extraLine = (over: Partial<SpellLine> = {}): SpellLine =>
+    ({ kind: 'damage', side: 'enemy', min: 2, max: 55, critMin: 2, critMax: 55, noCrit: true, ...over });
+  // Trueno y Ira de Yopuka de prueba: con rama condicional de 100 de Concentración.
+  const THUNDER = 31, WRATH = 32, FILL = 33, ALLY_ONLY = 34;
+  const withBranch = (id: number, key: string, gain: number, line = extraLine(), over: Partial<SpellCast> = {}) =>
+    spell(id, costs.ap1, {
+      key, lines: [dmg()], conditional: [{ when: WHEN, lines: [line] }], stateGains: [{ state: 3442, levels: gain }],
+      reasons: ['conditional'], ...over,
+    });
+  const build = (gainT = 15, gainW = 40) => fixture({
+    spells: [
+      withBranch(THUNDER, 'Thunderbolt', gainT), withBranch(WRATH, "Iop's Wrath", gainW, extraLine({ min: 3, max: 91, critMin: 4, critMax: 114, noCrit: false })),
+      spell(FILL, costs.ap1, { stateGains: [{ state: 3442, levels: 100 }] }),
+      withBranch(ALLY_ONLY, 'Thunderbolt', 15, extraLine(), { rangeMin: 0 }),
+    ],
+  });
+  const withAlly = (input: SimInput): SimInput => {
+    input.actors.push({ ...input.actors[0], id: 'ally', name: 'Aliado', start: { x: 4, y: 5 }, spells: [] });
+    return input;
+  };
+  const extraRows = (r: ReturnType<typeof simulate>, i: number) => r.steps[i].rows.filter((x) => x.tags.includes('sim.tag.delayedHit'));
+
+  it('se dispara en el paso que cruza 100 y desaparece', () => {
+    const r = simulate({ ...build(), steps: [cast(THUNDER), cast(FILL), cast(FILL)] });
+    expect(extraRows(r, 0)).toHaveLength(0);
+    const rows = r.steps[1].rows;
+    expect(rows).toHaveLength(1);
+    expect(rows[0].kind).toBe('damage');
+    expect(rows[0].value).toEqual({ normal: HIT_N, crit: HIT_N, avg: HIT_N });
+    expect(rows[0].tags).toEqual(expect.arrayContaining(['sim.tag.delayedHit', 'sim.tag.unconfirmed']));
+    expect(r.steps[1].state.actors.main!.pending).toEqual({});
+    expect(r.steps[2].rows).toHaveLength(0);
+  });
+
+  it('la propia ganancia que cruza 100 lo dispara en ese paso, tras el golpe principal', () => {
+    const r = simulate({ ...build(100), steps: [cast(THUNDER)] });
+    const rows = r.steps[0].rows;
+    expect(rows).toHaveLength(2);
+    expect(rows[0].value.normal).toBe(NORMAL);
+    expect(rows[1].tags).toContain('sim.tag.delayedHit');
+    expect(rows[1].value.normal).toBe(HIT_N);
+  });
+
+  it('el +5 del combo que cruza 100 también lo dispara', () => {
+    const steps = [cast(THUNDER), ...seq(['mp1', 'mp1', 'wp1'], false)];
+    const input = build();
+    const r = simulate({ ...input, steps: [{ type: 'adjust', state: { id: CONC, levels: 80 } }, ...steps] });
+    // 80 + 15 del Trueno = 95; el combo suma 5 y llega a 100
+    expect(extraRows(r, 3)).toHaveLength(0);
+    expect(extraRows(r, 4)).toHaveLength(1);
+  });
+
+  it('Ira de Yopuka y Trueno pendientes dan dos filas', () => {
+    const r = simulate({ ...build(), steps: [cast(THUNDER), cast(WRATH), cast(FILL)] });
+    const rows = extraRows(r, 2);
+    expect(rows).toHaveLength(2);
+    expect(rows.map((x) => x.value.normal).sort((a, b) => a - b)).toEqual([HIT_N, Math.floor(91 * 7)]);
+  });
+
+  it('repetir el hechizo sustituye su golpe pendiente', () => {
+    const r = simulate({ ...build(), steps: [cast(THUNDER), cast(THUNDER), cast(FILL)] });
+    expect(extraRows(r, 2)).toHaveLength(1);
+  });
+
+  it('lanzado a un aliado no guarda nada', () => {
+    const input = withAlly(build());
+    const r = simulate({
+      ...input, steps: [{ type: 'cast', actor: 'main', spell: ALLY_ONLY, target: 'ally' }, cast(FILL)],
+    });
+    expect(r.steps[0].state.actors.main!.pending ?? {}).toEqual({});
+    expect(extraRows(r, 1)).toHaveLength(0);
+  });
+
+  it('suma a los totales y baja los PV del mob', () => {
+    const input = build();
+    const r = simulate({ ...input, steps: [cast(THUNDER), cast(FILL)] });
+    expect(r.totals.main!.damage.normal).toBe(NORMAL + HIT_N);
+    expect(r.steps[1].state.mobHp).toBe(input.target.hp - (r.steps[0].rows[0].value.avg + HIT_N));
+  });
+
+  it('el golpe pendiente sobrevive al fin de turno', () => {
+    const r = simulate({ ...build(), steps: [cast(THUNDER), { type: 'endTurn' }, cast(FILL)] });
+    expect(extraRows(r, 2)).toHaveLength(1);
+  });
+
+  it('ajustar la Concentración a mano no lo dispara', () => {
+    const r = simulate({ ...build(), steps: [cast(THUNDER), { type: 'adjust', state: { id: CONC, levels: 100 } }] });
+    expect(r.steps[1].rows).toHaveLength(0);
+    expect(r.steps[1].state.actors.main!.pending?.Thunderbolt).toBeDefined();
+  });
+
+  it('la rama resuelta no deja el aviso de condicional', () => {
+    const r = simulate({ ...build(), steps: [cast(THUNDER)] });
+    expect(r.steps[0].rows[0].warnings).not.toContain('sim.warn.conditional');
+  });
+
+  it('otra clase con la misma rama no guarda nada', () => {
+    const input = build();
+    input.actors[0].classId = 'sacrogrito';
+    const r = simulate({ ...input, steps: [cast(THUNDER), cast(FILL)] });
+    expect(r.steps[1].rows).toHaveLength(0);
+    expect(r.steps[0].rows[0].warnings).toContain('sim.warn.conditional');
   });
 });

@@ -19,6 +19,7 @@ export interface SimActor {
   id: ActorId; name: string; classId: string; level: number;
   stats: Record<string, number>; mastery: Record<Element, number>; maxHp: number;
   ap: number; mp: number; wp: number; spells: Spell[]; start: Cell;
+  wpPerTurn?: number;   // PW que recupera al terminar el turno (depende de la clase y las pasivas); 0 por defecto
   passives?: string[];  // pasivas equipadas, por su nombre inglés de la wiki (`spells` solo trae los activos)
 }
 
@@ -31,7 +32,7 @@ export type SimStep =
   | { type: 'cast'; actor: ActorId; spell: number; target: 'mob' | 'ally' | 'self' }
   | { type: 'move'; actor: ActorId; to: Cell }
   | { type: 'endTurn' }
-  | { type: 'adjust'; actor?: ActorId; hpPct?: number; armor?: number; facing?: Facing; state?: { id: string; levels: number } };
+  | { type: 'adjust'; actor?: ActorId; hpPct?: number; armor?: number; facing?: Facing; state?: { id: string; levels: number }; wp?: number };
 
 export interface Triple { normal: number; crit: number; avg: number }
 
@@ -49,7 +50,15 @@ export interface ActorState {
   cell: Cell; ap: number; mp: number; wp: number; hp: number; armor: number;
   healRes: number; states: Record<string, number>; uses: Record<number, number>;
   history?: string[];  // costes de los hechizos del turno, para los combos de clase; se vacía al terminar el turno
+  pending?: Record<string, PendingHit>;  // golpes diferidos por la clave del hechizo que los guardó
 }
+
+/** Golpe que una regla de clase deja guardado hasta que ocurra su disparador. */
+export interface PendingHit { line: SpellLine; spellId: number }
+
+/** Golpe adicional que la regla de clase pide emitir en el paso actual. */
+export interface ExtraHit { line: SpellLine; spellId: number; tags: TKey[] }
+export interface AfterCastResult { extraHits?: ExtraHit[] }
 
 export interface SimState {
   actors: Partial<Record<ActorId, ActorState>>; mobHp: number; facing: Facing; turn: number;
@@ -70,6 +79,7 @@ export interface CastMods {
   dmgPct?: number; tags?: TKey[]; tagVars?: Record<string, number>; warnings?: TKey[]; lines?: SpellLine[];
   instead?: SpellLine[];  // efectos "en su lugar": sustituyen a los normales y a los de berserker; [] = sin filas de valor
   lifeStealPct?: number;  // el lanzador se cura este % del daño infligido (fila de cura aparte)
+  resolvedConditional?: boolean;  // la regla ya resuelve la rama condicional del hechizo: no se avisa de ella
 }
 
 /** Recursos extra que cuesta un hechizo según el estado del lanzador (p. ej. en berserker). */
@@ -83,7 +93,7 @@ export interface ClassRules {
   /** `mobHpPct` es el % de PV que le queda al objetivo respecto a los que tenía al empezar. */
   beforeCast?(state: ActorState, actor: SimActor, spell: Spell, input: SimInput, target: CastTarget, mobHpPct: number): CastMods;
   /** `recipient` es quien recibe el hechizo cuando no va al mob: el aliado o el propio lanzador. */
-  afterCast?(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget, recipient?: ActorState): void;
+  afterCast?(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget, recipient?: ActorState): AfterCastResult | void;
   onEndTurn?(state: ActorState): void;
 }
 
@@ -158,8 +168,8 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
   if (!cast) {
     me.ap -= extra.ap ?? 0; me.mp -= extra.mp ?? 0; me.wp -= extra.wp ?? 0;
     me.uses[spell.id] = (me.uses[spell.id] ?? 0) + 1;
-    rules?.afterCast?.(me, actor, spell, step.target, recipient);
-    return done([uncalculatedRow(['sim.warn.noData', ...(mods.warnings ?? [])], mods)]);
+    const after = rules?.afterCast?.(me, actor, spell, step.target, recipient);
+    return done([uncalculatedRow(['sim.warn.noData', ...(mods.warnings ?? [])], mods), ...extraRows(after, actor, me, st, input)]);
   }
 
   me.ap -= cast.ap + (extra.ap ?? 0); me.mp -= cast.mp + (extra.mp ?? 0); me.wp -= cast.wp + (extra.wp ?? 0);
@@ -167,7 +177,7 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
 
   // Avisos comunes a todas las filas del hechizo.
   const warn: TKey[] = [];
-  const hasInjected = (mods.lines?.length ?? 0) > 0 || mods.instead !== undefined;
+  const hasInjected = (mods.lines?.length ?? 0) > 0 || mods.instead !== undefined || !!mods.resolvedConditional;
   if (cast.reasons.includes('conditional') && !hasInjected) warn.push('sim.warn.conditional');
   if (cast.reasons.includes('secondary')) warn.push('sim.warn.secondary');
   if (cast.reasons.includes('noCrit')) warn.push('sim.warn.noCrit');
@@ -216,8 +226,31 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
     const steal = mods.lifeStealPct ? lifeStealRow(rows, mods.lifeStealPct, me, actor) : undefined;
     if (steal) rows.push(steal);
   }
-  rules?.afterCast?.(me, actor, spell, step.target, recipient);
+  const after = rules?.afterCast?.(me, actor, spell, step.target, recipient);
+  rows.push(...extraRows(after, actor, me, st, input));
   return done(rows);
+}
+
+/** Filas de los golpes adicionales que pide la regla de clase: daño normal con el estado ya actualizado. */
+function extraRows(after: AfterCastResult | void, actor: SimActor, me: ActorState, st: SimState, input: SimInput): StepRow[] {
+  const hits = (after && after.extraHits) || [];
+  const rows: StepRow[] = [];
+  for (const h of hits) {
+    const spell = actor.spells.find((s) => s.id === h.spellId);
+    if (!spell) continue;
+    const berserk = isBerserk((me.hp / actor.maxHp) * 100);
+    const caster: SimActor = CLASS_RULES[actor.classId]?.statsFor ? { ...actor, stats: CLASS_RULES[actor.classId]!.statsFor!(actor, berserk) } : actor;
+    const l = h.line;
+    const level = clamp(floor(actor.level) || 1, 1, SPELL_MAX_LEVEL);
+    const nBase = baseAtLevel(l.min, l.max, level);
+    const noCrit = !!l.noCrit;
+    rows.push(damageRow({
+      nBase, cBase: noCrit ? nBase : baseAtLevel(l.critMin, l.critMax, level), noCrit,
+      critPct: clamp(stat(actor.stats, 'crit'), 0, 100), el: elementOf(spell, actor), actor: caster, me, st, input, berserk,
+      mods: { tags: h.tags }, warn: noCrit ? ['sim.warn.noCrit'] : [],
+    }));
+  }
+  return rows;
 }
 
 const unique = <T,>(xs: T[]): T[] => [...new Set(xs)];
@@ -336,6 +369,7 @@ function adjustStep(step: Extract<SimStep, { type: 'adjust' }>, st: SimState, in
   if (step.hpPct !== undefined) me.hp = Math.max(1, floor(clamp(step.hpPct, 0, 100) / 100 * actor.maxHp));
   if (step.armor !== undefined) me.armor = clamp(floor(step.armor), 0, addArmor(0, Infinity, actor.maxHp));
   if (step.facing) st.facing = step.facing;
+  if (step.wp !== undefined) me.wp = clamp(floor(step.wp), 0, actor.wp);
   if (step.state) me.states[step.state.id] = Math.max(0, floor(step.state.levels));
   return done();
 }
@@ -344,7 +378,9 @@ function endTurn(st: SimState, input: SimInput): Outcome {
   for (const actor of input.actors) {
     const s = st.actors[actor.id];
     if (!s) continue;
-    s.ap = actor.ap; s.mp = actor.mp; s.wp = actor.wp; s.uses = {};
+    s.ap = actor.ap; s.mp = actor.mp; s.uses = {};
+    // Los PW no se rellenan: solo se recupera lo que cada personaje gana por turno, hasta su máximo.
+    s.wp = Math.min(actor.wp, s.wp + (actor.wpPerTurn ?? 0));
     CLASS_RULES[actor.classId]?.onEndTurn?.(s);
   }
   st.turn += 1;

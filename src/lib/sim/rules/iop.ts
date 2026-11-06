@@ -5,7 +5,7 @@
 // siguiente hechizo de daño.
 
 import type { Spell } from '../../spells';
-import type { ActorState, CastMods, CastTarget, ClassRules, SimActor, SimInput } from '../engine';
+import type { ActorState, AfterCastResult, CastMods, CastTarget, ClassRules, SimActor, SimInput } from '../engine';
 import type { TKey } from '../../i18n';
 
 export type Cost = 'ap1' | 'ap2' | 'ap3' | 'mp1' | 'wp1';
@@ -65,6 +65,12 @@ const dealsDamage = (spell: Spell) =>
   [...(spell.cast?.lines ?? []), ...(spell.cast?.berserkLines ?? [])].some((l) => l.kind === 'damage' && l.side === 'enemy');
 
 const hasDissipation = (actor: SimActor) => actor.passives?.includes('Dissipation') ?? false;
+// Alarde: "No longer recovers WP at level 100 Concentration".
+const hasShowOff = (actor: SimActor) => actor.passives?.includes('Show Off') ?? false;
+
+/** Golpe de la rama "When the Iop reaches 100 state 3442" (Trueno, Ira de Yopuka): se guarda hasta ese evento. */
+const delayedLine = (spell: Spell) =>
+  spell.cast?.conditional.find((c) => /reaches 100 state 3442/i.test(c.when))?.lines.find((l) => l.kind === 'damage' && l.side === 'enemy');
 
 /** Juicio: "Cast on an enemy" es su daño y "Cast on an ally" da Preparación; ninguna de las ramas es una condición real. */
 const isJudgment = (spell: Spell) => spell.cast?.key === 'Judgment';
@@ -100,15 +106,16 @@ function beforeCast(state: ActorState, _actor: SimActor, spell: Spell, input: Si
     tags.push('sim.tag.combo', 'sim.tag.unconfirmed');
   }
 
+  if (delayedLine(spell)) mods.resolvedConditional = true;
   if (dmgPct) mods.dmgPct = dmgPct;
   if (tags.length) mods.tags = tags;
   if (warnings.length) mods.warnings = warnings;
   return mods;
 }
 
-function afterCast(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget, recipient?: ActorState): void {
+function afterCast(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget, recipient?: ActorState): AfterCastResult {
   const cast = spell.cast;
-  if (!cast) { state.history = []; return; }
+  if (!cast) { state.history = []; return {}; }
   const history = historyWith(state, spell);
   const combo = matchCombo(history);
   state.history = combo === null ? history : [];  // un combo completado consume sus pasos
@@ -117,27 +124,44 @@ function afterCast(state: ActorState, actor: SimActor, spell: Spell, target: Cas
   if (hitsMob(spell, target)) state.states[PREPARATION] = 0;
   if (isJudgment(spell) && target !== 'mob' && recipient) addPreparation(recipient, JUDGMENT_PREP);
 
+  // El golpe diferido se guarda antes de sumar Concentración: la propia ganancia del hechizo puede dispararlo.
+  const delayed = delayedLine(spell);
+  if (delayed && target === 'mob') {
+    state.pending = { ...state.pending, [cast.key]: { line: delayed, spellId: spell.id } };
+  }
+
   let conc = cast.stateGains.filter((g) => g.state === CONCENTRATION).reduce((s, g) => s + g.levels, 0);
   if (combo && !hasDissipation(actor)) conc += COMBO_CONC;
-  if (conc > 0) gainConcentration(state, conc);
+  const fired = conc > 0 && gainConcentration(state, actor, conc);
 
   if (combo === 'prep') addPreparation(state, PREP_PER_COMBO);
   if (combo === 'ap') state.ap += COMBO_AP;
+
+  // Cada evento de Concentración suelta todos los golpes pendientes, que no se repiten.
+  if (!fired || !state.pending) return {};
+  const extraHits = Object.values(state.pending).map((p) => ({
+    line: p.line, spellId: p.spellId, tags: ['sim.tag.delayedHit', 'sim.tag.unconfirmed'] as TKey[],
+  }));
+  state.pending = {};
+  return { extraHits };
 }
 
 function addPreparation(state: ActorState, levels: number): void {
   state.states[PREPARATION] = Math.min(PREP_MAX, (state.states[PREPARATION] ?? 0) + levels);
 }
 
-/** Suma Concentración (tope 400); cada 100 da 1 PW y 4 de Preparación y se resta. */
-function gainConcentration(state: ActorState, levels: number): void {
+/** Suma Concentración (tope 400); cada 100 da 1 PW (hasta el máximo) y 4 de Preparación y se resta. Devuelve si hubo evento. */
+function gainConcentration(state: ActorState, actor: SimActor, levels: number): boolean {
   let conc = Math.min(CONC_MAX, (state.states[CONC_KEY] ?? 0) + levels);
+  let fired = false;
   while (conc >= CONC_EVENT) {
+    fired = true;
     conc -= CONC_EVENT;
-    state.wp += 1;
+    if (!hasShowOff(actor)) state.wp = Math.min(actor.wp, state.wp + 1);
     addPreparation(state, PREP_PER_EVENT);
   }
   state.states[CONC_KEY] = conc;
+  return fired;
 }
 
 export const iopRules: ClassRules = {

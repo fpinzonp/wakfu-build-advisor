@@ -591,3 +591,43 @@ describe('simulate: mob derribado', () => {
     expect(r.steps[1].rows[0].tags).toContain('sim.tag.mobDown');
   });
 });
+
+describe('simulate: PW entre turnos', () => {
+  const COSTLY = 2;  // cuesta 2 PW, 1 PA
+  const withWp = (actor: Partial<SimActor> = {}): SimInput => fixture({
+    actor, spells: [spellOf(JABS), spellOf(COSTLY, {}, { ap: 1, wp: 2, perTurn: null })],
+  });
+  const wpAfter = (r: ReturnType<typeof simulate>, i: number) => r.steps[i].state.actors.main!.wp;
+
+  it('los PW gastados no se recuperan al terminar el turno, pero PA y PM sí', () => {
+    const r = simulate({ ...withWp(), steps: [castAt(COSTLY, 'mob'), { type: 'move', actor: 'main', to: { x: 5, y: 4 } }, { type: 'endTurn' }] });
+    expect(wpAfter(r, 0)).toBe(4);
+    const end = r.steps[2].state.actors.main!;
+    expect(end.wp).toBe(4);
+    expect(end.ap).toBe(6);
+    expect(end.mp).toBe(4);
+  });
+
+  it('wpPerTurn devuelve PW al terminar el turno, sin pasar del máximo', () => {
+    const r = simulate({ ...withWp({ wpPerTurn: 2 }), steps: [castAt(COSTLY, 'mob'), { type: 'endTurn' }, { type: 'endTurn' }] });
+    expect(wpAfter(r, 1)).toBe(6);
+    expect(wpAfter(r, 2)).toBe(6);
+    const partial = simulate({ ...withWp({ wpPerTurn: 1 }), steps: [castAt(COSTLY, 'mob'), { type: 'endTurn' }] });
+    expect(wpAfter(partial, 1)).toBe(5);
+  });
+
+  it('adjust.wp fija los PW para los pasos siguientes y respeta el máximo', () => {
+    const r = simulate({
+      ...withWp(), steps: [castAt(COSTLY, 'mob'), { type: 'adjust', wp: 6 }, castAt(COSTLY, 'mob'), { type: 'adjust', wp: 99 }],
+    });
+    expect(wpAfter(r, 1)).toBe(6);
+    expect(wpAfter(r, 2)).toBe(4);
+    expect(wpAfter(r, 3)).toBe(6);
+  });
+
+  it('sin PW suficientes el hechizo se rechaza', () => {
+    const r = simulate({ ...withWp({ wp: 3 }), steps: [castAt(COSTLY, 'mob'), { type: 'endTurn' }, castAt(COSTLY, 'mob')] });
+    expect(r.steps[2].ok).toBe(false);
+    expect(r.steps[2].reason).toBe('sim.err.wp');
+  });
+});

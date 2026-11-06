@@ -25,6 +25,7 @@ export function actorFromBuild(id: ActorId, result: BuildResult, opts: ActorOpts
     spells: pick(fitted.actives),
     // Las pasivas se identifican por su nombre inglés de la wiki: `name` va traducido.
     passives: pick(fitted.passives).map((s) => s.key).filter((k): k is string => !!k),
+    wpPerTurn: 0,
     start: { ...opts.start },
   };
 }

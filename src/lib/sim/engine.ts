@@ -60,6 +60,9 @@ export interface SimInput { actors: SimActor[]; target: SimTarget; steps: SimSte
 type Kind = StepRow['kind'];
 export interface SimResult { steps: StepResult[]; totals: Partial<Record<ActorId, Record<Kind, Triple>>> }
 
+/** A quién va el hechizo: al mob, al aliado o al propio lanzador. */
+export type CastTarget = 'mob' | 'ally' | 'self';
+
 /** Ajustes que una regla de clase aplica a un lanzamiento. `lines` aporta efectos condicionales ya resueltos. */
 export interface CastMods {
   dmgPct?: number; tags?: TKey[]; warnings?: TKey[]; lines?: SpellLine[];
@@ -67,8 +70,8 @@ export interface CastMods {
 }
 
 export interface ClassRules {
-  beforeCast?(state: ActorState, actor: SimActor, spell: Spell, input: SimInput): CastMods;
-  afterCast?(state: ActorState, actor: SimActor, spell: Spell): void;
+  beforeCast?(state: ActorState, actor: SimActor, spell: Spell, input: SimInput, target: CastTarget): CastMods;
+  afterCast?(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget): void;
   onEndTurn?(state: ActorState): void;
 }
 
@@ -126,11 +129,11 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
   }
 
   const rules = CLASS_RULES[actor.classId];
-  const mods: CastMods = rules?.beforeCast?.(me, actor, spell, input) ?? {};
+  const mods: CastMods = rules?.beforeCast?.(me, actor, spell, input, step.target) ?? {};
 
   if (!cast) {
     me.uses[spell.id] = (me.uses[spell.id] ?? 0) + 1;
-    rules?.afterCast?.(me, actor, spell);
+    rules?.afterCast?.(me, actor, spell, step.target);
     return done([uncalculatedRow(['sim.warn.noData', ...(mods.warnings ?? [])])]);
   }
 
@@ -179,7 +182,7 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
     const steal = mods.lifeStealPct ? lifeStealRow(rows, mods.lifeStealPct, me, actor) : undefined;
     if (steal) rows.push(steal);
   }
-  rules?.afterCast?.(me, actor, spell);
+  rules?.afterCast?.(me, actor, spell, step.target);
   return done(rows);
 }
 

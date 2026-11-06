@@ -132,6 +132,27 @@ describe('Yopuka: Preparación', () => {
     expect(r.steps[3].state.actors.main!.states[PREP]).toBe(20);
   });
 
+  it('un hechizo de daño lanzado a un aliado conserva la Preparación', () => {
+    const input = fixture({ spells: [spell(BIG, costs.ap1, { lines: [dmg()], rangeMin: 0 })] });
+    input.actors.push({ ...input.actors[0], id: 'ally', name: 'Aliado', start: { x: 4, y: 5 }, spells: [] });
+    const steps: SimStep[] = [...seq(['mp1', 'mp1', 'wp1'], false), { type: 'cast', actor: 'main', spell: BIG, target: 'ally' }];
+    const s = simulate({ ...input, steps }).steps[3];
+    expect(s.state.actors.main!.states[PREP]).toBe(20);
+    expect(s.rows[0]?.tags ?? []).not.toContain('sim.tag.preparation');
+  });
+
+  it('la Concentración del combo que cruza 100 en un hechizo de daño deja la Preparación para el siguiente', () => {
+    const input = fixture({ spells: [spell(BIG, costs.ap3, { lines: [dmg()], stateGains: [{ state: 3442, levels: 96 }] })] });
+    const steps = [cast(plain('mp1')), cast(plain('ap3')), cast(BIG), cast(withDamage('ap1'))];
+    const r = simulate({ ...input, steps });
+    const s = r.steps[2].state.actors.main!;
+    expect(s.wp).toBe(6);
+    expect(s.states[PREP]).toBe(4);
+    expect(s.states[CONC]).toBe(1);
+    expect(r.steps[2].rows[0].tags).not.toContain('sim.tag.preparation');
+    expect(r.steps[3].rows[0].value.normal).toBe(Math.floor(105 * 7 * 1.04));
+  });
+
   it('se limita a 60 niveles', () => {
     const three = seq(['mp1', 'mp1', 'wp1'], false);
     const input = fixture({ actor: { wp: 10, mp: 20 } });
@@ -205,10 +226,30 @@ describe('Yopuka: historial de costes', () => {
     expect(r.steps[2].state.actors.main!.states[CONC] ?? 0).toBe(0);
   });
 
-  it('un coste de 4 PA tampoco es paso', () => {
+  it('un coste de 4 PA no es paso y rompe la secuencia', () => {
     const input = fixture({ spells: [spell(BIG, { ap: 4, mp: 0, wp: 0 }, { lines: [dmg()] })] });
     const r = simulate({ ...input, steps: [cast(plain('mp1')), cast(BIG), cast(plain('ap3')), cast(withDamage('ap3'))] });
-    expect(r.steps[3].rows.map((x) => x.kind)).toEqual(['damage', 'heal']);
+    expect(r.steps[3].rows.map((x) => x.kind)).toEqual(['damage']);
+  });
+
+  it('un hechizo de dos tipos de coste entre medias rompe la secuencia', () => {
+    const steps = [cast(plain('mp1')), cast(plain('mixed')), cast(plain('ap3')), cast(withDamage('ap3'))];
+    expect(simulate({ ...fixture(), steps }).steps[3].rows.map((x) => x.kind)).toEqual(['damage']);
+  });
+
+  it('un hechizo sin ficha rompe la secuencia', () => {
+    const noData: Spell = { id: BIG, name: 'Sin datos', el: 'air', lvl: 0, icon: 0, text: [] };
+    const steps = [cast(plain('mp1')), cast(plain('ap3')), cast(BIG), cast(withDamage('ap3'))];
+    const r = simulate({ ...fixture({ spells: [noData] }), steps });
+    expect(r.steps[3].rows.map((x) => x.kind)).toEqual(['damage']);
+  });
+
+  it('un combo completado consume sus pasos: no encadena con el siguiente', () => {
+    const steps = ['ap1', 'ap1', 'ap2', 'ap1', 'mp1'].map((c) => cast(withDamage(c)));
+    const r = simulate({ ...fixture({ extra: 10 }), steps });
+    expect(r.steps[2].rows[0].tags).toContain('sim.tag.push');
+    expect(r.steps[4].rows[0].tags).not.toContain('sim.tag.unconfirmed');
+    expect(r.steps[4].state.actors.main!.states[CONC]).toBe(5);
   });
 
   it('el historial se reinicia al terminar el turno', () => {

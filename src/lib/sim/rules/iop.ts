@@ -5,7 +5,7 @@
 // siguiente hechizo de daño.
 
 import type { Spell } from '../../spells';
-import type { ActorState, CastMods, ClassRules, SimActor, SimInput } from '../engine';
+import type { ActorState, CastMods, CastTarget, ClassRules, SimActor, SimInput } from '../engine';
 import type { TKey } from '../../i18n';
 
 export type Cost = 'ap1' | 'ap2' | 'ap3' | 'mp1' | 'wp1';
@@ -56,7 +56,7 @@ function costOf(spell: Spell): Cost | null {
 function historyWith(state: ActorState, spell: Spell): Cost[] {
   const past = (state.history ?? []) as Cost[];
   const cost = costOf(spell);
-  return cost ? [...past, cost] : past;
+  return cost ? [...past, cost] : [];  // un hechizo que no es paso rompe la secuencia
 }
 
 /** Hechizo que daña al enemigo: es el que gasta la Preparación. */
@@ -65,10 +65,10 @@ const dealsDamage = (spell: Spell) =>
 
 const hasDissipation = (actor: SimActor) => actor.passives?.includes('Dissipation') ?? false;
 
-function beforeCast(state: ActorState, _actor: SimActor, spell: Spell, input: SimInput): CastMods {
+function beforeCast(state: ActorState, _actor: SimActor, spell: Spell, input: SimInput, target: CastTarget): CastMods {
   if (!spell.cast) return {};
   const combo = matchCombo(historyWith(state, spell));
-  const dealsDmg = dealsDamage(spell);
+  const dealsDmg = dealsDamage(spell) && target === 'mob';
   const mods: CastMods = {};
   const tags: TKey[] = [];
   const warnings: TKey[] = [];
@@ -90,15 +90,15 @@ function beforeCast(state: ActorState, _actor: SimActor, spell: Spell, input: Si
   return mods;
 }
 
-function afterCast(state: ActorState, actor: SimActor, spell: Spell): void {
+function afterCast(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget): void {
   const cast = spell.cast;
-  if (!cast) return;
+  if (!cast) { state.history = []; return; }
   const history = historyWith(state, spell);
-  state.history = history;
   const combo = matchCombo(history);
+  state.history = combo === null ? history : [];  // un combo completado consume sus pasos
 
   // La Preparación acumulada se gasta aquí; la que den este hechizo o su combo queda para el siguiente.
-  if (dealsDamage(spell)) state.states[PREPARATION] = 0;
+  if (dealsDamage(spell) && target === 'mob') state.states[PREPARATION] = 0;
 
   let conc = cast.stateGains.filter((g) => g.state === CONCENTRATION).reduce((s, g) => s + g.levels, 0);
   if (combo && !hasDissipation(actor)) conc += COMBO_CONC;

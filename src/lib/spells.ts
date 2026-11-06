@@ -36,6 +36,7 @@ export interface Spell {
   text: string[];       // efecto según la wiki, traducido
   stats?: Record<string, number | string>;  // número o "N%lvl"
   zero?: string[];      // características que la pasiva deja a 0
+  key?: string;         // solo pasivas: nombre inglés de la wiki (`name` se traduce); en los activos está en `cast.key`
   cast?: SpellCast;     // solo hechizos activos con ficha propia en la wiki
 }
 

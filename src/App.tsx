@@ -19,6 +19,7 @@ import {
 import { bestSublimation, sublimationBonus } from './lib/sublimations';
 import { EMPTY_DECK, NO_DECK_BONUS, classSpells, deckBonus, fitDeck, type Deck, type DeckBonus, type Spell, type SpellData } from './lib/spells';
 import DeckPanel from './DeckPanel';
+import SimPanel from './SimPanel';
 import {
   LANGS, LangContext, fmt, initialLang, jobName, locale, pct, setLang as applyLang, setNames, t, tk, type Lang, type LangData,
 } from './lib/i18n';
@@ -603,8 +604,8 @@ function LibraryDialog({ builds, onOpen, onDelete, onCopy, onClose, canOpen }: {
   );
 }
 
-type ViewTab = 'equip' | 'stats' | 'deck' | 'enchant' | 'craft' | 'apt';
-const VIEW_TABS: ViewTab[] = ['equip', 'stats', 'deck', 'enchant', 'craft', 'apt'];
+type ViewTab = 'equip' | 'stats' | 'deck' | 'sim' | 'enchant' | 'craft' | 'apt';
+const VIEW_TABS: ViewTab[] = ['equip', 'stats', 'deck', 'sim', 'enchant', 'craft', 'apt'];
 
 function BuildView({ result, level, role, cls, elements, items, request, locked, busy, enchant, onEnchant,
   spells, deck, onDeck, deckBonus: deckEffect, names, onExclude, onSwap, onUnlock, onShare, onSave }: {
@@ -840,6 +841,11 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
 
       <div hidden={tab !== 'deck'} className="tab-body">
         <DeckPanel spells={spells} deck={deck} level={level} bonus={deckEffect} onChange={onDeck} onShare={onShare} />
+      </div>
+
+      <div hidden={tab !== 'sim'} className="tab-body">
+        <SimPanel result={sheetResult} classId={request.classId} level={level} elements={elements} deck={deck}
+          spells={spells} active={tab === 'sim'} onGoToDeck={() => setTab('deck')} />
       </div>
 
       <div hidden={tab !== 'enchant'} className="tab-body">

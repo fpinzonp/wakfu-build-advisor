@@ -593,6 +593,7 @@ for (const r of wiki?.spells ?? []) {
     lvl: Number(r.level) || 0,
     icon: Number(/(\d+)/.exec(r.icon ?? '')?.[1] ?? 0),
     text: spellText(r.effects),
+    ...(passive && { key: r.spell }),  // nombre inglés estable: `name` se traduce más tarde
     ...(curated && Object.keys(stats).length && { stats }),
     ...(zero?.length && { zero }),
   };

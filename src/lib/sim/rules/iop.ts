@@ -21,8 +21,8 @@ export const COMBOS: Record<ComboId, Cost[]> = {
 };
 
 const CONCENTRATION = 3442;
-const PREPARATION = '3462';
-const CONC_KEY = String(CONCENTRATION);
+export const PREPARATION = '3462';
+export const CONC_KEY = String(CONCENTRATION);
 const CONC_MAX = 400;
 const CONC_EVENT = 100;
 const PREP_MAX = 60;

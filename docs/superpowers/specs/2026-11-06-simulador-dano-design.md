@@ -46,7 +46,9 @@ Sigue el mockup B, "desglose protagonista", con la paleta y los componentes de l
 **Secuencia**
 - Cada paso es un hechizo, un movimiento, un fin de turno o un ajuste manual (PV, orientación, estado).
 - Se respetan PA, PM, PW, alcance, línea de visión y usos por turno. Si algo no se puede lanzar, no se añade y se dice por qué.
-- Al terminar el turno se recuperan los recursos. Concentración, Preparación, PV y estados continúan según su duración.
+- Al terminar el turno se recuperan los PA y PM. Los PW no se rellenan: lo que quede pasa al turno siguiente y cada personaje solo recupera los "PW por turno" que se le indiquen (0 por defecto, porque depende de la clase y de sus pasivas), sin pasar del máximo. Ningún origen de PW supera el máximo, tampoco el evento de Concentración.
+- Un ajuste manual de PW permite cambiarlos a mitad de secuencia.
+- Concentración, Preparación, PV y estados continúan según su duración.
 
 **Fórmula**, de la [guía de WakfuCalc](https://sites.google.com/view/wakfucalc/en/guides/formulas):
 
@@ -69,7 +71,9 @@ daño = base × (1 + maestrías / 100) × posición × (1 + % daño infligido / 
 - Cada combo completado aplica su efecto al último hechizo y suma 5 de Concentración, salvo con la pasiva Disipación.
 - Cada hechizo suma su Concentración. Al llegar a 100: +1 PW, +4 de Preparación, el estado asociado y −100 de Concentración.
 - Preparación: el siguiente hechizo de daño gana +1 % de daño infligido por nivel.
+- La pasiva Alarde hace que el evento de 100 de Concentración no dé PW; la Preparación se conserva.
 - Los hechizos que dependen de estos estados (Trueno, Ira de Yopuka, Juicio y similares) se calculan con sus reglas.
+- Golpe adicional: Trueno e Ira de Yopuka guardan un golpe diferido al darle al mob, y se emite como fila extra, con el cálculo normal de daño, en el paso en que ocurra el siguiente evento de 100 de Concentración (por ganancia de hechizo o por combo), incluido el del propio hechizo. Un nuevo lanzamiento sustituye su golpe pendiente, los de hechizos distintos son independientes y persisten entre turnos hasta dispararse. Va marcado "Golpe diferido" y "Sin confirmar", porque en el juego no está confirmado si se acumulan ni el momento exacto. Un ajuste manual de Concentración no dispara eventos.
 
 **Sacrogrito**
 - Los PV en % se ajustan a mano y bajan con los efectos propios de la secuencia, como el retorno de llama y Punición.

@@ -1,7 +1,8 @@
 // Reglas del Yopuka: combos por orden de costes, Concentración y Preparación.
 // Los combos se detectan por los costes de los hechizos lanzados en el turno (andar no cuenta) y
 // su efecto cae sobre el último hechizo del combo. Cada hechizo suma su Concentración; al llegar
-// a 100 da 1 PW y 4 de Preparación. La Preparación (+1 % de daño por nivel) se gasta en el
+// a 100 da 1 PW (sin pasar del máximo ni con Alarde) y 4 de Preparación, y suelta los golpes diferidos
+// de Trueno e Ira de Yopuka. La Preparación (+1 % de daño por nivel) se gasta en el
 // siguiente hechizo de daño.
 
 import type { Spell } from '../../spells';

@@ -429,3 +429,62 @@ describe('parseSpellCast: críticos sin emparejar', () => {
     expect(c.reasons).toEqual([]);
   });
 });
+
+describe('parseSpellCast: ramas "Cast on" y residuos de la segunda revisión', () => {
+  const PUMMEL = 'Cast on {{gui|enemy}}: {{gui|earth}} Damage: 3-98\n\nCast on {{gui|ally}}: {{gui|armor}} 3-1,438 Armor\n\n{{gui|caster}} {{gui|armor}} 3-1,438 Armor';
+  const PUMMEL_CRIT = 'Cast on {{gui|enemy}}: {{gui|earth}} Damage: 4-123\n\nCast on {{gui|ally}}: {{gui|armor}} 4-1,798  Armor\n\n{{gui|caster}} {{gui|armor}} 4-1,798 Armor';
+  const HEADS = 'Cast on an enemy {{gui|enemy}}:\n{{gui|arrow}} {{gui|earth}} Damage: 3-91\n{{gui|arrow}} 50% health stolen\n\nCast on an ally {{gui|ally}}:\n{{gui|arrow}} {{gui|ally}} and {{gui|caster}}: {{gui|earth}} Healing: 6-50';
+  const BURP = '{{gui|enemy}} {{gui|fire}} Damage: 2 -60 {{gui|area vline|text=Size: 3 x 0}}\n{{gui|ally}} {{gui|fire}} Healing: 4-33 {{gui|area vline|text=Size: 3 x 0}}\n\nIf the target is {{st|6107}}:\n{{gui|arrow}} Consumes {{st|6107}}';
+  const SCRATCH = 'Along the path (3 -cell line):\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 3-98 (melee)\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 5-50\n\nTeleports to the cell';
+  const TRANSFER = 'Cast on a fighter, they switch places with {{gui|summon}} {{st|7134}} (7 cells maximum)\n{{gui|enemy}} {{gui|air}} Damage: 4-121\n\n{{gui|dragon}} {{st|7123}}:\n{{gui|arrow}} {{gui|enemy}} {{gui|air}} Damage: 4-121 {{gui|area circlering}}';
+  const CHILL = '{{st|3591}} (+50 Lvl.):\n{{gui|arrow}} -50 Elemental Resistance\n{{gui|air}} Damage: 4-111\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3599}}';
+  const SPEED = "'''Normal Effects'''\nTeleports to the targeted cell\n{{gui|caster}} {{gui|armor}} 6-28 {{gui|air}} Armor\n\n'''Effects if {{gui|caster}} {{gui|berserk}} {{st|9315}}'''\nCosts {{gui|wp}} 1 extra WP\n{{gui|enemy}} {{gui|air}} Damage: 3-91 {{gui|area circle}} around the starting cell\nTeleports to the targeted cell";
+  const hit = (side, kind, min, max) => expect.objectContaining({ side, kind, min, max });
+
+  it('Pummel: la cabecera con su efecto en la misma línea abre un bloque con ese efecto y dice a quién va', () => {
+    const c = cast({ effects: PUMMEL, criteffects: PUMMEL_CRIT });
+    expect(c.conditional).toEqual([
+      { when: 'Cast on enemy', lines: [{ kind: 'damage', side: 'enemy', min: 3, max: 98, critMin: 4, critMax: 123 }] },
+      { when: 'Cast on ally', lines: [{ kind: 'armor', side: 'ally', min: 3, max: 1438, critMin: 4, critMax: 1798 }] },
+    ]);
+    expect(c.lines).toEqual([expect.objectContaining({ kind: 'armor', side: 'caster', max: 1438 })]);
+  });
+
+  it('las cabeceras "Cast on" conservan a quién van aunque el icono se quite del texto', () => {
+    const c = cast({ effects: HEADS, criteffects: HEADS });
+    expect(c.conditional.map((b) => b.when)).toEqual(['Cast on an enemy', 'Cast on an ally']);
+    expect(c.conditional[0].lines).toEqual([expect.objectContaining({ kind: 'damage', side: 'enemy', min: 3, max: 91 })]);
+    expect(c.conditional[0].unread).toBe(true);  // "50% health stolen" no se calcula
+  });
+
+  it('Flaming Burp: "2 -60" con espacios se lee como rango', () => {
+    const c = cast({ effects: BURP, criteffects: BURP });
+    expect(c.lines).toEqual([hit('enemy', 'damage', 2, 60), hit('ally', 'heal', 4, 33)]);
+  });
+
+  it('Up to Scratch: "Along the path (3 -cell line):" es estructura y el golpe de melé queda condicional', () => {
+    const c = cast({ target: 'aoe', effects: SCRATCH, criteffects: SCRATCH });
+    expect(c.lines).toEqual([hit('ally', 'heal', 5, 50)]);
+    expect(c.conditional).toEqual([{ when: 'melee', lines: [hit('enemy', 'damage', 3, 98)] }]);
+  });
+
+  it('Transfer: una frase "Cast on a fighter, ..." sin dos puntos no es cabecera: su daño es incondicional', () => {
+    const c = cast({ effects: TRANSFER, criteffects: TRANSFER });
+    expect(c.lines).toEqual([hit('enemy', 'damage', 4, 121)]);
+    expect(c.conditional).toHaveLength(1);  // solo la rama del estado
+    expect(c.reasons).toContain('secondary');  // "7 cells maximum" no se calcula
+  });
+
+  it('Sudden Chill: "estado (+N Lvl.):" aplica un estado, no abre una condición: su daño es incondicional', () => {
+    const c = cast({ effects: CHILL, criteffects: CHILL });
+    expect(c.lines).toEqual([hit('enemy', 'damage', 4, 111)]);
+    expect(c.conditional.map((b) => b.when)).toEqual(['On state 8202']);
+    expect(c.reasons).toContain('secondary');  // la resistencia que baja no se calcula
+  });
+
+  it('Light Speed: el daño "around the starting cell" de berserker se lee y avisa de lo que no calcula', () => {
+    const c = cast({ target: 'aoe', effects: SPEED, criteffects: SPEED });
+    expect(c.berserkLines).toEqual([hit('enemy', 'damage', 3, 91)]);
+    expect(c.reasons).toContain('secondary');
+  });
+});

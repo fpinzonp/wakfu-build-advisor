@@ -28,7 +28,8 @@ export interface SpellCast {
   rangeMin: number; rangeMax: number; rangeMod: boolean; los: boolean;
   perTurn: number | null; target: 'st' | 'aoe'; zone?: Zone;
   lines: SpellLine[]; berserkLines?: SpellLine[];
-  conditional: { when: string; lines: SpellLine[] }[];  // efectos bajo una condición: no están en `lines`
+  // efectos bajo una condición: no están en `lines`; `unread`: la rama trae números que no se leen
+  conditional: { when: string; lines: SpellLine[]; unread?: boolean }[];
   stateGains: { state: number; levels: number }[];  // de "{{st|id}} (+N Lvl.)", solo si son incondicionales
   reasons: CastReason[];       // 'noCrit' y 'critFixed' no hacen partial por sí solos
   partial: boolean;            // reasons incluye 'conditional' o 'secondary'

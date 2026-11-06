@@ -58,7 +58,7 @@ function plain(line, states = false) {
 
 // Línea completa de efecto: "Damage: A-B", "Damage A-B", "Healing: A-B" o "A-B Armor" (tras quitar iconos).
 const N = '(\\d[\\d,]*)'; // los números grandes llevan coma: "5-2,398"
-const EFFECT = new RegExp(`^(?:(Damage|Heals?|Healing|Armor):?\\s*${N}-${N}|()${N}-${N} Armor)$`, 'i');
+const EFFECT = new RegExp(`^(?:(Damage|Heals?|Healing|Armor):?\\s*${N}\\s*-\\s*${N}|()${N}\\s*-\\s*${N} Armor)$`, 'i');
 // Variante que sustituye a otra: "Damage: A-B instead", con o sin condición delante.
 const INSTEAD = /^(?:(.*?):\s*)?(Damage|Heals?|Healing|Armor):?\s*(\d+)-(\d+)\s+instead$/i;
 // Anotación de alcance tras el efecto: "Damage: 6-153 (melee)". Depende de la distancia, así que es condicional.
@@ -67,10 +67,17 @@ const RANGE_NOTE = /^(.*?)\s*\((melee|distance)\)$/i;
 // Lista cerrada: lo que cambia el valor ("+5% per MP", "extra") o depende de algo ("on summons", "around the target")
 // no se acepta y sigue saliendo como efecto sin leer, que es el lado seguro.
 const QUALIFIER = new RegExp('^(.*?)\\s*(?:, penetrates Armor|\\(penetrates Armor\\)|\\((?:in)?direct(?: damage)?\\)'
-  + '|\\(to the targeted cell\\)|\\(except on\\s*\\)|\\(\\d+\\)|in an? .*area of effect|at end of the target\'s turn'
+  + '|around the starting cell|\\(to the targeted cell\\)|\\(except on\\s*\\)|\\(\\d+\\)|in an? .*area of effect|at end of the target\'s turn'
   + '|and (?:applies .*|steals .*|-.*|\\{ST\\}))$', 'i');
 // Cabecera de un bloque condicional: "If ...:", "Otherwise:", "When ...", "Per ...", "For each ..."
+// "Cast on ..." es cabecera, salvo una frase con coma ("Cast on a fighter, they switch places"): describe un efecto.
 const HEADER = /^(?:If|Otherwise|When|Per|For each|At |Each time|In |Cast on)\b|:$/i;
+// Cabecera con su efecto en la misma línea: "Cast on : Damage: 3-98" (el icono ya se quitó del texto).
+const INLINE_HEADER = /^(.*?)\s*:\s*(.+)$/;
+// Frase "Cast on X, ...": efecto descrito en prosa, que no abre bloque y no se calcula.
+const CAST_NOTE = /^Cast on\b[^:]*,/i;
+// Estado con niveles que se aplica al objetivo, con dos puntos: "{ST} (+50 Lvl.):". Lo que sigue no depende de nada.
+const STATE_INTRO = /^\{ST\} \(\+\d+ Lvl\.?\):$/;
 
 // Cabeceras de estructura: dicen DÓNDE cae el efecto (un área, una línea, el trayecto), no CUÁNDO.
 // Como el hechizo tiene un solo objetivo, sus líneas se aplican siempre y no abren un bloque condicional.
@@ -78,7 +85,7 @@ const HEADER = /^(?:If|Otherwise|When|Per|For each|At |Each time|In |Cast on)\b|
 // (avisa en vez de mostrar un número equivocado).
 const STRUCTURAL = new RegExp(
   '^(?:In(?: an? .*?(?:area of effect|line|cross|square|circle|ring|diagonal|cone|cells?))? ?:'
-  + '|Along the path ?:|For each enemy affected ?:|Normal Effects ?:)$', 'i');
+  + '|Along the path(?: \\(\\d+\\s*-\\s*cell line\\))? ?:|For each enemy affected ?:|Normal Effects ?:)$', 'i');
 export const isStructuralHeader = (line) => STRUCTURAL.test(line);
 
 // A quién afecta una línea. El daño va al enemigo salvo que el icono diga lanzador (el icono "ally" en un daño
@@ -97,6 +104,14 @@ function effectOf(line, raw, ctx) {
   if (!m) return null;
   const kind = KINDS[(m[1] ?? 'armor').toLowerCase()];
   return { kind, side: sideOf(raw, kind, ctx), min: num(m[2] ?? m[5]), max: num(m[3] ?? m[6]) };
+}
+
+// Texto de la condición de una cabecera. En "Cast on ..." el icono dice a quién va (enemigo o aliado) y al quitarlo
+// del texto se perdería: se añade como palabra si el texto no la trae.
+function headerText(text, icon) {
+  const when = text.replace(/[\s:]+$/, '').trim();
+  if (/^Cast on\b/i.test(when) && icon && icon !== 'caster' && !/\b(?:enem(?:y|ies)|all(?:y|ies))\b/i.test(when)) return `${when} ${icon}`;
+  return when;
 }
 
 // Interpreta un bloque de efectos. Lo que cuelga de una cabecera condicional va a `conditional`, nunca a `normal`.
@@ -151,14 +166,29 @@ function parseEffectBlock(text) {
       gains.push({ state: Number(gain[1]), levels: Number(/\(\+(\d+)/.exec(line)[1]) });
       continue;
     }
+    if (CAST_NOTE.test(line) && !block) { secondary = true; continue; }
+    if (STATE_INTRO.test(line)) {
+      block = null;
+      gains.push({ state: Number(/\{\{st\|(\d+)/.exec(raw)[1]), levels: Number(/\(\+(\d+)/.exec(line)[1]) });
+      continue;
+    }
     if (isStructuralHeader(line)) { block = null; continue; }
+    // Cabecera y efecto en la misma línea: el bloque nace con ese único efecto y se cierra.
+    const inline = INLINE_HEADER.exec(line);
+    const inlineEffect = inline && HEADER.test(inline[1]) && effectOf(inline[2], raw, ctx);
+    if (inlineEffect) {
+      conditional.push({ when: headerText(inline[1], icon), lines: [inlineEffect] });
+      block = null;
+      continue;
+    }
     if (HEADER.test(line)) {
-      block = { when: plain(raw, true).replace(/\s*:$/, '').trim(), lines: [] };
+      block = { when: headerText(plain(raw, true), icon), lines: [] };
       conditional.push(block);
       continue;
     }
-    if (!block && /\d/.test(line.replace(/\{ST\}/g, ''))) {
-      if (/(damage|heal|armor)/i.test(line)) unreadEffect = true; else secondary = true;
+    if (/\d/.test(line.replace(/\{ST\}/g, ''))) {
+      if (block) block.unread = true;  // número sin leer dentro de la rama: si se aplica, hay que avisar
+      else if (/(damage|heal|armor)/i.test(line)) unreadEffect = true; else secondary = true;
     }
   }
   return { normal, berserk, gains, conditional, unreadEffect, secondary };
@@ -196,7 +226,7 @@ function conditionalWithCrit(base, crit, fixes) {
   const out = base.map((b, i) => {
     const r = withCrit(b.lines, crit[i]?.lines ?? [], fixes);
     if (!r.ok) ok = false;
-    return { when: b.when, lines: r.lines };
+    return { when: b.when, lines: r.lines, ...(b.unread && { unread: true }) };
   });
   return { conditional: out, ok };
 }

@@ -121,6 +121,7 @@ const fr: Dict = {
   "form.aria": "Configuration du personnage",
   "form.character": "Personnage",
   "form.level": "Niveau",
+  "form.levelBand": "Tranche de niveau",
   "form.class": "Classe",
   "form.playstyle": "Style de jeu",
   "form.usualIn": "Habituel chez {cls}",

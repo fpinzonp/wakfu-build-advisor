@@ -1,6 +1,6 @@
 // Recomendador de builds: puntúa una combinación de objetos según el rol y busca la mejor
 // combinación con ascenso por coordenadas, reinicios aleatorios y respeto de las reglas del juego.
-import { BUILD_SLOTS, CRAFT_FILTER_EXEMPT, EPIC, RELIC, isDamageRole, type BuildSlot, type Element, type Item, type Role } from './game';
+import { ALWAYS_EQUIPPED_SLOTS, BUILD_SLOTS, EPIC, RELIC, isDamageRole, type BuildSlot, type Element, type Item, type Role } from './game';
 import { planAptitudes, type AptitudePlan } from './aptitudes';
 import type { DeckBonus } from './spells';
 import { t } from './i18n';
@@ -13,7 +13,7 @@ export interface BuildRequest {
   elements: Element[];
   targets: { ap: number; mp: number; range: number };
   allowedRarities: number[];
-  minLevel: number;          // ignora objetos de nivel inferior (0 = todos)
+  minLevel: number;          // ignora objetos de nivel inferior (0 = todos), salvo mascota y montura
   craftOnly: boolean;        // solo objetos con receta (salvo mascota y montura)
   berserk: boolean;          // contar el dominio berserker (Sacrógrito)
   crit: boolean;             // priorizar crítico (roles de daño)
@@ -311,9 +311,9 @@ export function recommend(items: Item[], req: BuildRequest): BuildResult {
   const { base } = ctx;
   const allowed = new Set(req.allowedRarities);
 
-  const pool = items.filter((i) => i.lvl <= req.level && i.lvl >= req.minLevel
-    && allowed.has(i.rarity) && !req.excluded.has(i.id)
-    && (!req.craftOnly || i.src === 'craft' || CRAFT_FILTER_EXEMPT.includes(i.slot))
+  const pool = items.filter((i) => i.lvl <= req.level && !req.excluded.has(i.id)
+    && (ALWAYS_EQUIPPED_SLOTS.includes(i.slot)
+      || (i.lvl >= req.minLevel && allowed.has(i.rarity) && (!req.craftOnly || i.src === 'craft')))
     && !i.cond?.some((c) => 'cls' in c && c.cls !== req.classId));
   const poolById = new Map(pool.map((i) => [i.id, i]));
 

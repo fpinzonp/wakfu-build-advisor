@@ -119,6 +119,7 @@ const es = {
   "form.aria": "Configuración del personaje",
   "form.character": "Personaje",
   "form.level": "Nivel",
+  "form.levelBand": "Franja de nivel",
   "form.class": "Clase",
   "form.playstyle": "Estilo de juego",
   "form.usualIn": "Habitual en {cls}",

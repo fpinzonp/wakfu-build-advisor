@@ -121,6 +121,7 @@ const en: Dict = {
   "form.aria": "Character setup",
   "form.character": "Character",
   "form.level": "Level",
+  "form.levelBand": "Level bracket",
   "form.class": "Class",
   "form.playstyle": "Playstyle",
   "form.usualIn": "Usual for {cls}",

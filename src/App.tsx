@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
-  BUILD_SLOTS, CLASSES, ELEMENTS, EPIC, RARITIES, RELIC, ROLES, ROLE_DEFAULT_TARGETS, SOURCE_LABELS, STAT_LABELS,
-  isDamageRole, itemImage,
+  BUILD_SLOTS, CLASSES, ELEMENTS, EPIC, LEVEL_BANDS, RARITIES, RELIC, ROLES, ROLE_DEFAULT_TARGETS, SOURCE_LABELS, STAT_LABELS,
+  bandOf, isDamageRole, itemImage,
   type BuildSlot, type EnchantData, type Element, type Item, type RecipeData, type Role, type SocketColor, type Sublimation,
 } from './lib/game';
 import {
@@ -311,6 +311,13 @@ export default function App() {
         <aside className="panel form" aria-label={t('form.aria')}>
           <div className="form-scroll">
             <FormStep n={1} title={t('form.character')}>
+              <div className="field">
+                <label htmlFor="level-band" className="label">{t('form.levelBand')}</label>
+                <select id="level-band" className="input" value={bandOf(level).max}
+                  onChange={(e) => changeLevel(+e.target.value)}>
+                  {LEVEL_BANDS.map((b) => <option key={b.max} value={b.max}>{b.min}–{b.max}</option>)}
+                </select>
+              </div>
               <div className="field">
                 <label htmlFor="level" className="label">{t('form.level')}</label>
                 <div className="level-row">

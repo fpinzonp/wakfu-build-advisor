@@ -92,7 +92,15 @@ export interface RecipeData {
 }
 
 // Ranuras que no se filtran con "solo crafteables" (casi nunca se craftean)
-export const CRAFT_FILTER_EXEMPT: ItemSlot[] = ['pet', 'mount'];
+// Mascota y montura siempre se colocan: no les aplican los filtros de nivel mínimo, rareza ni fabricación.
+export const ALWAYS_EQUIPPED_SLOTS: ItemSlot[] = ['pet', 'mount'];
+
+// Franjas de nivel del juego: 1-20, 21-35 y luego de 15 en 15 hasta 245.
+export const LEVEL_BANDS = [
+  { min: 1, max: 20 },
+  ...Array.from({ length: 15 }, (_, i) => ({ min: 21 + i * 15, max: 35 + i * 15 })),
+];
+export const bandOf = (level: number) => LEVEL_BANDS.find((b) => level <= b.max) ?? LEVEL_BANDS[LEVEL_BANDS.length - 1];
 
 export const ELEMENTS: { id: Element; label: string; color: string }[] = [
   L('el.fire', { id: 'fire', color: '#e8643a' }),

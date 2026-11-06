@@ -5,7 +5,14 @@ import { t, type TKey } from './i18n';
 
 export type SpellElement = 'fire' | 'water' | 'earth' | 'air' | 'light' | 'neutral' | 'passive';
 
-export interface SpellLine { kind: 'damage' | 'heal' | 'armor'; min: number; max: number; critMin: number; critMax: number }
+export interface SpellLine {
+  kind: 'damage' | 'heal' | 'armor';
+  side: 'enemy' | 'ally' | 'caster';  // a quién afecta; sin icono, el daño va al enemigo y la cura/armadura al objetivo aliado
+  min: number; max: number; critMin: number; critMax: number;
+}
+
+/** Por qué una ficha no es completa: efectos condicionales, otros efectos numéricos sin leer o sin bloque de críticos. */
+export type CastReason = 'conditional' | 'secondary' | 'noCrit';
 
 /** Coste y efectos de un hechizo activo para el simulador (de la ficha de la wiki). */
 export interface SpellCast {
@@ -14,8 +21,10 @@ export interface SpellCast {
   rangeMin: number; rangeMax: number; rangeMod: boolean; los: boolean;
   perTurn: number | null; target: 'st' | 'aoe';
   lines: SpellLine[]; berserkLines?: SpellLine[];
-  stateGains: { state: number; levels: number }[];  // de "{{st|id}} (+N Lvl.)"
-  partial: boolean;            // quedaron efectos sin interpretar
+  conditional: { when: string; lines: SpellLine[] }[];  // efectos bajo una condición: no están en `lines`
+  stateGains: { state: number; levels: number }[];  // de "{{st|id}} (+N Lvl.)", solo si son incondicionales
+  reasons: CastReason[];       // 'noCrit' (sin bloque de críticos: el crítico vale lo normal) no hace partial
+  partial: boolean;            // reasons incluye 'conditional' o 'secondary'
 }
 
 export interface Spell {

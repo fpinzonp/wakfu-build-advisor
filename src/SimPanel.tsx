@@ -11,6 +11,7 @@ import type { StoredBuild } from './lib/share';
 import { spellImage, type Deck, type Spell, type SpellData } from './lib/spells';
 import { allyFromStored } from './lib/sim/ally';
 import { simulate, type ActorId, type CastTarget, type SimActor, type SimState, type SimStep, type Triple } from './lib/sim/engine';
+import { castTarget } from './lib/sim/castTarget';
 import { actorFromBuild } from './lib/sim/fromBuild';
 import { addArmor, casterZone, distance, inZone, isCasterCentred, type Cell, type Facing } from './lib/sim/formulas';
 import type { MobData } from './lib/sim/mobs';
@@ -28,19 +29,6 @@ const costText = (s: Spell) => {
   if (!c) return t('sim.deck.noData');
   const parts = [c.ap && `${c.ap} ${t('stat.ap')}`, c.mp && `${c.mp} ${t('stat.mp')}`, c.wp && `${c.wp} ${t('stat.wp')}`].filter(Boolean);
   return parts.length ? parts.join(' · ') : `0 ${t('stat.ap')}`;
-};
-
-/**
- * Los hechizos sin efecto sobre enemigos (armaduras, curas) se lanzan sobre uno mismo; el resto, al mob.
- * Con aliado, los que tienen efectos sobre aliados van al otro personaje. Con alcance 0 y sin zona solo se pueden
- * lanzar sobre uno mismo.
- */
-export const castTarget = (s: Spell, hasAlly: boolean): CastTarget => {
-  const c = s.cast;
-  if (c && c.rangeMax === 0 && !isCasterCentred(c)) return 'self';
-  const lines = [...(c?.lines ?? []), ...(c?.berserkLines ?? [])];
-  if (lines.length === 0 || lines.some((l) => l.side === 'enemy')) return 'mob';
-  return hasAlly && lines.some((l) => l.side === 'ally') ? 'ally' : 'self';
 };
 
 const same = (a: Cell, b: Cell) => a.x === b.x && a.y === b.y;
@@ -216,7 +204,7 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
   const targetOptions: { id: CastTarget | null; label: string }[] = [
     { id: null, label: t('sim.castTo.auto') },
     { id: 'mob', label: mobName },
-    { id: 'ally', label: others[0]?.name ?? '' },
+    ...(others[0] ? [{ id: 'ally' as const, label: others[0].name }] : []),
     { id: 'self', label: t('sim.castTo.self') },
   ];
 
@@ -259,8 +247,8 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
 
       <div className="sim-col">
         <div className="panel sim-res" role="status" aria-label={t('sim.res')}>
-          {ally && (
-            <div className="sim-who-pick">
+          <div className="sim-who-pick">
+            {ally && (
               <div className="field">
                 <span className="label" id="sim-acting">{t('sim.acting')}</span>
                 <div className="seg" role="group" aria-labelledby="sim-acting">
@@ -270,18 +258,18 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
                   ))}
                 </div>
               </div>
-              <div className="field">
-                <span className="label" id="sim-cast-to">{t('sim.castTo')}</span>
-                <div className="seg" role="group" aria-labelledby="sim-cast-to">
-                  {targetOptions.map((o) => (
-                    <button key={o.id ?? 'auto'} type="button" className={o.id === castTo ? 'on' : ''} aria-pressed={o.id === castTo}
-                      onClick={() => setCastTo(o.id)}>{o.label}</button>
-                  ))}
-                </div>
-                <small className="muted">{t('sim.castTo.hint')}</small>
+            )}
+            <div className="field">
+              <span className="label" id="sim-cast-to">{t('sim.castTo')}</span>
+              <div className="seg" role="group" aria-labelledby="sim-cast-to">
+                {targetOptions.map((o) => (
+                  <button key={o.id ?? 'auto'} type="button" className={o.id === castTo ? 'on' : ''} aria-pressed={o.id === castTo}
+                    onClick={() => setCastTo(o.id)}>{o.label}</button>
+                ))}
               </div>
+              <small className="muted">{t('sim.castTo.hint')}</small>
             </div>
-          )}
+          </div>
           {actors.map((a) => {
             const st = shown?.actors[a.id];
             const hp = st?.hp ?? a.maxHp;

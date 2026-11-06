@@ -2,7 +2,8 @@
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import SimMap from './SimMap';
-import SimPanel, { castTarget, needsAlly, shownFacing } from './SimPanel';
+import SimPanel, { needsAlly, shownFacing } from './SimPanel';
+import { castTarget } from './lib/sim/castTarget';
 import { facingStep } from './SimAdjust';
 import { AllyList } from './SimAlly';
 import SimSteps from './SimSteps';
@@ -47,7 +48,8 @@ describe('SimPanel', () => {
     const sin = renderToString(<SimPanel {...props} deck={deck} />);
     expect(sin).toMatch(/<button[^>]*disabled=""[^>]*>Añadir aliado/);
     expect(sin).not.toContain('Quién actúa');
-    expect(sin).not.toContain('Objetivo del próximo hechizo');
+    expect(sin).toContain('Objetivo del próximo hechizo');  // elegir mob o uno mismo no necesita aliado
+    expect(sin).not.toContain('sim-who-pick"><div class="field"><span class="label" id="sim-acting"');
     const con = renderToString(<SimPanel {...props} items={[{ id: 1 } as never]} spellData={spellData} deck={deck} />);
     expect(con).not.toMatch(/<button[^>]*disabled=""[^>]*>Añadir aliado/);
     expect(con).toContain('Añadir aliado');

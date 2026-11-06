@@ -154,7 +154,8 @@ describe('hechizos que antes no golpeaban al mob o quedaban sin calcular', () =>
     expect(spell.cast!.rangeMin).toBeGreaterThan(2);
     const step = run(classId, spell, 'mob', 245);
     expect(realHit(step)).toBeUndefined();
-    expect(step.rows.length).toBeGreaterThan(0);  // la fila avisa de lo que no recibe el mob (la armadura es de aliados)
+    // la rama de melé se descarta por el alcance: la fila sin calcular lo avisa, no se omite en silencio
+    expect(step.rows.some((r) => r.uncalculated && r.warnings.includes('sim.warn.conditional'))).toBe(true);
   });
 
   it('ningún hechizo con efecto sobre enemigos va a uno mismo por defecto: el efecto llega a la fila o a un aviso', () => {

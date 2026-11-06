@@ -596,7 +596,7 @@ const fr: Dict = {
   "sim.castTo": "Cible du prochain sort",
   "sim.castTo.auto": "Automatique",
   "sim.castTo.self": "Soi-même",
-  "sim.castTo.hint": "Automatique : soins et boucliers vers l'autre personnage, dégâts vers le mob.",
+  "sim.castTo.hint": "Automatique : chaque sort va là où ses effets l'indiquent.",
   "sim.map.hintAlly": "Cliquez sur une case pour déplacer le personnage qui agit. Bordure en pointillés : dos du mob.",
   "sim.map.cellAlly": "Case {x}, {y} : allié {name}",
   "sim.res.armor": "Armure {n}/{max}",

@@ -596,7 +596,7 @@ const en: Dict = {
   "sim.castTo": "Target of the next spell",
   "sim.castTo.auto": "Automatic",
   "sim.castTo.self": "Self",
-  "sim.castTo.hint": "Automatic: heals and shields go to the other character, damage to the mob.",
+  "sim.castTo.hint": "Automatic: each spell goes where its effects call for.",
   "sim.map.hintAlly": "Press a cell to move the acting character. Dashed border: the mob's back.",
   "sim.map.cellAlly": "Cell {x}, {y}: ally {name}",
   "sim.res.armor": "Armor {n}/{max}",

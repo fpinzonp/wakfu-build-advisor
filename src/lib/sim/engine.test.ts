@@ -644,16 +644,23 @@ describe('simulate: ramas condicionales que el paso decide', () => {
     expect(r.steps[0].rows).toHaveLength(1);
     expect(r.steps[0].rows[0]).toMatchObject({ kind: 'damage', value: { normal: 735 } });
     expect(r.steps[0].rows[0].uncalculated).toBeUndefined();
-    expect(r.steps[0].rows[0].warnings).toEqual([]);
+    // la rama del aliado se descarta por el destino y lo dice
+    expect(r.steps[0].rows[0].warnings).toEqual(['sim.warn.targetDropped']);
+    expect(r.steps[0].rows[0].warnings).not.toContain('sim.warn.conditional');
   });
 
-  it('"Cast on an ally" se aplica sobre el aliado y sobre uno mismo, y la del enemigo no', () => {
+  it('"Cast on an ally" se aplica sobre el aliado; sobre uno mismo se descarta con aviso, y la del enemigo también', () => {
     const input = spellWith(blocks);
     const onAlly = simulate({ ...input, actors: [input.actors[0], allyOf(input)], steps: [castAt(1, 'ally')] });
     expect(onAlly.steps[0].rows.map((x) => x.kind)).toEqual(['heal']);
-    expect(onAlly.steps[0].rows[0].warnings).toEqual([]);
+    expect(onAlly.steps[0].rows[0].warnings).toEqual(['sim.warn.targetDropped']);
     const onSelf = simulate({ ...input, steps: [castAt(1, 'self')] });
-    expect(onSelf.steps[0].rows.map((x) => x.kind)).toEqual(['heal']);
+    expect(onSelf.steps[0].rows).toEqual([expect.objectContaining({ uncalculated: true, warnings: ['sim.warn.targetDropped'] })]);
+  });
+
+  it('"Cast on an ally" sobre el mob: sin nada que calcular, la fila sin calcular avisa del destino', () => {
+    const r = simulate({ ...spellWith([blocks[1]]), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows).toEqual([expect.objectContaining({ uncalculated: true, warnings: ['sim.warn.targetDropped'] })]);
   });
 
   it('las variantes del texto ("Cast on enemy", "Cast on an enemy:") se reconocen', () => {
@@ -669,14 +676,34 @@ describe('simulate: ramas condicionales que el paso decide', () => {
     expect(near.steps[0].rows).toHaveLength(1);
     expect(near.steps[0].rows[0].tags).toContain('sim.tag.melee');
     expect(near.steps[0].rows[0].value.normal).toBe(20 * 7);  // solo la rama de melé
-    expect(near.steps[0].rows[0].warnings).toEqual([]);
+    // la rama de distancia se descarta por el alcance y lo dice
+    expect(near.steps[0].rows[0].warnings).toEqual(['sim.warn.conditional']);
     const far = spellWith(both);
     far.actors[0].start = { x: 2, y: 5 };
     const r = simulate({ ...far, steps: [castAt(1, 'mob')] });
     expect(r.steps[0].rows).toHaveLength(1);
     expect(r.steps[0].rows[0].tags).toContain('sim.tag.dist');
+    expect(r.steps[0].rows[0].warnings).toEqual(['sim.warn.conditional']);
   });
 
+  it('melé a distancia: la única rama se descarta y la fila sin calcular lo avisa', () => {
+    const input = spellWith([{ when: 'melee', lines: [line()] }]);
+    input.actors[0].start = { x: 2, y: 5 };
+    const r = simulate({ ...input, steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows).toEqual([expect.objectContaining({ uncalculated: true, warnings: ['sim.warn.conditional'] })]);
+  });
+
+  it('distancia en melé: igual, avisa por el alcance', () => {
+    const r = simulate({ ...spellWith([{ when: 'distance', lines: [line()] }]), steps: [castAt(1, 'mob')] });
+    expect(r.steps[0].rows).toEqual([expect.objectContaining({ uncalculated: true, warnings: ['sim.warn.conditional'] })]);
+  });
+
+  it('melé sobre uno mismo se descarta por el destino', () => {
+    const r = simulate({ ...spellWith([{ when: 'melee', lines: [line()] }]), steps: [castAt(1, 'self')] });
+    expect(r.steps[0].rows).toEqual([expect.objectContaining({ uncalculated: true, warnings: ['sim.warn.targetDropped'] })]);
+  });
+
+  // Regla fijada: `sim.warn.conditional` queda mientras algún bloque no se decida, aunque otros se apliquen.
   it('un bloque sin decidir sigue avisando aunque otros se hayan aplicado', () => {
     const mixed = [...blocks, { when: 'If the target has Armor', lines: [line()] }];
     const r = simulate({ ...spellWith(mixed), steps: [castAt(1, 'mob')] });

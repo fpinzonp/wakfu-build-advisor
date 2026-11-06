@@ -332,7 +332,7 @@ describe('Yopuka: Juicio', () => {
     expect(after.ally!.states[PREP]).toBe(10);
     expect(after.main!.states[PREP] ?? 0).toBe(0);
     expect(after.main!.states[CONC]).toBe(5);
-    expect(r.steps[0].rows).toEqual([expect.objectContaining({ uncalculated: true, warnings: ['sim.warn.prepGiven'] })]);
+    expect(r.steps[0].rows).toEqual([expect.objectContaining({ uncalculated: true, warnings: expect.arrayContaining(['sim.warn.prepGiven']) })]);
     expect(r.totals.main!.damage.normal).toBe(0);
   });
 

@@ -594,7 +594,7 @@ const es = {
   "sim.castTo": "Objetivo del próximo hechizo",
   "sim.castTo.auto": "Automático",
   "sim.castTo.self": "Uno mismo",
-  "sim.castTo.hint": "Automático: curas y escudos al otro personaje, daño al mob.",
+  "sim.castTo.hint": "Automático: cada hechizo va a donde corresponde según sus efectos.",
   "sim.map.hintAlly": "Pulsa una casilla para mover al personaje que actúa. Borde discontinuo: espalda del mob.",
   "sim.map.cellAlly": "Casilla {x}, {y}: aliado {name}",
   "sim.res.armor": "Armadura {n}/{max}",

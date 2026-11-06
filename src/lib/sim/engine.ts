@@ -102,7 +102,8 @@ export interface ClassRules {
 export const CLASS_RULES: Partial<Record<string, ClassRules>> = { yopuka: iopRules, sacrogrito: sacrierRules };
 
 /** Qué hace una rama condicional en este lanzamiento: se aplica, no corresponde, o el motor no sabe decidirlo. */
-type Branch = 'apply' | 'skip' | 'unknown';
+// `skipTarget`: la rama es de otro destino; `skipRange`: el alcance (melé o distancia) la descarta.
+type Branch = 'apply' | 'skipTarget' | 'skipRange' | 'unknown';
 
 // "Cast on an enemy", "Cast on ally"...: la rama depende solo de a quién va el hechizo. Lista cerrada: "Cast on KO'd ally"
 // o "Cast on the turret" dependen de algo más y no se deciden.
@@ -112,9 +113,10 @@ const CAST_ON = /^cast on(?: an?| the)?(?: target)? (?:(enem(?:y|ies))|(all(?:y|
 function branchOf(when: string, target: CastTarget, melee: boolean): Branch {
   const w = when.trim();
   const range = /^(melee|distance)$/i.exec(w)?.[1].toLowerCase();
-  if (range) return target === 'mob' && melee === (range === 'melee') ? 'apply' : 'skip';
+  if (range) return target !== 'mob' ? 'skipTarget' : melee === (range === 'melee') ? 'apply' : 'skipRange';
   const castOn = CAST_ON.exec(w);
-  if (castOn) return (castOn[1] ? target === 'mob' : target !== 'mob') ? 'apply' : 'skip';
+  // "Cast on ally" es solo para el otro personaje: sobre uno mismo no se aplica.
+  if (castOn) return (castOn[1] ? target === 'mob' : target === 'ally') ? 'apply' : 'skipTarget';
   return 'unknown';
 }
 
@@ -204,6 +206,10 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
   const undecided = branches.filter((x) => x.r === 'unknown' && !mods.resolvedConditional?.(x.b.when));
   if (cast.reasons.includes('conditional') && !hasInjected && (branches.length === 0 || undecided.length > 0)) warn.push('sim.warn.conditional');
   if (applied.some((b) => b.unread)) warn.push('sim.warn.secondary');
+  // Una rama descartada con efectos nunca desaparece en silencio: por destino avisa `targetDropped`, por alcance `conditional`.
+  const skipped = (r: Branch) => branches.some((x) => x.r === r && x.b.lines.length > 0);
+  if (skipped('skipTarget')) warn.push('sim.warn.targetDropped');
+  if (skipped('skipRange')) warn.push('sim.warn.conditional');
   if (cast.reasons.includes('secondary')) warn.push('sim.warn.secondary');
   if (cast.reasons.includes('noCrit')) warn.push('sim.warn.noCrit');
   if (cast.reasons.includes('critFixed')) warn.push('sim.warn.critFixed');

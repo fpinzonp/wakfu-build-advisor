@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseInfobox, parseMob, parseRange, parseSpellCast } from './wiki-parse.mjs';
+import { parseInfobox, parseMob, parseRange, parseSpellCast, pickSpellPage, spellTitleCandidates } from './wiki-parse.mjs';
 
 // Textos reales de wakfu.wiki.gg (action=raw), recortados tras la ficha.
 const ARROW = String.raw`{{Spell
@@ -189,6 +189,65 @@ describe('parseSpellCast: efectos condicionales', () => {
     const c = cast({ effects: '{{gui|caster}} {{st|4840}}: Damage: 10% of max HP\n{{gui|fire}} Damage 4-151 {{gui|area circlering|text=Size: 1 - 1}}', criteffects: '{{gui|fire}} Damage 5-188' });
     expect(c.lines).toEqual([{ kind: 'damage', side: 'enemy', min: 4, max: 151, critMin: 5, critMax: 188 }]);
     expect(c.reasons).toContain('conditional');
+  });
+});
+
+describe('parseSpellCast: cabeceras de estructura', () => {
+  const CLEAVER = "In a cross {{gui|area cross}} area of effect:\n{{gui|arrow}} {{gui|enemy}} {{gui|earth}} Damage: 2-55\n\nPer target hit:\n{{gui|arrow}} {{gui|caster}} {{gui|armor}} 1-20 {{gui|earth}} Armor";
+  const dmg = (min, max, critMin, critMax, side = 'enemy') => ({ kind: 'damage', side, min, max, critMin, critMax });
+  it('Cleaver: el daño del área va a lines y "Per target hit" sigue condicional', () => {
+    const c = cast({ target: 'aoe', effects: CLEAVER, criteffects: CLEAVER.replace('2-55', '2-69') });
+    expect(c.lines).toEqual([dmg(2, 55, 2, 69)]);
+    expect(c.conditional.map((b) => b.when)).toEqual(['Per target hit']);
+    expect(c.conditional[0].lines[0]).toMatchObject({ kind: 'armor', side: 'caster', min: 1, max: 20 });
+  });
+  it('Flaming Arrow: "In a 5-cell vertical line :" es estructura', () => {
+    const f = "In a 5-cell vertical line {{gui|area vline}}:\n{{gui|arrow}} {{gui|fire}} Damage: 4-121\n{{gui|arrow}} {{gui|enemy}} {{st|752}} (Lvl 3)";
+    const c = cast({ effects: f, criteffects: f.replace('4-121', '5-152') });
+    expect(c.lines).toEqual([dmg(4, 121, 5, 152)]);
+    expect(c.conditional).toEqual([]);
+  });
+  it('Deliverance: "In :" vacío, daño al enemigo y cura al aliado', () => {
+    const f = "In {{gui|area square|text=Size: 3}}:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 3-76\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 6-42";
+    const c = cast({ effects: f, criteffects: f });
+    expect(c.lines.map((l) => [l.kind, l.side])).toEqual([['damage', 'enemy'], ['heal', 'ally']]);
+    expect(c.partial).toBe(false);
+  });
+  it('Colonnades: el icono "ally" en un daño no cambia el lado y "Per target hit" lo hereda del lanzador', () => {
+    const f = "In a square {{gui|area square}} area of effect:\n{{gui|arrow}} {{gui|enemy}}\n{{gui|arrow}} {{gui|ally}} {{gui|earth}} Damage: 4-131\n\nPer target hit:\n{{gui|arrow}} {{gui|caster}} {{gui|earth}} Damage: 4-131\n{{gui|armor}} 1-20 {{gui|earth}} Armor {{gui|area squarering}}";
+    const c = cast({ target: 'aoe', effects: f, criteffects: f });
+    expect(c.lines).toEqual([dmg(4, 131, 4, 131)]);
+    expect(c.conditional[0].lines.map((l) => [l.kind, l.side])).toEqual([['damage', 'caster'], ['armor', 'caster']]);
+  });
+  it('Watchdog y Capering: "For each enemy affected" y "Along the path" son estructura', () => {
+    const w = cast({ effects: "For each enemy affected:\n{{gui|arrow}} {{gui|caster}} 1-467 armor\n{{gui|enemy}} {{gui|earth}} Damage: 4-121 {{gui|area cross}}", criteffects: "For each enemy affected:\n{{gui|arrow}} {{gui|caster}} 1-467 armor\n{{gui|enemy}} {{gui|earth}} Damage: 5-152 {{gui|area cross}}" });
+    expect(w.lines.map((l) => [l.kind, l.side])).toEqual([['armor', 'caster'], ['damage', 'enemy']]);
+    expect(w.partial).toBe(false);
+  });
+  it('otras cabeceras ("For each cell away", "Per portal") siguen condicionales', () => {
+    const c = cast({ effects: "For each cell away:\n{{gui|arrow}} {{gui|fire}} Damage: 1-10\n\nPer portal:\n{{gui|fire}} Damage: 2-20", criteffects: "For each cell away:\n{{gui|arrow}} {{gui|fire}} Damage: 1-12\n\nPer portal:\n{{gui|fire}} Damage: 2-24" });
+    expect(c.lines).toEqual([]);
+    expect(c.conditional).toHaveLength(2);
+    expect(c.partial).toBe(true);
+  });
+  it('"(melee)" y "(distance)" van a conditional con el alcance como condición; las comas se leen', () => {
+    const f = "Along the path:\n{{gui|arrow}} {{gui|enemy}} {{gui|fire}} Damage: 6-153 (melee)\n{{gui|arrow}} {{gui|ally}} {{gui|armor}} 5-2,398 armor";
+    const c = cast({ target: 'aoe', effects: f, criteffects: f.replace('6-153', '8-191').replace('5-2,398', '7-2,997') });
+    expect(c.lines).toEqual([{ kind: 'armor', side: 'ally', min: 5, max: 2398, critMin: 7, critMax: 2997 }]);
+    expect(c.conditional).toEqual([{ when: 'melee', lines: [dmg(6, 153, 8, 191)] }]);
+    expect(c.reasons).toContain('conditional');
+  });
+});
+
+describe('fichas de hechizos con otro título', () => {
+  it('prueba el nombre, "(spell)" y "(clase)" en ese orden', () => {
+    expect(spellTitleCandidates('Sword of Iop', 'Iop')).toEqual(['Sword of Iop', 'Sword of Iop (spell)', 'Sword of Iop (Iop)']);
+  });
+  it('elige la primera ficha de la clase y descarta la de otra clase', () => {
+    const row = { spell: 'Sword of Iop', class: 'Iop' };
+    const pages = { 'Sword of Iop': { class: 'Cra' }, 'Sword of Iop (spell)': { class: 'Iop', AP: '4' } };
+    expect(pickSpellPage(pages, row)).toEqual({ class: 'Iop', AP: '4' });
+    expect(pickSpellPage({ 'Sword of Iop': { class: 'Cra' } }, row)).toBeNull();
   });
 });
 

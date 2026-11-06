@@ -2,7 +2,7 @@
 // un archivo compacto con solo el equipamiento y sus estadísticas ya interpretadas.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { parseLuaTable } from './lua-table.mjs';
-import { parseInfobox, parseMob, parseSpellCast } from './wiki-parse.mjs';
+import { parseInfobox, parseMob, parseSpellCast, pickSpellPage, spellTitleCandidates } from './wiki-parse.mjs';
 
 const CDN = 'https://wakfu.cdn.ankama.com/gamedata';
 const OUT_DIR = new URL('../public/data/', import.meta.url);
@@ -313,13 +313,19 @@ async function fetchWikitext(titles) {
 // Ficha {{Spell}} de cada hechizo activo (por nombre inglés). Solo se guardan sus campos.
 const SPELL_FIELDS = ['class', 'AP', 'target', 'range', 'los', 'mod', 'effects', 'criteffects', 'conditions'];
 async function fetchSpellPages(spells) {
-  const names = [...new Set(spells.filter((s) => s.type !== 'Passive').map((s) => s.spell))];
-  const texts = await fetchWikitext(names);
-  const pages = {};
-  for (const [name, text] of texts) {
-    const f = parseInfobox(text, 'Spell');
-    if (!Object.keys(f).length) continue; // redirección o página de desambiguación
-    pages[name] = Object.fromEntries(SPELL_FIELDS.filter((k) => f[k] !== undefined).map((k) => [k, f[k]]));
+  let pending = spells.filter((s) => s.type !== 'Passive');
+  const pages = {}; // título de la wiki -> campos de la ficha
+  // Primero el nombre a secas; a los que no tienen ficha de su clase (el título es un objeto, una redirección o
+  // una desambiguación) se les prueba "<nombre> (spell)" y "<nombre> (<clase>)".
+  for (let i = 0; i < 3 && pending.length; i++) {
+    const titles = [...new Set(pending.map((s) => spellTitleCandidates(s.spell, s.class)[i]))];
+    if (i) await sleep(400);
+    for (const [title, text] of await fetchWikitext(titles)) {
+      const f = parseInfobox(text, 'Spell');
+      if (!Object.keys(f).length) continue;
+      pages[title] = Object.fromEntries(SPELL_FIELDS.filter((k) => f[k] !== undefined).map((k) => [k, f[k]]));
+    }
+    pending = pending.filter((s) => !pickSpellPage(pages, s));
   }
   return pages;
 }
@@ -567,7 +573,7 @@ const trSpell = (lang, kind, text) => {
 const spellsOut = { common: [], classes: {} };
 const usedIds = new Map();
 const unusedStats = new Set(Object.keys(spellStats));
-const castStats = { active: 0, cast: 0, partial: 0, noPage: 0 };
+const castStats = { active: 0, cast: 0, partial: 0, noPage: 0, missing: {} };
 for (const r of wiki?.spells ?? []) {
   const classId = r.class === 'Common' ? 'common' : WIKI_CLASS[r.class];
   if (!classId) continue;
@@ -591,14 +597,15 @@ for (const r of wiki?.spells ?? []) {
     ...(zero?.length && { zero }),
   };
   if (!passive) {
-    const page = wiki?.spellPages?.[r.spell];
-    // Sin ficha propia (redirección, desambiguación) o de otra clase: no se simula.
-    if (page && page.class === r.class) {
+    const page = pickSpellPage(wiki?.spellPages ?? {}, r);
+    // Sin ficha propia de su clase ni con los títulos alternativos: no se simula.
+    if (page) {
       spell.cast = parseSpellCast(page, r);
       castStats.cast++;
       if (spell.cast.partial) castStats.partial++;
     } else {
       castStats.noPage++;
+      (castStats.missing[r.class] ??= []).push(r.spell);
     }
     castStats.active++;
   }
@@ -683,6 +690,8 @@ await mkdir(OUT_DIR, { recursive: true });
 await writeFile(new URL('spells.json', OUT_DIR), JSON.stringify({ version, source: WIKI, ...spellsOut }));
 console.log(`${usedIds.size} hechizos y pasivas escritos en public/data/spells.json`);
 console.log(`Simulador: ${castStats.cast} de ${castStats.active} hechizos activos con ficha (${castStats.partial} parciales, ${castStats.noPage} sin página propia o de otra clase)`);
+
+for (const [cls, names] of Object.entries(castStats.missing)) console.log(`  Sin ficha (${cls}): ${names.join(', ')}`);
 
 // Monstruos para el simulador: se descartan las fichas sin PV ni resistencias.
 {

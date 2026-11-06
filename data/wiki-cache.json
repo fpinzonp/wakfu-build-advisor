@@ -1,7 +1,7 @@
 {
  "source": "https://wakfu.wiki.gg",
  "license": "CC BY-SA",
- "fetchedAt": "2026-11-06T17:02:00.932Z",
+ "fetchedAt": "2026-11-06T17:14:14.155Z",
  "states": {
   "751": {
    "name": "Flaming",
@@ -18765,6 +18765,255 @@
    "los": "n",
    "effects": "Summons a '''Regulator''' (max 1 per Xelor)\n\nCatches direct damage suffered by the other summons of the Xelor (Dial, Sinistro, or Cog)",
    "conditions": "1 use per turn"
+  },
+  "Tree (spell)": {
+   "class": "Sadida",
+   "range": "0",
+   "los": "n",
+   "effects": "Transforms the Sadida into {{st|3615}}\nHeals: 20% of max HP\nMisses a turn",
+   "conditions": "Is not being carried\n2-turn cooldown"
+  },
+  "Motion Sickness (spell)": {
+   "class": "Sacrier",
+   "AP": "2",
+   "target": "st",
+   "range": "2-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "'''Normal Effects'''\n{{gui|enemy}} {{gui|enemy}} {{st|4801}} (Lvl 1-25)\nWhen the bearer is moved by one of the Sacrier's spells:\n{{gui|arrow}} {{gui|air}} Damage: 1-25 (indirect damage) {{gui|area cross|text=Size: 1}}\n{{gui|arrow}} When the bearer is moved by one of the Sacrier's spells:\n{{gui|arrow}} {{gui|air}} Damage: 1-25 (indirect damage) {{gui|area cross|text=Size: 1}}\nPushes back 1 cell {{gui|area circlering|text=Size: 1 - 1}}\n\n'''Effects if {{gui|caster}} {{gui|berserk}} {{st|9315}}'''\nCosts {{gui|ap}} 1 extra AP\n{{gui|enemy}} {{gui|air}} Damage: 2-60 {{gui|area cross|text=Size: 1}}\n{{gui|enemy}} {{gui|enemy}} {{st|4801}} (Lvl 1-25)\n{{gui|arrow}} When the bearer is moved by one of the Sacrier's spells:\n{{gui|arrow}} {{gui|air}} Damage: 1-25 (indirect damage) {{gui|area cross|text=Size: 1}}\n{{gui|target}} Pushes back 1 cell {{gui|area circlering|text=Size: 1 - 1}}",
+   "criteffects": "'''Normal Effects'''\n{{gui|enemy}} {{st|4801}} (Lvl 1-31) (2 turns) {{gui|area cross|text=Size: 1}}\n{{gui|arrow}} When the bearer is moved by one of the Sacrier's spells:\n{{gui|arrow}} {{gui|air}} Damage: 1-31 (indirect damage) {{gui|area cross|text=Size: 1}}\nPushes back 1 cell {{gui|area circlering|text=Size: 1 - 1}}\n\n'''Effects if {{gui|caster}} {{gui|berserk}} {{st|9315}}'''\nCosts {{gui|ap}} 1 extra AP\n{{gui|enemy}}  {{st|4801}} (Lvl 1-31) (2 turns) {{gui|area cross|text=Size: 1}}\n{{gui|target}} Pushes back 1 cell {{gui|area circlering|text=Size: 1 - 1}}",
+   "conditions": "2 uses per turn"
+  },
+  "Gobgob (spell)": {
+   "class": "Osamodas",
+   "AP": "3",
+   "range": "1",
+   "los": "y",
+   "effects": "Summons a(n) Gobgob :\n{{st|7135}} (Lvl 1)\n\nIf the Gobgob is already on the field:\n{{gui|arrow}} Recalls it and summons it agian",
+   "conditions": "4-turn cooldown"
+  },
+  "Tax (spell)": {
+   "class": "Enutrof",
+   "AP": "4",
+   "target": "st",
+   "range": "2-5",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|water}} Damage: 4-121\n\nIf the Enutrof has {{st|8552}}:\n{{gui|arrow}} {{gui|MP}} -4 MP\n{{gui|arrow}} Consumes 1 {{st|8552}}",
+   "criteffects": "{{gui|water}} Damage: 8-152\n\nIf the Enutrof has {{st|8552}}:\n{{gui|arrow}} {{gui|MP}} -4 MP\n{{gui|arrow}} Consumes 1 {{st|8552}}",
+   "conditions": "1 use per target\n2 uses per turn"
+  },
+  "Transcendence (spell)": {
+   "class": "Eniripsa",
+   "AP": "1",
+   "target": "",
+   "range": "1-7",
+   "los": "n",
+   "effects": "{{gui|target}} {{st|3896}}\n{{gui|arrow}} Can only be {{st|3896}} once per combat",
+   "conditions": "4-turn cooldown"
+  },
+  "Barrier (spell)": {
+   "class": "Eliotrope",
+   "AP": "2",
+   "range": "1-3",
+   "los": "y",
+   "effects": "Deploys a {{ar|1604}} (1 turn) {{gui|area circle}} (2)\n{{gui|arrow}} {{gui|ally}} -20% damage received\n{{gui|arrow}} {{gui|enemy}} -3 MP (1x per turn)\n\nCan only be cast on a {{st|3396}}",
+   "conditions": "1 use per turn"
+  },
+  "Teleportation (spell)": {
+   "class": "Feca",
+   "range": "1-4",
+   "los": "y",
+   "effects": "If the targeted cell is adjacent to an enemy:\n{{gui|arrow}} The Feca teleports to the cell\n\nIf the target is an enemy:\n{{gui|arrow}} Teleports the target in front of the Feca",
+   "conditions": "1 use per turn"
+  },
+  "Black Bow Meow (spell)": {
+   "class": "Ecaflip",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{st|3714}}\n{{gui|resistance}} 66 Elemental Resistance\n{{gui|arrow}} 5 AP, 4 MP, 20% of the Ecaflip's max HP\n{{gui|arrow}} Cannot lock\n{{gui|arrow}} Life Link with the Ecaflip\n{{gui|arrow}} Has the spell Furtive\n\nValue: 6\nColor: black",
+   "conditions": "1 use per turn"
+  },
+  "Marrow Bone (spell)": {
+   "class": "Common",
+   "AP": "3",
+   "range": "1-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "Summons a Marrow Bone\nAt end of caster's turn:\n{{gui|arrow}} Marrow Bone loses 1% max HP\n{{gui|arrow}} {{gui|water}} Heals: 27 around Marrow Bone {{gui|area circlering|text=Size: 1 - 1}}",
+   "conditions": "4-turn cooldown"
+  },
+  "Judgment (spell)": {
+   "class": "Iop",
+   "AP": "1",
+   "target": "st",
+   "range": "1-2",
+   "los": "y",
+   "effects": "Cast on an enemy {{gui|enemy}}:\n{{gui|arrow}} {{gui|fire}} Damage: 1-30\n{{gui|arrow}} {{st|8912}} (Lvl 15)\n{{gui|arrow}} The next '''Fire {{gui|fire}} spell''' suffered by the state bearer inflicts 15% extra damage\n\nCast on an ally {{gui|ally}}:\n{{gui|arrow}} {{st|3462}} (+10 Lvl.)\n\n{{gui|caster}} {{st|3442}} (+5 Lvl.)",
+   "criteffects": "Cast on an enemy {{gui|enemy}}:\n{{gui|arrow}} {{gui|fire}} Damage: 1-38\n{{gui|arrow}} {{st|8912}} (Lvl 15)\n{{gui|arrow}} The next '''Fire {{gui|fire}} spell''' suffered by the state bearer inflicts 15% extra damage\n\nCast on an ally {{gui|ally}}:\n{{gui|arrow}} {{st|3462}} (+10 Lvl.)\n\n{{gui|caster}} {{st|3442}} (+5 Lvl.)",
+   "conditions": "2 uses per target\n4 uses per turn"
+  },
+  "Devastate (spell)": {
+   "class": "Iop",
+   "AP": "5",
+   "target": "aoe",
+   "range": "0-2",
+   "los": "y",
+   "effects": "{{gui|caster}} Teleports to the cell\n{{gui|earth}} Damage: 5-164 {{gui|area square}}\n\n{{gui|caster}} {{st|3442}} (+25 Lvl.)\n{{gui|arrow}} +5 levels per target hit",
+   "criteffects": "{{gui|caster}} Teleports to the cell\n{{gui|earth}} Damage: 7-205 {{gui|area square}}\n\n{{gui|caster}} {{st|3442}} (+25 Lvl.)\n{{gui|arrow}} +5 levels per target hit",
+   "conditions": "1 use per turn"
+  },
+  "Sword of Iop (spell)": {
+   "class": "Iop",
+   "AP": "3",
+   "target": "aoe",
+   "range": "1-4",
+   "los": "y",
+   "effects": "In a cross {{gui|area cross}} area of effect:\n{{gui|arrow}} {{gui|enemy}} {{gui|air}} Damage: 3-83\n{{gui|arrow}} {{gui|ally}} {{gui|di}} 10% damage inflicted (2 turns)\n\n{{gui|caster}} {{st|3442}} (+15 Lvl.)",
+   "criteffects": "In a cross {{gui|area cross}} area of effect:\n{{gui|arrow}} {{gui|enemy}} {{gui|air}} Damage: 4-104\n{{gui|arrow}} {{gui|ally}} {{gui|di}} 10% damage inflicted (2 turns)\n\n{{gui|caster}} {{st|3442}} (+15 Lvl.)",
+   "conditions": "2 uses per turn"
+  },
+  "Anatomy (spell)": {
+   "class": "Eniripsa",
+   "AP": "3",
+   "target": "st",
+   "range": "1-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "If the target has more than 80% of max HP:\n{{gui|arrow}} {{gui|air}} Damage: 5-152 (penetrates Armor)\n\nOtherwise:\n{{gui|arrow}} {{gui|air}} Damage: 3-91 (penetrates Armor)",
+   "criteffects": "If the target has more than 80% of max HP:\n{{gui|arrow}} {{gui|air}} Damage: 7-190 (penetrates Armor)\n\nOtherwise:\n{{gui|arrow}} {{gui|air}} Damage: 4-114 (penetrates Armor)",
+   "conditions": "2 uses per turn"
+  },
+  "Coney (spell)": {
+   "class": "Eniripsa",
+   "AP": "2",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "With {{st|3867}}:\n{{gui|arrow}} Summons a {{st|8029}}\n\nOtherwise:\n{{gui|arrow}} Summons a [{{st|3863}}]\n\nAt start of the Eniripsa's next turn:\n{{gui|arrow}} The Coney evolves into {{st|3892}}\n{{gui|arrow}} {{gui|caster}} 2 WP",
+   "conditions": "1 use per turn"
+  },
+  "Portal (spell)": {
+   "class": "Eliotrope",
+   "range": "1-4",
+   "los": "n",
+   "effects": "Places of removes a {{st|3396}}\n{{gui|arrow}} Placing a {{st|3396}} costs '''1 max WP'''\n{{gui|arrow}} Removing a {{st|3396}} restores '''1 max and current WP'''\n\nSpells that go through a {{st|3396}} get a 25% bonus on damage inflicted and a 25% bonus on heals performed",
+   "conditions": "The target must not be an enemy.\n2 uses per turn"
+  },
+  "Last Breath (spell)": {
+   "class": "Osamodas",
+   "AP": "3",
+   "range": "1-5",
+   "los": "y",
+   "mod": "y",
+   "effects": "Cast on {{gui|summon}} {{st|7134}}:\n{{gui|arrow}} {{gui|summon}} 4 MP\n{{gui|arrow}} {{gui|summon}} 4 Range\n{{gui|arrow}} {{gui|summon}} Dies at the end of the turn\n\nPer turn spent on the field:\n{{gui|arrow}} {{gui|summon}} 10% Damage inflicted\n{{gui|arrow}} {{gui|summon}} 10% Heals performed\n{{gui|arrow}} {{gui|caster}} 1 WP",
+   "conditions": "3-turn cooldown"
+  },
+  "Surge (spell)": {
+   "class": "Ouginak",
+   "AP": "1",
+   "range": "1-4",
+   "los": "y",
+   "effects": "If cast on an empty cell:\n{{gui|arrow}} Teleports to the cell\n\nIf cast on {{st|7529}} or {{st|7525}}:\n{{gui|arrow}} Switches places\n\nCosts {{gui|ap}} 1 AP per cell moved",
+   "conditions": "Is not being carried\n2 uses per turn"
+  },
+  "Bow Wow (spell)": {
+   "class": "Ouginak",
+   "AP": "3",
+   "range": "1",
+   "los": "y",
+   "effects": "Summons a(n) Bow Wow\n'''Characteristics:'''\n{{gui|arrow}} 6 AP and 4 MP\n{{gui|arrow}} 100% of the Ouginak's WP\n{{gui|arrow}} 40% of the Ouginak's max HP\n{{gui|arrow}} Has the Ouginak's characteristics\n{{gui|arrow}} Cannot be healed\n'''Spells:'''\n{{gui|arrow}} Licky\n{{gui|arrow}} Itchy\n{{gui|arrow}} Boney-O\n{{gui|arrow}} Sniffing\nPossess the Ouginak's WP spells",
+   "conditions": "Bow Wow Summons not in play\n2-turn cooldown"
+  },
+  "Boombot (spell)": {
+   "class": "Rogue",
+   "AP": "2",
+   "range": "1",
+   "los": "yes",
+   "effects": "Summons a {{st|7942}} (max 1)\n\nThe {{st|7942}} has the following spells:\n{{gui|arrow}} [[Boombot#Spells|Detonation]]\n{{gui|arrow}} [[Boombot#Spells|Magnetization]]\n{{gui|arrow}} [[Boombot#Spells|Push]]\n{{gui|arrow}} [[Boombot#Spells|Overload]]",
+   "conditions": "4-turn cooldown"
+  },
+  "Seed (spell)": {
+   "class": "Sadida",
+   "range": "1-4",
+   "los": "n",
+   "mod": "y",
+   "effects": "On a free cell:\n{{gui|arrow}} Places a {{st|8202}}\n{{gui|arrow}} Total number of '''Seeds''' +\n{{gui|doll}} + '''Trees''' cannot exceed 6\n\nOn a {{st|8202}}:\n{{gui|arrow}} Transforms the seed into {{st|8217}}\n{{gui|arrow}} 2 {{st|8217}} max\n{{gui|arrow}} Min. of 2 cells between each {{st|8217}}\n\nOn a {{gui|doll}}:\n{{gui|arrow}} Transforms the {{gui|doll}} into {{st|8202}}\n{{gui|arrow}} Loses 1 level of {{st|3624}}\n\nOn a {{st|8217}}:\n{{gui|arrow}} Kills the {{st|8217}}",
+   "conditions": "3 uses per turn"
+  },
+  "The Ultra-Powerful (spell)": {
+   "class": "Sadida",
+   "AP": "4",
+   "range": "1-2",
+   "los": "y",
+   "effects": "Summons {{st|3595}}:\n{{gui|arrow}} Sacrifices all other {{gui|doll}}\n{{gui|arrow}} '''The Ultra-Powerful''' gets their abilities\n{{gui|arrow}} '''The Ultra-Powerful''' does not gain {{st|3624}}\n\nMax of 1 '''Ultra-Powerful''' per team",
+   "conditions": "3 uses per turn"
+  },
+  "The Voodoll (spell)": {
+   "class": "Sadida",
+   "AP": "2",
+   "range": "2-6",
+   "los": "y",
+   "mod": "y",
+   "effects": "Summons {{st|3616}}\nLinks the target to the Voodoll:\n{{gui|arrow}} {{gui|ally}} {{st|3856}}\n{{gui|arrow}} {{gui|enemy}} {{st|3857}}\n\nRequires a free cell to be summoned\nMax of 1 '''Voodoll''' (per team)",
+   "conditions": "In the state \"The Voodoll\"(target)\nThe target must not be an enemy.\nDoes not have the \"Voodoll Blessing\" state(target)\nDoes not have the \"Voodoll Curse\" state(target)\nThe target must not be an enemy.\n2-turn cooldown"
+  },
+  "Double (spell)": {
+   "class": "Sram",
+   "AP": "2",
+   "range": "1",
+   "los": "y",
+   "effects": "Summons a {{st|3667}} (1 time every 2 turns max)\n\nIf the '''Double''' is on the field:\n{{gui|arrow}} The spell can be cast on the Sram {{gui|caster}}\n{{gui|arrow}} The spell doesn't cost any AP\n{{gui|arrow}} The Sram {{gui|caster}} takes control of the '''Double''' and instantly plays its turn",
+   "conditions": "Sram Double Summons in play\nor Does not have the \"Double\" state"
+  },
+  "Bastion (spell)": {
+   "class": "Feca",
+   "AP": "2",
+   "target": "st",
+   "range": "1-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 2-75\n\n{{gui|ally}} Redirects 25% of damage received from an enemy to the Feca\n\nEmpty cell: {{gui|glyph}} {{ar|1476}} (Level 1-45)",
+   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 2-94\n\n{{gui|ally}} Redirects 25% of damage received from an enemy to the Feca\n\nEmpty cell: {{gui|glyph}} {{ar|1476}} (Level 1-56)",
+   "conditions": "1 use per target\n2 uses per turn"
+  },
+  "Staff (spell)": {
+   "class": "Feca",
+   "AP": "5",
+   "target": "st",
+   "range": "1-4",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 5-152\n\n{{gui|ally}} {{gui|shield}} {{st|6344}}\nAt start of turn:\n{{gui|arrow}}  '''40% melee damage inflicted'''\n{{gui|arrow}} Removed at end of turn if no adjacent enemies\n\n\nEmpty cell: {{gui|glyph}} {{ar|1476}} (Level 3-91)",
+   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 7-190\n\n{{gui|ally}} {{gui|shield}} {{st|6344}}\nAt start of turn:\n{{gui|arrow}}  '''40% melee damage inflicted'''\n{{gui|arrow}} Removed at end of turn if no adjacent enemies\n\n\nEmpty cell: {{gui|glyph}} {{ar|1476}} (Level 4-114)"
+  },
+  "Ambush (spell)": {
+   "class": "Foggernaut",
+   "AP": "3",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "If the targeted cell is free:\n{{gui|arrow}} The '''Turret''' teleports to the cell at the start of the caster's next turn\n{{gui|arrow}} The '''Turret''' activates instantly after teleporting\n\nOtherwise:\n{{gui|arrow}} The '''Turret''' switches places with the target (7 cells max)\n{{gui|arrow}} {{gui|arrow}} The '''Turret''' activates instantly after the position switch",
+   "conditions": "Number of Turret (Range 7) >= 1\n2-turn cooldown"
+  },
+  "Turret (spell)": {
+   "class": "Foggernaut",
+   "AP": "2",
+   "range": "1-6",
+   "los": "y",
+   "effects": "Summons a {{st|7672}} (max 2 per team)\nor levels it up and recovers 2 AP (1 time per turn)\n\nBased on the element of the last spell cast by the Foggernaut, the turret casts a spell at end of turn:\n{{gui|arrow}} {{gui|fire}} [[Distant Shot]]\n{{gui|arrow}} {{gui|water}} [[Alignment Shot]]\n{{gui|arrow}} {{gui|earth}} [[Destruction Shot]]\n\nThe Turret restores 1 SP to the Foggernaut per enemy hit",
+   "conditions": "2 uses per turn"
+  },
+  "Rift (spell)": {
+   "class": "Huppermage",
+   "AP": "2",
+   "target": "st",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 2-60\n{{gui|ally}} {{gui|armor}} 2-799 Armor\n{{gui|caster}} {{gui|armor}} 2-799 Armor\n\nIf {{gui|caster}} has {{gui|earthrune}}:\n{{gui|arrow}} Armor is doubled\n{{gui|arrow}} {{gui|caster}} consumes {{gui|earthrune}}",
+   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 2-76\n{{gui|ally}} {{gui|armor}} 3 -999 Armor\n{{gui|caster}} {{gui|armor}} 3-999 Armor\n\nIf {{gui|caster}} has {{gui|earthrune}}:\n{{gui|arrow}} Armor is doubled\n{{gui|arrow}} {{gui|caster}} consumes {{gui|earthrune}}",
+   "conditions": "2 uses per target\n3 uses per turn"
   }
  },
  "mobs": [

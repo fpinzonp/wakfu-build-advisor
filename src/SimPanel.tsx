@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import SimAdjust from './SimAdjust';
 import SimMap from './SimMap';
 import SimSteps from './SimSteps';
 import SimTarget, { DUMMY, type MobLoad, type TargetState } from './SimTarget';
@@ -70,7 +71,6 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
   const [placing, setPlacing] = useState(false);
   const [steps, setSteps] = useState<SimStep[]>([]);
   const [comboExtraPct, setComboExtraPct] = useState(0);
-  const [hpPct, setHpPct] = useState(100);
   const [preview, setPreview] = useState<Spell | null>(null);
   // `view` es el paso mostrado; null sigue el último (en vivo) y -1 es antes del primer paso.
   const [view, setView] = useState<number | null>(null);
@@ -202,22 +202,7 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
                 {t('sim.clear')}
               </button>
             </div>
-            <div className="sim-adjust">
-              <label className="field sim-num">
-                <span className="label">{t('sim.hpPct')}</span>
-                <input className="input" type="number" min={1} max={100} value={hpPct}
-                  onChange={(e) => setHpPct(Math.min(100, Math.max(0, Number(e.target.value) || 0)))} />
-              </label>
-              <button type="button" className="btn" onClick={() => add({ type: 'adjust', actor: 'main', hpPct })}>{t('sim.hpApply')}</button>
-              {classId === 'yopuka' && (
-                <label className="field sim-num">
-                  <span className="label">{t('sim.comboExtra')}</span>
-                  <input className="input" type="number" min={0} value={comboExtraPct}
-                    onChange={(e) => setComboExtraPct(Math.max(0, Number(e.target.value) || 0))} />
-                  <small className="muted">{t('sim.comboExtra.hint')}</small>
-                </label>
-              )}
-            </div>
+            <SimAdjust yopuka={classId === 'yopuka'} comboExtraPct={comboExtraPct} onComboExtra={setComboExtraPct} onAdd={add} />
           </div>
 
           <SimSteps steps={sim.steps} selected={idx} spellName={(id) => spellById.get(id)?.name}

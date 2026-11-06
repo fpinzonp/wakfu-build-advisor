@@ -57,4 +57,16 @@ describe('SimSteps', () => {
     expect(html).toContain('No quedan PA suficientes');
     expect(html).toContain('No válido');
   });
+
+  it('rotula los ajustes de orientación, armadura y estado', () => {
+    const adjusts: StepResult[] = [
+      { step: { type: 'adjust', facing: 'e' }, ok: true, rows: [], state },
+      { step: { type: 'adjust', armor: 300 }, ok: true, rows: [], state },
+      { step: { type: 'adjust', state: { id: '3462', levels: 20 } }, ok: true, rows: [], state },
+    ];
+    const html = renderToString(<SimSteps steps={adjusts} selected={0} spellName={() => undefined} onSelect={() => undefined} onRemove={() => undefined} />);
+    expect(html).toContain('El objetivo mira: Derecha');
+    expect(html).toContain('Armadura fijada en 300');
+    expect(html).toContain('Preparación fijada en 20');
+  });
 });

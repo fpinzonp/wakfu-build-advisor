@@ -31,7 +31,7 @@ export type SimStep =
   | { type: 'cast'; actor: ActorId; spell: number; target: 'mob' | 'ally' | 'self' }
   | { type: 'move'; actor: ActorId; to: Cell }
   | { type: 'endTurn' }
-  | { type: 'adjust'; actor?: ActorId; hpPct?: number; armor?: number; facing?: Facing };
+  | { type: 'adjust'; actor?: ActorId; hpPct?: number; armor?: number; facing?: Facing; state?: { id: string; levels: number } };
 
 export interface Triple { normal: number; crit: number; avg: number }
 
@@ -322,6 +322,7 @@ function adjustStep(step: Extract<SimStep, { type: 'adjust' }>, st: SimState, in
   if (step.hpPct !== undefined) me.hp = Math.max(1, floor(clamp(step.hpPct, 0, 100) / 100 * actor.maxHp));
   if (step.armor !== undefined) me.armor = clamp(floor(step.armor), 0, addArmor(0, Infinity, actor.maxHp));
   if (step.facing) st.facing = step.facing;
+  if (step.state) me.states[step.state.id] = Math.max(0, floor(step.state.levels));
   return done();
 }
 

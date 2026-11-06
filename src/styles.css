@@ -547,3 +547,4 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
   .sim-totals { grid-template-columns: minmax(0, 1fr); }
   .sim-controls .actions .btn { flex: 1; padding-inline: 8px; }
 }
+.sim-adjust-item { display: flex; gap: 8px; align-items: flex-end; }

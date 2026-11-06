@@ -1,6 +1,7 @@
 import { cellText } from './SimMap';
 import { fmt, t } from './lib/i18n';
 import type { StepResult, StepRow } from './lib/sim/engine';
+import { CONC_KEY, PREPARATION } from './lib/sim/rules/iop';
 
 /** Nombre del paso: hechizo, movimiento, fin de turno o ajuste. */
 function stepLabel(r: StepResult, spellName: (id: number) => string | undefined): string {
@@ -8,7 +9,15 @@ function stepLabel(r: StepResult, spellName: (id: number) => string | undefined)
   if (s.type === 'cast') return spellName(s.spell) ?? t('sim.step.unknown');
   if (s.type === 'move') return t('sim.step.move', { cell: cellText(s.to) });
   if (s.type === 'endTurn') return t('sim.step.endTurn');
-  return s.hpPct !== undefined ? t('sim.step.hp', { pct: Math.round(s.hpPct) }) : '';
+  const parts: string[] = [];
+  if (s.hpPct !== undefined) parts.push(t('sim.step.hp', { pct: Math.round(s.hpPct) }));
+  if (s.armor !== undefined) parts.push(t('sim.step.armor', { n: fmt(s.armor) }));
+  if (s.facing) parts.push(t('sim.step.facing', { facing: t(`sim.facing.${s.facing}`) }));
+  if (s.state) {
+    const name = s.state.id === CONC_KEY ? t('sim.state.conc') : s.state.id === PREPARATION ? t('sim.state.prep') : s.state.id;
+    parts.push(t('sim.step.state', { state: name, n: fmt(s.state.levels) }));
+  }
+  return parts.join(' · ');
 }
 
 function Why({ row }: { row: StepRow }) {

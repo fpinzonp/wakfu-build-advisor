@@ -553,6 +553,16 @@ const en: Dict = {
   "sim.total.avg": "Average",
   "sim.total.mobHp": "Mob HP left: {pct}%",
   "sim.unvalidated": "The formulas have not yet been checked against real in-game hits.",
+  "sim.turnTarget": "Turn target",
+  "sim.turnTarget.aria": "Turn the target from this step on",
+  "sim.armorSet": "Character armor",
+  "sim.armorApply": "Set armor",
+  "sim.state.conc": "Concentration",
+  "sim.state.prep": "Preparation",
+  "sim.state.apply": "Set",
+  "sim.step.facing": "Target faces: {facing}",
+  "sim.step.armor": "Armor set to {n}",
+  "sim.step.state": "{state} set to {n}",
 };
 
 export default en;

@@ -286,3 +286,15 @@ describe('Yopuka: hechizos condicionales', () => {
     expect(row.value.normal).toBe(NORMAL);
   });
 });
+
+describe('Yopuka: Preparación ajustada a mano', () => {
+  it('la Preparación fijada con un ajuste sube el daño del siguiente hechizo y se gasta', () => {
+    const steps: SimStep[] = [
+      { type: 'adjust', state: { id: PREP, levels: 20 } }, cast(withDamage('ap1')), cast(withDamage('ap1')),
+    ];
+    const r = simulate({ ...fixture(), steps });
+    expect(r.steps[1].rows[0].value.normal).toBe(Math.floor(105 * 7 * 1.2));
+    expect(r.steps[1].rows[0].tags).toContain('sim.tag.preparation');
+    expect(r.steps[2].rows[0].value.normal).toBe(NORMAL);
+  });
+});

@@ -375,3 +375,25 @@ describe('simulate: apoyo', () => {
     expect(r.totals.main!.damage.normal).toBe(0);
   });
 });
+
+describe('simulate: ajustes manuales a mitad de secuencia', () => {
+  it('girar al objetivo cambia solo los golpes siguientes', () => {
+    const turn = (f: 'e' | 'w'): SimStep => ({ type: 'adjust', facing: f });
+    const r = simulate({ ...fixture(), steps: [...jab(), turn('e'), ...jab(), turn('w'), { type: 'endTurn' }, ...jab()] });
+    const pos = r.steps.flatMap((s) => s.rows.map((x) => x.position));
+    expect(pos).toEqual(['front', 'back', 'front']);
+    const dmg = r.steps.flatMap((s) => s.rows.map((x) => x.value.normal));
+    expect(dmg[1]).toBeGreaterThan(dmg[0]);
+    expect(dmg[2]).toBe(dmg[0]);
+  });
+
+  it('fija un estado del personaje, con tope inferior en 0', () => {
+    const r = simulate({
+      ...fixture(), steps: [
+        { type: 'adjust', state: { id: '3462', levels: 12 } }, { type: 'adjust', state: { id: '9', levels: -5 } },
+      ],
+    });
+    expect(r.steps[0].state.actors.main!.states['3462']).toBe(12);
+    expect(r.steps[1].state.actors.main!.states['9']).toBe(0);
+  });
+});

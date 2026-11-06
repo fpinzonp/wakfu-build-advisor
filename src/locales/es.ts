@@ -551,6 +551,16 @@ const es = {
   "sim.total.avg": "Promedio",
   "sim.total.mobHp": "PV restantes del mob: {pct} %",
   "sim.unvalidated": "Las fórmulas aún no se han comparado con golpes reales del juego.",
+  "sim.turnTarget": "Girar objetivo",
+  "sim.turnTarget.aria": "Girar al objetivo desde este paso",
+  "sim.armorSet": "Armadura del personaje",
+  "sim.armorApply": "Ajustar armadura",
+  "sim.state.conc": "Concentración",
+  "sim.state.prep": "Preparación",
+  "sim.state.apply": "Fijar",
+  "sim.step.facing": "El objetivo mira: {facing}",
+  "sim.step.armor": "Armadura fijada en {n}",
+  "sim.step.state": "{state} fijada en {n}",
 };
 
 export default es;

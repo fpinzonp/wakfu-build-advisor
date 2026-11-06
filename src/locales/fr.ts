@@ -553,6 +553,16 @@ const fr: Dict = {
   "sim.total.avg": "Moyenne",
   "sim.total.mobHp": "PV restants du monstre : {pct} %",
   "sim.unvalidated": "Les formules n'ont pas encore été comparées à de vrais coups du jeu.",
+  "sim.turnTarget": "Tourner la cible",
+  "sim.turnTarget.aria": "Tourner la cible à partir de cette étape",
+  "sim.armorSet": "Armure du personnage",
+  "sim.armorApply": "Ajuster l'armure",
+  "sim.state.conc": "Concentration",
+  "sim.state.prep": "Préparation",
+  "sim.state.apply": "Fixer",
+  "sim.step.facing": "La cible regarde : {facing}",
+  "sim.step.armor": "Armure fixée à {n}",
+  "sim.step.state": "{state} fixée à {n}",
 };
 
 export default fr;

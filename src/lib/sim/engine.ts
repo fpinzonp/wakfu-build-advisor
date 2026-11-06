@@ -11,6 +11,7 @@ import {
   isBerserk, isMelee, positionOf, type Cell, type Facing, type Position,
 } from './formulas';
 import { iopRules } from './rules/iop';
+import { sacrierRules } from './rules/sacrier';
 
 export type ActorId = 'main' | 'ally';
 
@@ -66,17 +67,26 @@ export type CastTarget = 'mob' | 'ally' | 'self';
 /** Ajustes que una regla de clase aplica a un lanzamiento. `lines` aporta efectos condicionales ya resueltos. */
 export interface CastMods {
   dmgPct?: number; tags?: TKey[]; warnings?: TKey[]; lines?: SpellLine[];
+  instead?: SpellLine[];  // efectos "en su lugar": sustituyen a los normales y a los de berserker
   lifeStealPct?: number;  // el lanzador se cura este % del daño infligido (fila de cura aparte)
 }
 
+/** Recursos extra que cuesta un hechizo según el estado del lanzador (p. ej. en berserker). */
+export interface ExtraCost { ap?: number; mp?: number; wp?: number }
+
 export interface ClassRules {
-  beforeCast?(state: ActorState, actor: SimActor, spell: Spell, input: SimInput, target: CastTarget): CastMods;
+  /** Coste añadido al del hechizo; se valida antes de gastar nada y se cobra con el resto. */
+  extraCost?(state: ActorState, actor: SimActor, spell: Spell): ExtraCost;
+  /** Características con las que el lanzador calcula el hechizo (p. ej. maestrías que se suman en berserker). */
+  statsFor?(actor: SimActor, berserk: boolean): Record<string, number>;
+  /** `mobHpPct` es el % de PV que le queda al objetivo respecto a los que tenía al empezar. */
+  beforeCast?(state: ActorState, actor: SimActor, spell: Spell, input: SimInput, target: CastTarget, mobHpPct: number): CastMods;
   afterCast?(state: ActorState, actor: SimActor, spell: Spell, target: CastTarget): void;
   onEndTurn?(state: ActorState): void;
 }
 
 /** Reglas por clase: cada clase se añade en su propia tarea. */
-export const CLASS_RULES: Partial<Record<string, ClassRules>> = { yopuka: iopRules };
+export const CLASS_RULES: Partial<Record<string, ClassRules>> = { yopuka: iopRules, sacrogrito: sacrierRules };
 
 const MAP_SIZE = 11;
 const ELEMENT_ORDER: Element[] = ['fire', 'water', 'earth', 'air'];
@@ -115,11 +125,13 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
   if (step.target !== 'mob' && (!recipient || !recipientActor)) return fail('sim.err.target');
 
   const cast = spell.cast;
+  const rules = CLASS_RULES[actor.classId];
+  const extra: ExtraCost = (cast && rules?.extraCost?.(me, actor, spell)) || {};
   if (cast) {
     if (cast.perTurn !== null && (me.uses[spell.id] ?? 0) >= cast.perTurn) return fail('sim.err.uses');
-    if (me.ap < cast.ap) return fail('sim.err.ap');
-    if (me.mp < cast.mp) return fail('sim.err.mp');
-    if (me.wp < cast.wp) return fail('sim.err.wp');
+    if (me.ap < cast.ap + (extra.ap ?? 0)) return fail('sim.err.ap');
+    if (me.mp < cast.mp + (extra.mp ?? 0)) return fail('sim.err.mp');
+    if (me.wp < cast.wp + (extra.wp ?? 0)) return fail('sim.err.wp');
     if (step.target !== 'self') {
       const to = step.target === 'mob' ? input.target.cell : recipient!.cell;
       const d = distance(me.cell, to);
@@ -128,8 +140,8 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
     }
   }
 
-  const rules = CLASS_RULES[actor.classId];
-  const mods: CastMods = rules?.beforeCast?.(me, actor, spell, input, step.target) ?? {};
+  const mobHpPct = input.target.hp > 0 ? (st.mobHp / input.target.hp) * 100 : 0;
+  const mods: CastMods = rules?.beforeCast?.(me, actor, spell, input, step.target, mobHpPct) ?? {};
 
   if (!cast) {
     me.uses[spell.id] = (me.uses[spell.id] ?? 0) + 1;
@@ -137,12 +149,12 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
     return done([uncalculatedRow(['sim.warn.noData', ...(mods.warnings ?? [])])]);
   }
 
-  me.ap -= cast.ap; me.mp -= cast.mp; me.wp -= cast.wp;
+  me.ap -= cast.ap + (extra.ap ?? 0); me.mp -= cast.mp + (extra.mp ?? 0); me.wp -= cast.wp + (extra.wp ?? 0);
   me.uses[spell.id] = (me.uses[spell.id] ?? 0) + 1;
 
   // Avisos comunes a todas las filas del hechizo.
   const warn: TKey[] = [];
-  const hasInjected = (mods.lines?.length ?? 0) > 0;
+  const hasInjected = (mods.lines?.length ?? 0) > 0 || (mods.instead?.length ?? 0) > 0;
   if (cast.reasons.includes('conditional') && !hasInjected) warn.push('sim.warn.conditional');
   if (cast.reasons.includes('secondary')) warn.push('sim.warn.secondary');
   if (cast.reasons.includes('noCrit')) warn.push('sim.warn.noCrit');
@@ -150,7 +162,9 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
 
   // Berserker: sus efectos sustituyen a los normales cuando hay.
   const berserk = isBerserk((me.hp / actor.maxHp) * 100);
-  const base = berserk && cast.berserkLines?.length ? cast.berserkLines : cast.lines;
+  const base = mods.instead ?? (berserk && cast.berserkLines?.length ? cast.berserkLines : cast.lines);
+  // La regla de clase puede cambiar las características del lanzador (maestrías que se suman en berserker).
+  const caster: SimActor = rules?.statsFor ? { ...actor, stats: rules.statsFor(actor, berserk) } : actor;
   const applies = (l: SpellLine) =>
     l.side === 'caster' ? l.kind !== 'damage' : l.side === 'enemy' ? step.target === 'mob' : step.target !== 'mob';
   const lines = [...base, ...(mods.lines ?? [])].filter(applies);
@@ -175,8 +189,8 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
       const cBase = noCrit ? nBase : baseAtLevel(l.critMin, l.critMax, level);
       const rowWarn: TKey[] = unique(spell.el === 'neutral' && l.kind !== 'armor' ? [...warn, 'sim.warn.element'] : warn);
       const row = l.kind === 'damage'
-        ? damageRow({ nBase, cBase, critPct, el, actor, me, st, input, berserk, mods, warn: rowWarn })
-        : supportRow({ l, nBase, cBase, critPct, el, actor, me, rState, rActor, onSelf: rId === step.actor, berserk, mods, warn: rowWarn });
+        ? damageRow({ nBase, cBase, critPct, el, actor: caster, me, st, input, berserk, mods, warn: rowWarn })
+        : supportRow({ l, nBase, cBase, critPct, el, actor: caster, me, rState, rActor, onSelf: rId === step.actor, berserk, mods, warn: rowWarn });
       rows.push(row);
     }
     const steal = mods.lifeStealPct ? lifeStealRow(rows, mods.lifeStealPct, me, actor) : undefined;

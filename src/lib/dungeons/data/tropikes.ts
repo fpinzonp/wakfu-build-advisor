@@ -41,11 +41,14 @@ const orientStep: Step = {
 const advanceStep: Step = {
   actor: 'nodkoko',
   text: {
-    es: 'Al inicio del turno, la Nodkoko avanza 2 casillas hacia el oeste.',
-    en: 'At the start of the turn, the Nodkoko advances 2 cells west.',
-    fr: 'Au début du tour, la Nodkoko avance de 2 cases vers l’ouest.',
+    es: 'Al final del turno la Nodkoko pierde 1 PV (0 PV) y, al inicio del siguiente, avanza 2 casillas al oeste.',
+    en: 'At the end of the turn the Nodkoko loses 1 HP (0 HP) and, at the start of the next, advances 2 cells west.',
+    fr: 'En fin de tour la Nodkoko perd 1 PV (0 PV) et, au début du suivant, avance de 2 cases vers l’ouest.',
   },
-  changes: [{ type: 'move', piece: 'nodkoko', to: { x: 6, y: 5 }, path: [{ x: 7, y: 5 }] }],
+  changes: [
+    { type: 'label', piece: 'nodkoko', label: '0 PV ←' },
+    { type: 'move', piece: 'nodkoko', to: { x: 6, y: 5 }, path: [{ x: 7, y: 5 }] },
+  ],
 };
 
 const vulnTurns: L10n = { es: 'Turnos vulnerable', en: 'Vulnerable turns', fr: 'Tours vulnérable' };
@@ -83,9 +86,9 @@ const d: Dungeon = {
         fr: 'Les 3 monstres sont invulnérables (aura verte) tant qu’une explosion de Nodkoko ne les atteint pas.',
       },
       duration: {
-        es: 'Permanente: una vez alcanzados por la explosión, quedan vulnerables.',
-        en: 'Permanent: once hit by the explosion, they stay vulnerable.',
-        fr: 'Permanent : une fois touchés par l’explosion, ils restent vulnérables.',
+        es: 'La guía no indica que vuelvan a ser invulnerables tras la explosión.',
+        en: 'The guide does not say they become invulnerable again after the explosion.',
+        fr: 'Le guide n’indique pas qu’ils redeviennent invulnérables après l’explosion.',
       },
       steps: [
         {
@@ -100,9 +103,9 @@ const d: Dungeon = {
         {
           actor: 'pj1',
           text: {
-            es: 'El Personaje 1 empuja a los monstruos hacia la Nodkoko, a 2 casillas de su futura explosión.',
-            en: 'Character 1 pushes the monsters toward the Nodkoko, within 2 cells of its coming explosion.',
-            fr: 'Le Personnage 1 pousse les monstres vers la Nodkoko, à 2 cases de sa future explosion.',
+            es: 'El Personaje 1 empuja a los monstruos hasta dejarlos dentro del radio de 2 de la explosión (ejemplo).',
+            en: 'Character 1 pushes the monsters until they are within the explosion’s radius of 2 (example).',
+            fr: 'Le Personnage 1 pousse les monstres jusqu’à les placer dans le rayon de 2 de l’explosion (exemple).',
           },
           changes: [
             { type: 'move', piece: 'mob1', to: { x: 5, y: 4 }, path: [{ x: 3, y: 4 }, { x: 4, y: 4 }] },
@@ -125,9 +128,9 @@ const d: Dungeon = {
         },
         {
           text: {
-            es: 'La invulnerabilidad de los 3 monstruos cae y ya se les puede dañar; no vuelve.',
-            en: 'The 3 monsters lose their invulnerability and can be damaged; it does not come back.',
-            fr: 'Les 3 monstres perdent leur invulnérabilité et peuvent être blessés ; elle ne revient pas.',
+            es: 'La invulnerabilidad de los 3 monstruos cae y ya se les puede dañar (la guía no indica que vuelva).',
+            en: 'The 3 monsters lose their invulnerability and can be damaged (the guide does not say it returns).',
+            fr: 'Les 3 monstres perdent leur invulnérabilité et peuvent être blessés (le guide n’indique pas qu’elle revient).',
           },
           changes: [
             { type: 'aura', piece: 'mob1', on: false },
@@ -173,9 +176,9 @@ const d: Dungeon = {
         {
           actor: 'pj1',
           text: {
-            es: 'El Personaje 1 empuja al boss 3 casillas hacia la Nodkoko, a 1 casilla de su futura explosión.',
-            en: 'Character 1 pushes the boss 3 cells toward the Nodkoko, 1 cell from its coming explosion.',
-            fr: 'Le Personnage 1 pousse le boss de 3 cases vers la Nodkoko, à 1 case de sa future explosion.',
+            es: 'El Personaje 1 empuja al boss hasta dejarlo dentro del radio de 2 de la explosión (ejemplo).',
+            en: 'Character 1 pushes the boss until it is within the explosion’s radius of 2 (example).',
+            fr: 'Le Personnage 1 pousse le boss jusqu’à le placer dans le rayon de 2 de l’explosion (exemple).',
           },
           changes: [{ type: 'move', piece: 'boss', to: { x: 5, y: 5 }, path: [{ x: 3, y: 5 }, { x: 4, y: 5 }] }],
         },

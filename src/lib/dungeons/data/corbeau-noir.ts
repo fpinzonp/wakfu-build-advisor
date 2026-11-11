@@ -87,6 +87,17 @@ const d: Dungeon = {
             { type: 'counter', id: 'turns', name: turns, value: '1' },
           ],
         },
+        {
+          text: {
+            es: 'Al acabar ese turno vuelve la invulnerabilidad: el hechizo especial solo la quita durante un turno.',
+            en: 'When that turn ends the invulnerability returns: the special spell only removes it for one turn.',
+            fr: 'À la fin de ce tour l’invulnérabilité revient : le sort spécial ne la retire que pendant un tour.',
+          },
+          changes: [
+            { type: 'aura', piece: 'boss', on: true },
+            { type: 'counter', id: 'turns', name: turns, value: null },
+          ],
+        },
       ],
     },
   ],

@@ -73,9 +73,9 @@ const d: Dungeon = {
         {
           actor: 'pj2',
           text: {
-            es: 'Desde esa PO el golpe no se refleja: el boss no devuelve el daño a quien lo ataca desde 4 PO.',
-            en: 'From that range the hit is not reflected: the boss does not return damage to whoever attacks it from range 4.',
-            fr: 'Depuis cette PO le coup n’est pas renvoyé : le boss ne renvoie pas les dégâts à qui l’attaque à 4 PO.',
+            es: 'Desde 4 PO el golpe no se refleja (solo vale para golpes desde esa PO; desde otra se sigue reflejando).',
+            en: 'From range 4 the hit is not reflected (only for hits from that range; from any other it is still reflected).',
+            fr: 'À 4 PO le coup n’est pas renvoyé (seulement pour les coups depuis cette PO ; sinon il renvoie encore).',
           },
           changes: [
             { type: 'zone', zone: { kind: 'hit', cells: [{ x: 5, y: 3 }] } },

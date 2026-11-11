@@ -98,9 +98,9 @@ const d: Dungeon = {
         },
         {
           text: {
-            es: 'Con 3 sombreros el boss deja de ser invulnerable: se le mata antes que a los sombreros (no matar ninguno antes).',
-            en: 'With 3 hats the boss stops being invulnerable: kill it before the hats (do not kill any hat first).',
-            fr: 'Avec 3 chapeaux le boss n’est plus invulnérable : on le tue avant les chapeaux (n’en tuer aucun avant).',
+            es: 'Con 3 sombreros cae su invulnerabilidad: no mates ningún sombrero antes: si muere uno, vuelve.',
+            en: 'With 3 hats its invulnerability falls: kill no hat first; if one dies, the boss becomes invulnerable again.',
+            fr: 'Avec 3 chapeaux son invulnérabilité tombe : ne tuez aucun chapeau avant ; si un meurt, le boss redevient invulnérable.',
           },
           changes: [{ type: 'aura', piece: 'boss', on: false }],
         },

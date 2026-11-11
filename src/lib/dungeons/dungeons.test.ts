@@ -76,7 +76,9 @@ describe('registro de mazmorras', () => {
   it('Corbeau Noir: matar un corbac permite quitar la invulnerabilidad un turno', () => {
     const r = room('corbeau-noir', 'boss');
     expect(all(r)).toContainEqual({ type: 'remove', piece: 'corbac' });
-    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(all(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: true });
+    expect(last(r)).toContainEqual({ type: 'counter', id: 'turns', name: expect.anything(), value: null });
   });
   it('Hagen-Glass: la armadura de hielo cae al quitar PA', () => {
     const r = room('hagen-glass');

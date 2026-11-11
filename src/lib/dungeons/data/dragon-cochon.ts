@@ -37,6 +37,7 @@ const d: Dungeon = {
         pj(1, { x: 7, y: 1 }, support),
         pj(2, { x: 7, y: 3 }, support),
         pj(3, { x: 7, y: 5 }, dps),
+        pj(4, { x: 5, y: 6 }, support),
       ],
       condition: {
         es: 'El boss es invulnerable (aura verde). Hay que acumular 30 PA de «daños por la espalda» (estado mal-o-derrière en su ficha).',
@@ -64,10 +65,7 @@ const d: Dungeon = {
             en: 'A first character (e.g. Osamodas, Pandawa or Zobal) turns the boss’s back to the whole team.',
             fr: 'Un premier personnage (ex. Osamodas, Pandawa ou Zobal) donne le dos du boss à toute l’équipe.',
           },
-          changes: [
-            { type: 'zone', zone: { kind: 'hit', cells: [{ x: 5, y: 3 }] } },
-            { type: 'counter', id: 'back', name: back, value: '0/30' },
-          ],
+          changes: [],
         },
         {
           actor: 'pj2',
@@ -82,11 +80,11 @@ const d: Dungeon = {
           ],
         },
         {
-          actor: 'pj1',
+          actor: 'pj4',
           text: {
-            es: 'El Personaje 1 (soporte) suma más PA por la espalda antes de que jueguen los de daño (ejemplo: 20 de 30).',
-            en: 'Character 1 (support) adds more AP in the back before the damage dealers play (example: 20 of 30).',
-            fr: 'Le Personnage 1 (support) ajoute des PA dans le dos avant les DPS (exemple : 20 sur 30).',
+            es: 'El Personaje 4 (soporte) suma más PA por la espalda antes de que jueguen los de daño (ejemplo: 20 de 30).',
+            en: 'Character 4 (support) adds more AP in the back before the damage dealers play (example: 20 of 30).',
+            fr: 'Le Personnage 4 (support) ajoute des PA dans le dos avant les DPS (exemple : 20 sur 30).',
           },
           changes: [
             { type: 'zone', zone: { kind: 'hit', cells: [{ x: 5, y: 3 }] } },

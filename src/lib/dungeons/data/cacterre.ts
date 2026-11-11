@@ -42,9 +42,9 @@ const d: Dungeon = {
         fr: 'Le boss est invulnérable (aura verte). Il faut lui infliger 10 PA de dégâts de chaque élément : l’avancée se voit dans sa fiche de combattant.',
       },
       duration: {
-        es: 'La guía no indica que la invulnerabilidad vuelva. Cada elemento le da un bonus (resistencia, parada, maestría o críticos) hasta tenerlos todos.',
-        en: 'The guide does not say the invulnerability returns. Each element gives it a bonus (resistance, parry, mastery or crits) until all are done.',
-        fr: 'Le guide n’indique pas que l’invulnérabilité revient. Chaque élément lui donne un bonus (résistance, parade, maîtrise ou CC) jusqu’à les avoir tous.',
+        es: 'Conviene poner los 40 PA en el mismo turno y antes de que juegue el boss. La guía no indica que la invulnerabilidad vuelva. Cada elemento le da un bonus (resistencia, parada, maestría o críticos) hasta tenerlos todos.',
+        en: 'Best to put all 40 AP in the same turn, before the boss plays. The guide does not say the invulnerability returns. Each element gives it a bonus (resistance, parry, mastery or crits) until all are done.',
+        fr: 'Mieux vaut mettre les 40 PA dans le même tour, avant que le boss joue. Le guide n’indique pas que l’invulnérabilité revient. Chaque élément lui donne un bonus (résistance, parade, maîtrise ou CC) jusqu’à les avoir tous.',
       },
       steps: [
         {

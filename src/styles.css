@@ -571,7 +571,8 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .dun { display: flex; flex-direction: column; gap: 12px; }
 .dun-pick { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
 .dun-pick .field { min-width: 0; flex: 1 1 220px; }
-.dun-board { position: relative; width: 100%; max-width: 520px; background: var(--panel-2); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); overflow: hidden; }
+.dun { overflow-x: clip; }
+.dun-board { position: relative; width: 100%; max-width: 520px; background: var(--panel-2); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); }
 .dun-grid { position: absolute; inset: 0; display: grid; }
 .dun-cell { border: 1px solid var(--line); min-width: 0; min-height: 0; }
 .dun-tile-red { background: rgba(255, 128, 128, .35); }
@@ -584,9 +585,13 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .dun-zone-path { background: rgba(143, 157, 170, .3); }
 .dun-zone-hit { background: rgba(255, 255, 255, .35); }
 .dun-pieces { position: absolute; inset: 0; pointer-events: none; }
+.dun-piece { pointer-events: auto; cursor: default; }
+.dun-piece:hover, .dun-piece:focus { z-index: 2; }
+.dun-piece::after { content: attr(data-name); position: absolute; left: 50%; top: 100%; transform: translateX(-50%); margin-top: 2px; padding: 2px 8px; white-space: nowrap; font-size: 12px; background: var(--panel-3); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); opacity: 0; visibility: hidden; }
+.dun-piece:hover::after, .dun-piece:focus::after { opacity: 1; visibility: visible; }
 .dun-piece { position: absolute; display: flex; align-items: center; justify-content: center; padding: 8%; transition: left .5s, top .5s; }
 .dun-piece > span { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: clamp(8px, 2.4vw, 13px); font-weight: 700; color: var(--accent-ink); background: var(--muted); overflow: hidden; }
-.dun-boss > span { background: var(--neg); transform: scale(1.35); }
+.dun-boss > span { background: var(--neg); transform: scale(1.15); }
 .dun-mob > span { background: var(--gold); }
 .dun-special > span { background: #9aa8ff; }
 .dun-char > span { background: var(--accent); }

@@ -14,7 +14,7 @@ export default function DungeonBoard({ state, size, roomName }: Props) {
       if (tile) cls.push(`dun-tile-${tile}`);
       for (const z of state.zones) if (z.cells.some(c => c.x === x && c.y === y)) cls.push(`dun-zone-${z.kind}`);
       // Los números visibles son de base 1; los datos, de base 0.
-      cells.push(<div key={`${x},${y}`} className={cls.join(' ')} title={t('dun.cell', { x: x + 1, y: y + 1 })} />);
+      cells.push(<div key={`${x},${y}`} className={cls.join(' ')} aria-label={t('dun.cell', { x: x + 1, y: y + 1 })} />);
     }
   }
   return (
@@ -40,6 +40,8 @@ export default function DungeonBoard({ state, size, roomName }: Props) {
               className={cls.join(' ')}
               style={{ left: `${(p.cell.x / size.w) * 100}%`, top: `${(p.cell.y / size.h) * 100}%`, width: `${100 / size.w}%`, height: `${100 / size.h}%` }}
               title={label}
+              data-name={name}
+              tabIndex={0}
               role="img"
               aria-label={label}
             >

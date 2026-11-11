@@ -40,6 +40,20 @@ describe('Mazmorras: panel', () => {
     const h = renderToString(<DungeonBoard state={boardAt(room!, 0)} size={room!.size} roomName="x" />);
     expect(h).toContain('invulnerable');
   });
+  it('el tablero marca al actor con dun-actor', () => {
+    // El primer paso (de cualquier sala) con actor definido que sea una pieza visible.
+    for (const room of DUNGEONS.flatMap(d => d.rooms)) {
+      for (let i = 0; i < room.steps.length; i++) {
+        const st = boardAt(room, i);
+        if (st.actor && st.pieces.some(p => p.id === st.actor)) {
+          const h = renderToString(<DungeonBoard state={st} size={room.size} roomName="x" />);
+          expect(h).toContain('dun-actor');
+          return;
+        }
+      }
+    }
+    throw new Error('ninguna sala tiene un paso con actor visible');
+  });
   it('los tres idiomas tienen las mismas claves', () => {
     expect(Object.keys(en).sort()).toEqual(Object.keys(es).sort());
     expect(Object.keys(fr).sort()).toEqual(Object.keys(es).sort());

@@ -34,7 +34,7 @@ const ring: Cell[] = [
   { x: 3, y: 5 }, { x: 4, y: 5 }, { x: 5, y: 5 },
 ];
 const cellA: Cell = { x: 3, y: 4 }; // lado oeste del boss
-const cellB: Cell = { x: 5, y: 4 }; // lado opuesto (este)
+const cellB: Cell = { x: 5, y: 4 }; // la otra casilla de golpe (ejemplo: lado este)
 // Burbujas a distancia <= 2 de una casilla, sin contar la que hay bajo los pies del personaje.
 const near = (c: Cell): Cell[] => ring.filter(r => (r.x !== c.x || r.y !== c.y) && Math.abs(r.x - c.x) + Math.abs(r.y - c.y) <= 2);
 const clearedByA = near(cellA);
@@ -110,9 +110,9 @@ const d: Dungeon = {
         {
           actor: 'pj1',
           text: T(
-            'En el mismo turno golpea desde la casilla del lado opuesto: el renvoi quita las burbujas que faltaban.',
-            'In the same turn it hits from the cell on the opposite side: the renvoi clears the remaining bubbles.',
-            'Dans le même tour il frappe depuis la case du côté opposé : le renvoi retire les bulles restantes.',
+            'En el mismo turno golpea desde la otra casilla (ejemplo): el renvoi quita las burbujas que faltaban.',
+            'In the same turn it hits from the other cell (example): the renvoi clears the remaining bubbles.',
+            'Dans le même tour il frappe depuis l’autre case (exemple) : le renvoi retire les bulles restantes.',
           ),
           changes: [
             { type: 'move', piece: 'pj1', to: cellB },

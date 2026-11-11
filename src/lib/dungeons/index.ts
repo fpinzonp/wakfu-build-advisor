@@ -42,7 +42,7 @@ export const EXCLUDED: Excluded[] = [
   {
     id: 'kannibouls',
     name: 'Donjon des Kannibouls',
-    reason: 'La guía no dice si el tótem absorbido se consume, cuánto dura la vulnerabilidad (la imagen solo muestra «Vulnérabilité Aquatique» de 1 turno) ni cómo el estado de los personajes permite dañar a los invulnerables; la absorción del boss («zona de tótems» y reglas de 20 % por elemento) tampoco se concreta.',
+    reason: 'La guía da la receta del boss (crear una zona de tótems, meter al boss, golpear; mejor 3-4 tótems) pero no dice si los tótems absorbidos se consumen, cómo obtienen los personajes el estado necesario para dañar (solo hay una imagen de «Vulnérabilité Aquatique» de 1 turno) ni da posiciones o un diagrama de la zona; animarlo obligaría a inventar esos datos.',
   },
   {
     id: 'cite-interdite',
@@ -52,7 +52,7 @@ export const EXCLUDED: Excluded[] = [
   {
     id: 'kannivores',
     name: 'Donjon des Kannivores',
-    reason: 'La invulnerabilidad del boss dura 1 turno en cada cambio de fase y es automática; no hay una mecánica de los jugadores para quitarla. Las raíces solo reducen el daño un 25 % cada una, sin un paso a paso concreto.',
+    reason: 'La guía describe las raíces (cada una reduce un 25 % el daño al boss y redirigen el 100 % si está cerca) y la stèle 2 (daño 0 a monstruos sin aliado a 1-3 casillas), pero la invulnerabilidad de 1 turno del boss es automática en cada cambio de fase y no hay una maniobra de los jugadores que quitar; no hay posiciones ni diagrama de un paso a paso que animar sin inventar.',
   },
 ];
 

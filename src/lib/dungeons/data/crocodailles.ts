@@ -4,7 +4,7 @@ import type { Dungeon, L10n, Piece, Step } from '../types';
 // Donjon des Crocodailles (171-185). Fuente: https://wakfu.guide/donjons/171-185/ (sección «Donjon des Crocodailles»).
 // Imágenes revisadas: d50 (Éventreur), d51 (Crocodaille Ancestral/chamán: cura y -50 % monoblanco), d52-d54 (marca «Capturé»/«Proie
 // Ensanglantée» del cazador), d56 (ficha «Écailles Renforcées»: +500 res. elementales hasta sufrir una colisión, aura verde),
-// d57 (ficha del Roi des Crocodailles), d59 (agujeros «Noyades» con flechas: no alinearse con ellos). No hay diagrama de posiciones
+// d57 (agujeros «Noyades» con flechas: no alinearse con ellos), d59 (ficha del Roi des Crocodailles). No hay diagrama de posiciones
 // de la sala: tablero y casillas son un ejemplo esquemático. La guía no dice qué 3 monstruos de la sala 1 llevan las escamas
 // reforzadas; se muestran como «Crocodaille 1-3». Sin comprobar en el juego.
 
@@ -115,9 +115,9 @@ const d: Dungeon = {
         pj(1, { x: 1, y: 3 }),
       ],
       condition: {
-        es: 'El boss no es invulnerable al principio, pero lo pasa a ser al llegar al 55 % de PV; hay que provocarle una colisión. Es indesplazable. Cuidado: los desplazamientos deslizan 3 casillas más y los agujeros «Noyades» quitan -2 PM y -33 % PV.',
-        en: 'The boss is not invulnerable at first, but becomes so at 55 % HP; you must make it suffer a collision. It cannot be moved. Careful: displacements slide 3 more cells and “Drowning” holes cost -2 MP and -33 % HP.',
-        fr: 'Le boss n’est pas invulnérable au début, mais le devient à 55 % de PV ; il faut lui infliger une collision. Il est indéplaçable. Attention : les déplacements glissent de 3 cases de plus et les trous « Noyades » coûtent -2 PM et -33 % PV.',
+        es: 'El boss no es invulnerable al principio, pero lo pasa a ser al llegar al 55 % de PV; hay que provocarle una colisión. Es indesplazable y puede darte un estado que alarga +2 tus deslizamientos. Cuidado: los desplazamientos deslizan 3 casillas más y los agujeros «Noyades» quitan -2 PM y -33 % PV.',
+        en: 'The boss is not invulnerable at first, but becomes so at 55 % HP; you must make it suffer a collision. It cannot be moved and can give you a state that lengthens your slides by +2. Careful: displacements slide 3 more cells and “Drowning” holes cost -2 MP and -33 % HP.',
+        fr: 'Le boss n’est pas invulnérable au début, mais le devient à 55 % de PV ; il faut lui infliger une collision. Il est indéplaçable et peut vous donner un état qui allonge vos glissades de +2. Attention : les déplacements glissent de 3 cases de plus et les trous « Noyades » coûtent -2 PM et -33 % PV.',
       },
       duration: {
         es: 'La guía no indica cuánto dura el estado sin invulnerabilidad ni si vuelve a protegerse.',

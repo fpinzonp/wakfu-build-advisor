@@ -14,10 +14,17 @@ import hagenGlass from './data/hagen-glass';
 import smarrante from './data/smarrante';
 import cacterre from './data/cacterre';
 import dragonCochon from './data/dragon-cochon';
+import noirespore from './data/noirespore';
+import potofeu from './data/potofeu';
+import jawdin from './data/jawdin';
+import sourceDuMal from './data/source-du-mal';
+import waWabbit from './data/wa-wabbit';
+import enutrosor from './data/enutrosor';
 
 // Orden: por tramo de nivel (mínimo) y luego por nombre francés.
 export const DUNGEONS: Dungeon[] = [tropikes, poulpe, tourMinerale, corbeauCave, excarnus, truchiere, scarriere, slekymoses,
   magikRiktus, areneDansante, corbeauNoir, hagenGlass, smarrante, cacterre, dragonCochon,
+  noirespore, potofeu, jawdin, sourceDuMal, waWabbit, enutrosor,
 ].sort(
   (a, b) => a.tier[0] - b.tier[0] || a.name.fr.localeCompare(b.name.fr, 'fr'),
 );

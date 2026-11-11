@@ -106,8 +106,62 @@ describe('registro de mazmorras', () => {
     expect(all(p1)).toContainEqual(expect.objectContaining({ type: 'counter', id: 'back', value: '30/30' }));
     expect(all(p2)).toContainEqual(expect.objectContaining({ type: 'counter', id: 'frenzy', value: '7/7' }));
   });
-  it('tramo 96-125: frases de paso de 120 caracteres como máximo en los 3 idiomas', () => {
-    const ids = ['magik-riktus', 'arene-dansante', 'corbeau-noir', 'hagen-glass', 'smarrante', 'cacterre', 'dragon-cochon'];
+  it('Noirespore: Sepolourpode invulnerables hasta matar a los demás; boss fase 1 cae al matar la invocación; fase 2 espera 2 turnos', () => {
+    const r1 = room('noirespore');
+    for (const id of ['sepo1', 'sepo2', 'sepo3']) {
+      expect(r1.pieces.find(p => p.id === id)!.invulnerable).toBe(true);
+      expect(last(r1)).toContainEqual({ type: 'aura', piece: id, on: false });
+    }
+    const b1 = room('noirespore', 'boss1');
+    expect(all(b1)).toContainEqual({ type: 'remove', piece: 'summon' });
+    expect(all(b1)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    const b2 = room('noirespore', 'boss2');
+    expect(b2.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(b2)).toContainEqual(expect.objectContaining({ type: 'counter', id: 'wait', value: '2/2' }));
+    expect(all(b2)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Potofeu: el veneno se transmite 2 veces al boss y cae la invulnerabilidad', () => {
+    const r = room('potofeu', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(r).filter(c => c.type === 'aura' && c.piece === 'boss' && !c.on).length).toBe(2);
+    expect(all(r)).toContainEqual(expect.objectContaining({ type: 'counter', id: 'times', value: '2/2' }));
+  });
+  it('Jawdin: la Cawotte a 1 PV explota con el boss dentro y le quita la invulnerabilidad 1 turno', () => {
+    const r = room('jawdin', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(r)).toContainEqual({ type: 'remove', piece: 'c1' });
+    expect(all(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: true });
+  });
+  it('Source du Mal: matar el Bulbiflore deja el glifo oscuro y «Mort Subite» quita la invulnerabilidad', () => {
+    const r = room('source-du-mal', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(r)).toContainEqual({ type: 'remove', piece: 'bulbiflore' });
+    expect(all(r)).toContainEqual(expect.objectContaining({ type: 'tiles', color: 'dark' }));
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Wa Wabbit: el Wobot muere normal, los 3 Wabbits necesitan logo y luego cae el boss', () => {
+    const r = room('wa-wabbit', 'boss');
+    expect(r.pieces.find(p => p.id === 'wobot')!.invulnerable).toBeFalsy();
+    for (const id of ['w1', 'w2', 'w3', 'boss']) {
+      expect(r.pieces.find(p => p.id === id)!.invulnerable).toBe(true);
+      expect(all(r)).toContainEqual({ type: 'aura', piece: id, on: false });
+    }
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Enutrosor: las +400 res. bajan al dañar el diamante y matar una gema da ×5; el boss igual', () => {
+    const r = room('enutrosor');
+    expect(r.pieces.find(p => p.id === 'm1')!.invulnerable).toBe(true);
+    expect(all(r)).toContainEqual({ type: 'remove', piece: 'gem1' });
+    expect(all(r)).toContainEqual({ type: 'aura', piece: 'm1', on: false });
+    const b = room('enutrosor', 'boss');
+    expect(b.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(b)).toContainEqual({ type: 'remove', piece: 'gem1' });
+    expect(last(b)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('tramos 96-155: frases de paso de 120 caracteres como máximo en los 3 idiomas', () => {
+    const ids = ['magik-riktus', 'arene-dansante', 'corbeau-noir', 'hagen-glass', 'smarrante', 'cacterre', 'dragon-cochon',
+      'noirespore', 'potofeu', 'jawdin', 'source-du-mal', 'wa-wabbit', 'enutrosor'];
     const largas: string[] = [];
     for (const d of DUNGEONS.filter(x => ids.includes(x.id)))
       for (const r of d.rooms) for (const st of r.steps) for (const l of ['es', 'en', 'fr'] as const)

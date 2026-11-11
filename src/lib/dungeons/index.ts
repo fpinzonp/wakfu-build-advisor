@@ -20,11 +20,16 @@ import jawdin from './data/jawdin';
 import sourceDuMal from './data/source-du-mal';
 import waWabbit from './data/wa-wabbit';
 import enutrosor from './data/enutrosor';
+import lampionaute from './data/lampionaute';
+import roubBar from './data/roub-bar';
+import eBou from './data/e-bou';
+import fabriqueMeka from './data/fabrique-meka';
 
 // Orden: por tramo de nivel (mínimo) y luego por nombre francés.
 export const DUNGEONS: Dungeon[] = [tropikes, poulpe, tourMinerale, corbeauCave, excarnus, truchiere, scarriere, slekymoses,
   magikRiktus, areneDansante, corbeauNoir, hagenGlass, smarrante, cacterre, dragonCochon,
   noirespore, potofeu, jawdin, sourceDuMal, waWabbit, enutrosor,
+  lampionaute, roubBar, eBou, fabriqueMeka,
 ].sort(
   (a, b) => a.tier[0] - b.tier[0] || a.name.fr.localeCompare(b.name.fr, 'fr'),
 );

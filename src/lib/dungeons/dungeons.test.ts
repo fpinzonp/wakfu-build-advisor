@@ -161,9 +161,50 @@ describe('registro de mazmorras', () => {
     expect(all(b)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
     expect(last(b)).toContainEqual(expect.objectContaining({ type: 'counter', id: 'x5', value: null }));
   });
-  it('tramos 96-155: frases de paso de 120 caracteres como máximo en los 3 idiomas', () => {
+  it('Lampionaute: Foudroyé + desplazamiento inverso junto a Javého quita la invulnerabilidad 1 turno', () => {
+    const r = room('lampionaute', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: true });
+  });
+  it("Roub'Bar: el muro de pólvora quita la +300 res. en la sala 1 y la invulnerabilidad del boss", () => {
+    const r1 = room('roub-bar', 'room1');
+    expect(r1.pieces.find(p => p.id === 'm1')!.invulnerable).toBe(true);
+    expect(all(r1)).toContainEqual({ type: 'aura', piece: 'm1', on: false });
+    expect(last(r1)).toContainEqual({ type: 'aura', piece: 'm1', on: true });
+    const b = room('roub-bar', 'boss');
+    expect(b.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(b)).toContainEqual(expect.objectContaining({ type: 'tiles', color: 'red' }));
+    expect(all(b)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('E-Bou: fase 1 pasa las casillas azules a rojas; fase 3 resetea las rojas y saca al boss del centro', () => {
+    const p1 = room('e-bou', 'phase1');
+    expect(p1.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(p1.tiles![0].color).toBe('blue');
+    expect(all(p1).filter(c => c.type === 'tiles' && c.color === 'red').length).toBe(p1.tiles![0].cells.length);
+    expect(last(p1)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    const p3 = room('e-bou', 'phase3');
+    expect(p3.tiles!.some(t => t.color === 'red')).toBe(true);
+    expect(all(p3).filter(c => c.type === 'tiles' && c.color === 'blue').length).toBe(2);
+    expect(all(p3)).toContainEqual(expect.objectContaining({ type: 'move', piece: 'boss' }));
+    expect(all(p3)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Fabrique Méka: empezar el turno en el glifo oscuro da +50 % y baja la protección en sala 1 y boss', () => {
+    const r = room('fabrique-meka');
+    for (const id of ['m1', 'm2', 'm3']) {
+      expect(r.pieces.find(p => p.id === id)!.invulnerable).toBe(true);
+      expect(all(r)).toContainEqual({ type: 'aura', piece: id, on: false });
+    }
+    expect(r.tiles![0].color).toBe('dark');
+    const b = room('fabrique-meka', 'boss');
+    expect(b.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(b)).toContainEqual(expect.objectContaining({ type: 'counter', id: 'bonus', value: '+50 %' }));
+    expect(all(b)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(last(b)).toContainEqual({ type: 'aura', piece: 'boss', on: true });
+  });
+  it('tramos 96-170: frases de paso de 120 caracteres como máximo en los 3 idiomas', () => {
     const ids = ['magik-riktus', 'arene-dansante', 'corbeau-noir', 'hagen-glass', 'smarrante', 'cacterre', 'dragon-cochon',
-      'noirespore', 'potofeu', 'jawdin', 'source-du-mal', 'wa-wabbit', 'enutrosor'];
+      'noirespore', 'potofeu', 'jawdin', 'source-du-mal', 'wa-wabbit', 'enutrosor', 'lampionaute', 'roub-bar', 'e-bou', 'fabrique-meka'];
     const largas: string[] = [];
     for (const d of DUNGEONS.filter(x => ids.includes(x.id)))
       for (const r of d.rooms) for (const st of r.steps) for (const l of ['es', 'en', 'fr'] as const)

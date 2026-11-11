@@ -7,9 +7,18 @@ import excarnus from './data/excarnus';
 import truchiere from './data/truchiere';
 import scarriere from './data/scarriere';
 import slekymoses from './data/slekymoses';
+import magikRiktus from './data/magik-riktus';
+import areneDansante from './data/arene-dansante';
+import corbeauNoir from './data/corbeau-noir';
+import hagenGlass from './data/hagen-glass';
+import smarrante from './data/smarrante';
+import cacterre from './data/cacterre';
+import dragonCochon from './data/dragon-cochon';
 
 // Orden: por tramo de nivel (mínimo) y luego por nombre francés.
-export const DUNGEONS: Dungeon[] = [tropikes, poulpe, tourMinerale, corbeauCave, excarnus, truchiere, scarriere, slekymoses].sort(
+export const DUNGEONS: Dungeon[] = [tropikes, poulpe, tourMinerale, corbeauCave, excarnus, truchiere, scarriere, slekymoses,
+  magikRiktus, areneDansante, corbeauNoir, hagenGlass, smarrante, cacterre, dragonCochon,
+].sort(
   (a, b) => a.tier[0] - b.tier[0] || a.name.fr.localeCompare(b.name.fr, 'fr'),
 );
 

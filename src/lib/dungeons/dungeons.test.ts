@@ -62,4 +62,54 @@ describe('registro de mazmorras', () => {
     expect(all(r)).toContainEqual({ type: 'label', piece: 'pj1', label: 'Slek' });
     expect(all(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
   });
+  it('Magik Riktus: el boss empieza invulnerable, 3 sombreros y deja de serlo', () => {
+    const r = room('magik-riktus', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(r).filter(c => c.type === 'add').length).toBe(3);
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Arène Dansante: el boss refleja y deja de hacerlo al golpearlo desde la PO exacta', () => {
+    const r = room('arene-dansante', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Corbeau Noir: matar un corbac permite quitar la invulnerabilidad un turno', () => {
+    const r = room('corbeau-noir', 'boss');
+    expect(all(r)).toContainEqual({ type: 'remove', piece: 'corbac' });
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Hagen-Glass: la armadura de hielo cae al quitar PA', () => {
+    const r = room('hagen-glass');
+    expect(r.pieces.find(p => p.id === 'mob1')!.invulnerable).toBe(true);
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'mob1', on: false });
+  });
+  it('Smarrante: el golpe cuerpo a cuerpo quita la invulnerabilidad solo durante su turno', () => {
+    const r = room('smarrante', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: true });
+  });
+  it('Cacterre: 4 contadores de elemento llegan a 10/10 y cae la invulnerabilidad', () => {
+    const r = room('cacterre', 'boss');
+    expect(all(r).filter(c => c.type === 'counter' && c.value === '10/10').length).toBe(4);
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Dragon-Cochon: fase 1 (30 PA) y fase 2 (frenesí 7) quitan la invulnerabilidad', () => {
+    const p1 = room('dragon-cochon', 'phase1');
+    const p2 = room('dragon-cochon', 'phase2');
+    for (const r of [p1, p2]) {
+      expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+      expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    }
+    expect(all(p1)).toContainEqual(expect.objectContaining({ type: 'counter', id: 'back', value: '30/30' }));
+    expect(all(p2)).toContainEqual(expect.objectContaining({ type: 'counter', id: 'frenzy', value: '7/7' }));
+  });
+  it('tramo 96-125: frases de paso de 120 caracteres como máximo en los 3 idiomas', () => {
+    const ids = ['magik-riktus', 'arene-dansante', 'corbeau-noir', 'hagen-glass', 'smarrante', 'cacterre', 'dragon-cochon'];
+    const largas: string[] = [];
+    for (const d of DUNGEONS.filter(x => ids.includes(x.id)))
+      for (const r of d.rooms) for (const st of r.steps) for (const l of ['es', 'en', 'fr'] as const)
+        if (st.text[l].length > 120) largas.push(`${d.id}/${r.id} ${l} (${st.text[l].length}): ${st.text[l]}`);
+    expect(largas).toEqual([]);
+  });
 });

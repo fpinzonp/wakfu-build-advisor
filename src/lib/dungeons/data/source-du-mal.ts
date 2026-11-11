@@ -103,13 +103,25 @@ const d: Dungeon = {
         {
           actor: 'pj1',
           text: T(
-            'Con «Mort Subite», el Personaje 1 sí puede dañar al boss: para él cae la invulnerabilidad (2 turnos).',
-            'With “Sudden Death”, Character 1 can damage the boss: for it the invulnerability falls (2 turns).',
-            'Avec « Mort Subite », le Personnage 1 peut blesser le boss : pour lui l’invulnérabilité tombe (2 tours).',
+            'Con «Mort Subite» el Personaje 1 puede dañar al boss: cae la invulnerabilidad, solo para él, 2 turnos.',
+            'With “Sudden Death” Character 1 can damage the boss: invulnerability falls, for it only, 2 turns.',
+            'Avec « Mort Subite » le Personnage 1 peut blesser le boss : l’invulnérabilité tombe, pour lui seul, 2 tours.',
           ),
           changes: [
             { type: 'zone', zone: { kind: 'hit', cells: [{ x: 3, y: 4 }] } },
             { type: 'aura', piece: 'boss', on: false },
+          ],
+        },
+        {
+          text: T(
+            'Pasados los 2 turnos el estado termina y el boss vuelve a ser invulnerable (deducido).',
+            'After the 2 turns the state ends and the boss is invulnerable again (deduced).',
+            'Après les 2 tours l’état se termine et le boss redevient invulnérable (déduit).',
+          ),
+          changes: [
+            { type: 'aura', piece: 'boss', on: true },
+            { type: 'label', piece: 'pj1', label: null },
+            { type: 'counter', id: 'state', name: state, value: null },
           ],
         },
       ],

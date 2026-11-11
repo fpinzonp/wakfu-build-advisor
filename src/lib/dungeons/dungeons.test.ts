@@ -138,7 +138,8 @@ describe('registro de mazmorras', () => {
     expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
     expect(all(r)).toContainEqual({ type: 'remove', piece: 'bulbiflore' });
     expect(all(r)).toContainEqual(expect.objectContaining({ type: 'tiles', color: 'dark' }));
-    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(all(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: true });
   });
   it('Wa Wabbit: el Wobot muere normal, los 3 Wabbits necesitan logo y luego cae el boss', () => {
     const r = room('wa-wabbit', 'boss');
@@ -157,7 +158,8 @@ describe('registro de mazmorras', () => {
     const b = room('enutrosor', 'boss');
     expect(b.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
     expect(all(b)).toContainEqual({ type: 'remove', piece: 'gem1' });
-    expect(last(b)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(all(b)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(last(b)).toContainEqual(expect.objectContaining({ type: 'counter', id: 'x5', value: null }));
   });
   it('tramos 96-155: frases de paso de 120 caracteres como máximo en los 3 idiomas', () => {
     const ids = ['magik-riktus', 'arene-dansante', 'corbeau-noir', 'hagen-glass', 'smarrante', 'cacterre', 'dragon-cochon',

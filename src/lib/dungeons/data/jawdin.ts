@@ -105,11 +105,14 @@ const d: Dungeon = {
         {
           actor: 'pj1',
           text: T(
-            'El boss, vulnerable, gana 10 PM y daño en todo el mapa: el Personaje 1 se pone al cuerpo a cuerpo de la Cawotte.',
-            'Vulnerable, the boss gains 10 MP and a map-wide damage spell: Character 1 stands next to the Cawotte.',
-            'Le boss, vulnérable, gagne 10 PM et un sort de zone totale : le Personnage 1 se place au corps à corps de la Cawotte.',
+            'El boss, vulnerable, gana 10 PM y daño en todo el mapa: todos se ponen al cuerpo a cuerpo de una Cawotte.',
+            'Vulnerable, the boss gains 10 MP and a map-wide damage spell: all characters stand next to a Cawotte.',
+            'Le boss, vulnérable, gagne 10 PM et un sort sur toute la map : tous se placent au corps à corps d’une Cawotte.',
           ),
-          changes: [{ type: 'move', piece: 'pj1', to: { x: 7, y: 7 }, path: [{ x: 3, y: 7 }, { x: 4, y: 7 }, { x: 5, y: 7 }, { x: 6, y: 7 }] }],
+          changes: [
+            { type: 'move', piece: 'pj1', to: { x: 7, y: 7 }, path: [{ x: 3, y: 7 }, { x: 4, y: 7 }, { x: 5, y: 7 }, { x: 6, y: 7 }] },
+            { type: 'move', piece: 'pj2', to: { x: 8, y: 6 } },
+          ],
         },
         {
           text: T(

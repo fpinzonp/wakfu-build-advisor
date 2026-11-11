@@ -65,9 +65,9 @@ const d: Dungeon = {
         {
           actor: 'pj1',
           text: T(
-            'El Personaje 1 mata una gema (la que convenga): todo el daño del equipo se multiplica por 5 durante 1 turno.',
-            'Character 1 kills a gem (whichever suits): the whole team’s damage is multiplied by 5 for 1 turn.',
-            'Le Personnage 1 tue une gemme (celle qui arrange) : les dégâts de l’équipe sont multipliés par 5 pendant 1 tour.',
+            'El Personaje 1 mata una gema (la que convenga): el daño al diamante se multiplica por 5 durante 1 turno.',
+            'Character 1 kills a gem (whichever suits): damage to the diamond is multiplied by 5 for 1 turn.',
+            'Le Personnage 1 tue une gemme (celle qui arrange) : les dégâts au diamant sont multipliés par 5 pendant 1 tour.',
           ),
           changes: [
             { type: 'remove', piece: 'gem1' },
@@ -111,9 +111,9 @@ const d: Dungeon = {
         {
           actor: 'pj2',
           text: T(
-            'El diamante llega a 50 % de PV: los monstruos ya no tienen bonus y dejan de ser invulnerables.',
-            'The diamond reaches 50% HP: the monsters no longer have a bonus and stop being invulnerable.',
-            'Le diamant arrive à 50 % de PV : les monstres n’ont plus de bonus et ne sont plus invulnérables.',
+            'El diamante llega a 50 % de PV: los monstruos pierden el bonus de +400 res.',
+            'The diamond reaches 50% HP: the monsters lose the +400 res. bonus.',
+            'Le diamant arrive à 50 % de PV : les monstres perdent le bonus de +400 rés.',
           ),
           changes: [
             { type: 'zone', zone: { kind: 'hit', cells: [{ x: 5, y: 4 }] } },
@@ -154,9 +154,9 @@ const d: Dungeon = {
         pj(3, { x: 5, y: 7 }),
       ],
       condition: T(
-        'La mecánica es la misma, con el boss en lugar del diamante: sus +400 res. (aura verde) bajan al dañarlo, y matar una gema da daño ×5 sobre él durante 1 turno.',
-        'The mechanic is the same, with the boss in place of the diamond: its +400 res. (green aura) go down as it is damaged, and killing a gem gives ×5 damage on it for 1 turn.',
-        'La mécanique est la même, avec le boss à la place du diamant : ses +400 rés. (aura verte) baissent quand on le frappe, et tuer une gemme donne des dégâts ×5 sur lui pendant 1 tour.',
+        'La mecánica es la misma, con el boss en lugar del diamante: sus +400 res. (aura verde) bajan al dañarlo, y matar una gema da daño ×5 sobre él durante 1 turno. Si un aliado está a su cuerpo a cuerpo, el boss no recibe daño.',
+        'The mechanic is the same, with the boss in place of the diamond: its +400 res. (green aura) go down as it is damaged, and killing a gem gives ×5 damage on it for 1 turn. If an ally is in its melee range, the boss takes no damage.',
+        'La mécanique est la même, avec le boss à la place du diamant : ses +400 rés. (aura verte) baissent quand on le frappe, et tuer une gemme donne des dégâts ×5 sur lui pendant 1 tour. Si un allié est à son cac, le boss ne subit aucun dégât.',
       ),
       duration: T(
         'Cuanto menos PV tiene, más fuerte pega y más bajan las resistencias de los demás monstruos: conviene centrarse en el boss. La guía no da más duraciones.',
@@ -187,34 +187,13 @@ const d: Dungeon = {
         {
           actor: 'pj2',
           text: T(
-            'El Personaje 2 daña al boss con el ×5, desde lejos: su bonus de resistencias baja.',
-            'Character 2 damages the boss with the ×5, from range: its resistance bonus goes down.',
-            'Le Personnage 2 frappe le boss avec le ×5, à distance : son bonus de résistances baisse.',
+            'El Personaje 2 daña al boss con el ×5, desde lejos: su bonus baja. Un aliado a su melé anularía el daño.',
+            'Character 2 damages the boss with the ×5, from range: its bonus drops. An ally in its melee would cancel the damage.',
+            'Le Personnage 2 frappe le boss avec le ×5, à distance : son bonus baisse. Un allié à son cac annulerait les dégâts.',
           ),
           changes: [
             { type: 'zone', zone: { kind: 'hit', cells: [{ x: 5, y: 3 }] } },
             { type: 'label', piece: 'boss', label: '+400 ↓' },
-          ],
-        },
-        {
-          actor: 'pj3',
-          text: T(
-            'Aviso: si un aliado (Personaje 3) está al cuerpo a cuerpo del boss, los golpes que se le den no le hacen daño.',
-            'Warning: if an ally (Character 3) is in the boss’s melee range, hits dealt to it do no damage.',
-            'Attention : si un allié (Personnage 3) est au corps à corps du boss, les coups qu’on lui porte ne lui font aucun dégât.',
-          ),
-          changes: [{ type: 'move', piece: 'pj3', to: { x: 5, y: 4 }, path: [{ x: 5, y: 6 }, { x: 5, y: 5 }] }],
-        },
-        {
-          actor: 'pj3',
-          text: T(
-            'Hay que evitarlo: el Personaje 3 se aparta del cuerpo a cuerpo del boss antes de que le peguen.',
-            'Avoid it: Character 3 moves out of the boss’s melee range before it is hit.',
-            'Il faut l’éviter : le Personnage 3 s’écarte du corps à corps du boss avant qu’on le frappe.',
-          ),
-          changes: [
-            { type: 'move', piece: 'pj3', to: { x: 5, y: 7 }, path: [{ x: 5, y: 5 }, { x: 5, y: 6 }] },
-            { type: 'counter', id: 'x5', name: x5, value: null },
           ],
         },
         {
@@ -231,6 +210,14 @@ const d: Dungeon = {
             { type: 'aura', piece: 'boss', on: false },
             { type: 'counter', id: 'x5', name: x5, value: '×5' },
           ],
+        },
+        {
+          text: T(
+            'Acaba ese turno: el ×5 dura solo 1 turno y termina.',
+            'That turn ends: the ×5 lasts only 1 turn and ends.',
+            'Ce tour se termine : le ×5 ne dure qu’un tour et prend fin.',
+          ),
+          changes: [{ type: 'counter', id: 'x5', name: x5, value: null }],
         },
       ],
     },

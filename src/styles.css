@@ -566,3 +566,51 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
   .sim-controls .actions .btn { flex: 1; padding-inline: 8px; }
 }
 .sim-adjust-item { display: flex; gap: 8px; align-items: flex-end; }
+
+/* Mazmorras */
+.dun { display: flex; flex-direction: column; gap: 12px; }
+.dun-pick { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.dun-pick .field { min-width: 0; flex: 1 1 220px; }
+.dun-board { position: relative; width: 100%; max-width: 520px; background: var(--panel-2); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); overflow: hidden; }
+.dun-grid { position: absolute; inset: 0; display: grid; }
+.dun-cell { border: 1px solid var(--line); min-width: 0; min-height: 0; }
+.dun-tile-red { background: rgba(255, 128, 128, .35); }
+.dun-tile-blue { background: rgba(90, 150, 255, .35); }
+.dun-tile-white { background: rgba(230, 236, 239, .3); }
+.dun-tile-dark { background: rgba(20, 40, 110, .7); }
+.dun-zone-explosion { background: rgba(240, 181, 74, .45); }
+.dun-zone-glyph { background: rgba(95, 208, 176, .3); }
+.dun-zone-collision { background: rgba(255, 128, 128, .5); }
+.dun-zone-path { background: rgba(143, 157, 170, .3); }
+.dun-zone-hit { background: rgba(255, 255, 255, .35); }
+.dun-pieces { position: absolute; inset: 0; pointer-events: none; }
+.dun-piece { position: absolute; display: flex; align-items: center; justify-content: center; padding: 8%; transition: left .5s, top .5s; }
+.dun-piece > span { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: clamp(8px, 2.4vw, 13px); font-weight: 700; color: var(--accent-ink); background: var(--muted); overflow: hidden; }
+.dun-boss > span { background: var(--neg); transform: scale(1.35); }
+.dun-mob > span { background: var(--gold); }
+.dun-special > span { background: #9aa8ff; }
+.dun-char > span { background: var(--accent); }
+.dun-inv > span { box-shadow: 0 0 0 2px #4be37a, 0 0 8px 3px rgba(75, 227, 122, .7); }
+.dun-actor > span { outline: 2px solid #fff; outline-offset: 2px; }
+.dun-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); }
+.dun-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; background: var(--muted); }
+.dun-dot.dun-boss { background: var(--neg); }
+.dun-dot.dun-mob { background: var(--gold); }
+.dun-dot.dun-special { background: #9aa8ff; }
+.dun-dot.dun-char { background: var(--accent); }
+.dun-dot.dun-inv { background: transparent; box-shadow: 0 0 0 2px #4be37a; }
+.dun-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.dun-controls button { min-width: 44px; min-height: 44px; background: var(--panel-3); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); }
+.dun-controls button:disabled { opacity: .4; }
+.dun-step { margin-left: 4px; }
+.dun-text { margin: 0; min-height: 3em; }
+.dun-counters { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.dun-counters li { background: var(--panel-3); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 2px 10px; }
+.dun-info { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; }
+.dun-info dt { color: var(--muted); }
+.dun-info dd { margin: 0; min-width: 0; }
+.dun-foot, .dun-warn { margin: 0; }
+.dun-warn { color: var(--gold); font-size: 12px; }
+@media (prefers-reduced-motion: reduce) {
+  .dun-piece { transition: none; }
+}

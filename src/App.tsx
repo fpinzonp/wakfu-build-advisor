@@ -20,6 +20,7 @@ import { bestSublimation, sublimationBonus } from './lib/sublimations';
 import { EMPTY_DECK, classSpells, type Deck, type DeckBonus, type Spell, type SpellData } from './lib/spells';
 import DeckPanel from './DeckPanel';
 import SimPanel from './SimPanel';
+import DungeonPanel from './DungeonPanel';
 import { bonusFor, requestFor as requestForSaved, resolveSaved } from './lib/savedBuild';
 import {
   LANGS, LangContext, fmt, initialLang, jobName, locale, pct, setLang as applyLang, setNames, t, tk, type Lang, type LangData,
@@ -68,7 +69,7 @@ export default function App() {
   const [stored, setStored] = useState<StoredBuild[]>(() => loadStored());
   const [dialog, setDialog] = useState<'share' | 'save' | 'library' | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const [section, setSection] = useState<'builds' | 'teams'>('builds');
+  const [section, setSection] = useState<'builds' | 'teams' | 'dungeons'>('builds');
   const resultsRef = useRef<HTMLElement>(null);
 
   const notify = useCallback((text: string) => {
@@ -279,7 +280,7 @@ export default function App() {
       </header>
 
       <nav className="tabs section-tabs" role="tablist" aria-label={t('section.aria')}>
-        {(['builds', 'teams'] as const).map((id) => (
+        {(['builds', 'teams', 'dungeons'] as const).map((id) => (
           <button key={id} role="tab" aria-selected={section === id} className={section === id ? 'on' : ''} onClick={() => setSection(id)}>
             {t(`section.${id}`)}
           </button>
@@ -288,6 +289,10 @@ export default function App() {
 
       <div hidden={section !== 'teams'}>
         <TeamsPanel spellData={spellData} initialClass={classId} onBuild={buildFromTeam} />
+      </div>
+
+      <div hidden={section !== 'dungeons'}>
+        <DungeonPanel active={section === 'dungeons'} />
       </div>
 
       <main className="layout" hidden={section !== 'builds'}>

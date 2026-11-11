@@ -98,7 +98,7 @@ const d: Dungeon = {
         },
         {
           text: {
-            es: 'Con 3 sombreros cae su invulnerabilidad: no mates ningún sombrero antes: si muere uno, vuelve.',
+            es: 'Con 3 sombreros cae su invulnerabilidad; no mates ningún sombrero antes: si muere uno, vuelve.',
             en: 'With 3 hats its invulnerability falls: kill no hat first; if one dies, the boss becomes invulnerable again.',
             fr: 'Avec 3 chapeaux son invulnérabilité tombe : ne tuez aucun chapeau avant ; si un meurt, le boss redevient invulnérable.',
           },

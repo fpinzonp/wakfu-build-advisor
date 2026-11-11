@@ -58,4 +58,28 @@ describe('Mazmorras: panel', () => {
     expect(Object.keys(en).sort()).toEqual(Object.keys(es).sort());
     expect(Object.keys(fr).sort()).toEqual(Object.keys(es).sort());
   });
+
+  it('piezas sin label: inicial + número del nombre, y el label como insignia aparte', () => {
+    const n = (s: string) => ({ es: s, en: s, fr: s });
+    const room = {
+      id: 'r', name: n('Sala'), size: { w: 4, h: 4 }, condition: n('c'), duration: n('d'),
+      pieces: [
+        { id: 'p1', kind: 'char' as const, name: { es: 'Personaje 1', en: 'Character 1', fr: 'Personnage 1' }, cell: { x: 0, y: 0 } },
+        { id: 'p2', kind: 'char' as const, name: { es: 'Personaje 2', en: 'Character 2', fr: 'Personnage 2' }, cell: { x: 1, y: 0 } },
+        { id: 'b', kind: 'boss' as const, name: n('Jefe'), cell: { x: 2, y: 0 }, label: '+45 %' },
+      ],
+      steps: [{ text: n('0'), changes: [] }],
+    };
+    const h = renderToString(<DungeonBoard state={boardAt(room, 0)} size={room.size} roomName="x" />);
+    expect(h).toContain('>P1<');
+    expect(h).toContain('>P2<');
+    expect(h).toContain('>J<');
+    expect(h).toContain('dun-badge');
+    expect(h).toContain('+45 %');
+  });
+  it('los controles van antes del tablero en el DOM', () => {
+    const h = renderToString(<DungeonPanel active />);
+    expect(h.indexOf('dun-controls')).toBeGreaterThan(-1);
+    expect(h.indexOf('dun-controls')).toBeLessThan(h.indexOf('dun-board'));
+  });
 });

@@ -75,18 +75,18 @@ const d: Dungeon = {
         {
           actor: 'pj1',
           text: {
-            es: 'Un daño de zona o indirecto, sin apuntar al monstruo, lo atraviesa: no se refleja (la protección sigue).',
-            en: 'Area or indirect damage not aimed at the monster goes through: it is not reflected (protection stays).',
-            fr: 'Un dégât de zone ou indirect, sans viser le monstre, passe à travers : pas de renvoi (la protection reste).',
+            es: 'Un daño de zona o indirecto, sin apuntar al monstruo, lo atraviesa: no se refleja (la protección sigue, deducido).',
+            en: 'Area or indirect damage not aimed at the monster goes through: it is not reflected (protection stays, inferred).',
+            fr: 'Un dégât de zone ou indirect, sans viser le monstre, passe à travers : pas de renvoi (la protection reste, déduit).',
           },
           changes: [{ type: 'zone', zone: { kind: 'hit', center: { x: 3, y: 2 }, radius: 1 } }],
         },
         {
           actor: 'pj2',
           text: {
-            es: 'El Personaje 2 lanza un hechizo de cura o boost sobre el monstruo: el reflejo cura o refuerza a quien lo lanza.',
-            en: 'Character 2 casts a heal or boost spell on the monster: the reflection heals or boosts the caster.',
-            fr: 'Le Personnage 2 lance un sort de soin ou de boost sur le monstre : le renvoi soigne ou booste le lanceur.',
+            es: 'El Personaje 2 lanza un hechizo de cura o boost sobre el monstruo: el reflejo te cura.',
+            en: 'Character 2 casts a heal or boost spell on the monster: the reflection heals you.',
+            fr: 'Le Personnage 2 lance un sort de soin ou de boost sur le monstre : le renvoi te soigne.',
           },
           changes: [{ type: 'zone', zone: { kind: 'hit', cells: [{ x: 3, y: 2 }] } }],
         },

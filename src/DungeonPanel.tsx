@@ -80,6 +80,18 @@ export default function DungeonPanel({ active }: { active: boolean }) {
         )}
       </div>
 
+      <div className="dun-controls">
+        <button onClick={() => { setStep(0); setPlaying(false); }} aria-label={t('dun.first')} title={t('dun.first')}>⏮</button>
+        <button onClick={() => { setStep(Math.max(0, step - 1)); setPlaying(false); }} disabled={step === 0} aria-label={t('dun.prev')} title={t('dun.prev')}>‹</button>
+        {playing ? (
+          <button onClick={() => setPlaying(false)} aria-label={t('dun.pause')} title={t('dun.pause')}>⏸</button>
+        ) : (
+          <button onClick={() => { setStep(playFrom(step, total)); setPlaying(true); }} aria-label={t('dun.play')} title={t('dun.play')}>▶</button>
+        )}
+        <button onClick={() => { setStep(Math.min(total - 1, step + 1)); setPlaying(false); }} disabled={step >= total - 1} aria-label={t('dun.next')} title={t('dun.next')}>›</button>
+        <strong className="dun-step">{t('dun.step', { n: step + 1, total })}</strong>
+      </div>
+
       <DungeonBoard state={state} size={room.size} roomName={room.name[lang]} />
 
       <ul className="dun-legend">
@@ -88,18 +100,6 @@ export default function DungeonPanel({ active }: { active: boolean }) {
         ))}
         <li><span className="dun-dot dun-inv" aria-hidden="true" />{t('dun.legend.inv')}</li>
       </ul>
-
-      <div className="dun-controls">
-        <button onClick={() => { setStep(0); setPlaying(false); }} aria-label={t('dun.first')} title={t('dun.first')}>⏮</button>
-        <button onClick={() => { setStep(Math.max(0, step - 1)); setPlaying(false); }} disabled={step === 0} aria-label={t('dun.prev')} title={t('dun.prev')}>◀</button>
-        {playing ? (
-          <button onClick={() => setPlaying(false)} aria-label={t('dun.pause')} title={t('dun.pause')}>⏸</button>
-        ) : (
-          <button onClick={() => { setStep(playFrom(step, total)); setPlaying(true); }} aria-label={t('dun.play')} title={t('dun.play')}>▶</button>
-        )}
-        <button onClick={() => { setStep(Math.min(total - 1, step + 1)); setPlaying(false); }} disabled={step >= total - 1} aria-label={t('dun.next')} title={t('dun.next')}>⏭</button>
-        <strong className="dun-step">{t('dun.step', { n: step + 1, total })}</strong>
-      </div>
 
       <p className="dun-text" aria-live="polite">{state.text[lang]}</p>
 

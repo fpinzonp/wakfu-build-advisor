@@ -71,8 +71,13 @@ export function boardAt(room: Room, step: number): BoardState {
           }
           break;
         case 'counter':
-          counters = counters.filter(c => c.id !== ch.id);
-          if (ch.value !== null) counters.push({ id: ch.id, name: ch.name, value: ch.value });
+          // Reemplaza en su sitio para no reordenar; solo añade al final si es nuevo.
+          {
+            const i = counters.findIndex(c => c.id === ch.id);
+            if (ch.value === null) { if (i >= 0) counters = counters.filter((_, j) => j !== i); }
+            else if (i >= 0) counters = counters.map((c, j) => (j === i ? { id: ch.id, name: ch.name, value: ch.value as string } : c));
+            else counters = [...counters, { id: ch.id, name: ch.name, value: ch.value }];
+          }
           break;
       }
     }

@@ -4,7 +4,7 @@ import type { Dungeon, L10n, Piece } from '../types';
 // Scarrière Abandonnée (81-95). Fuente: https://wakfu.guide/donjons/81-95/ (la sección no tiene imágenes propias, solo la cabecera).
 // El elemento del equipo (fuego) y las posiciones son un ejemplo; la forma real de la sala no se reproduce. Sin comprobar en el juego.
 
-const resist: L10n = { es: 'Res. del boss', en: 'Boss res.', fr: 'Rés. du boss' };
+const resist: L10n = { es: 'Res. de fuego del boss', en: 'Boss fire res.', fr: 'Rés. feu du boss' };
 
 const beetle = (id: string, cell: Cell, es: string, en: string, fr: string): Piece => ({
   id, kind: 'mob', cell,
@@ -54,9 +54,9 @@ const d: Dungeon = {
       steps: [
         {
           text: {
-            es: 'Situación inicial: el boss (99 % res. en los 4 elementos) y sus 4 escarabajos; el equipo usa el mismo elemento (ejemplo: fuego).',
-            en: 'Initial situation: the boss (99% res. in all 4 elements) and its 4 scarabs; the team uses the same element (example: fire).',
-            fr: 'Situation initiale : le boss (99 % rés. dans les 4 éléments) et ses 4 scarabées ; l’équipe utilise le même élément (exemple : feu).',
+            es: 'Situación inicial: boss con 99 % res. en los 4 elementos y 4 escarabajos; el equipo usa un mismo elemento (ej.: fuego).',
+            en: 'Initial situation: boss with 99% res. in all 4 elements and its 4 scarabs; the team uses one element (e.g. fire).',
+            fr: 'Situation initiale : boss à 99 % rés. dans les 4 éléments et 4 scarabées ; l’équipe joue un seul élément (ex. : feu).',
           },
           changes: [],
         },
@@ -80,7 +80,7 @@ const d: Dungeon = {
           },
           changes: [
             { type: 'aura', piece: 'boss', on: false },
-            { type: 'counter', id: 'res', name: resist, value: '0 % feu' },
+            { type: 'counter', id: 'res', name: resist, value: '0 %' },
           ],
         },
         {

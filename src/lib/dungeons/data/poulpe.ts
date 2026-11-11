@@ -20,9 +20,9 @@ const tentacles: L10n = { es: 'Tentáculos vivos', en: 'Tentacles alive', fr: 'T
 const kill = (n: number, left: number): Step => ({
   actor: 'pj1',
   text: {
-    es: `Se mata el tentáculo ${n}${left ? '' : ': era el último'}.`,
-    en: `Tentacle ${n} is killed${left ? '' : ': it was the last one'}.`,
-    fr: `Le tentacule ${n} est tué${left ? '' : ' : c’était le dernier'}.`,
+    es: `Se mata el tentáculo ${n} (orden de ejemplo)${left ? '' : ': era el último'}.`,
+    en: `Tentacle ${n} is killed (example order)${left ? '' : ': it was the last one'}.`,
+    fr: `Le tentacule ${n} est tué (ordre d’exemple)${left ? '' : ' : c’était le dernier'}.`,
   },
   changes: [
     { type: 'remove', piece: `t${n}` },
@@ -88,9 +88,9 @@ const d: Dungeon = {
         {
           actor: 'pj1',
           text: {
-            es: 'El Personaje 1 va a por los tentáculos de uno en uno, sin prisa: la guía aconseja preparar el turno de daño.',
-            en: 'Character 1 goes after the tentacles one at a time: the guide advises preparing the burst turn.',
-            fr: 'Le Personnage 1 s’occupe des tentacules un par un : le guide conseille de préparer le tour de burst.',
+            es: 'El Personaje 1 va a por los tentáculos: la guía aconseja preparar el turno de daño.',
+            en: 'Character 1 goes after the tentacles: the guide advises preparing the burst turn.',
+            fr: 'Le Personnage 1 s’occupe des tentacules : le guide conseille de préparer le tour de burst.',
           },
           changes: [{ type: 'move', piece: 'pj1', to: { x: 3, y: 6 } }],
         },

@@ -222,7 +222,7 @@ const d: Dungeon = {
             'The boss heals 45% of its HP (1% + 45% of its max HP).',
             'Le boss se soigne de 45 % de ses PV (1 % + 45 % de ses PV max).',
           ),
-          changes: [{ type: 'label', piece: 'boss', label: 'curado 45 %' }],
+          changes: [{ type: 'label', piece: 'boss', label: '+45 %' }],
         },
         {
           actor: 'pj1',

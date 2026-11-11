@@ -606,7 +606,6 @@ const fr: Dict = {
   "dun.tier": "Niveau {min}-{max}",
   "dun.room": "Salle",
   "dun.board": "Plateau : {room}",
-  "dun.cell": "Case {x}, {y}",
   "dun.piece": "{name}, case {x}, {y}",
   "dun.invulnerable": "invulnérable",
   "dun.step": "Étape {n} / {total}",

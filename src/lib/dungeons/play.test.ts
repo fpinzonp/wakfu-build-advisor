@@ -85,4 +85,18 @@ describe('boardAt', () => {
     boardAt(room, 3);
     expect(room).toEqual(copy);
   });
+
+  it('los contadores se actualizan en su sitio y se quitan sin reordenar', () => {
+    const r: Room = { ...room, steps: [
+      { text: n('0'), changes: [
+        { type: 'counter', id: 'a', name: n('A'), value: '1' },
+        { type: 'counter', id: 'b', name: n('B'), value: '1' },
+        { type: 'counter', id: 'c', name: n('C'), value: '1' },
+      ] },
+      { text: n('1'), changes: [{ type: 'counter', id: 'a', name: n('A'), value: '2' }] },
+      { text: n('2'), changes: [{ type: 'counter', id: 'b', name: n('B'), value: null }] },
+    ] };
+    expect(boardAt(r, 1).counters.map(c => `${c.id}${c.value}`)).toEqual(['a2', 'b1', 'c1']);
+    expect(boardAt(r, 2).counters.map(c => c.id)).toEqual(['a', 'c']);
+  });
 });

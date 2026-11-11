@@ -4,6 +4,11 @@ import { t, useLang } from './lib/i18n';
 
 interface Props { state: BoardState; size: { w: number; h: number }; roomName: string }
 
+// Inicial + número final del nombre ("Personaje 2" → "P2"); sin número, solo la inicial.
+function tag(name: string): string {
+  return name.charAt(0).toUpperCase() + (name.match(/\d+$/)?.[0] ?? '');
+}
+
 export default function DungeonBoard({ state, size, roomName }: Props) {
   const { lang } = useLang();
   const cells: JSX.Element[] = [];
@@ -13,8 +18,7 @@ export default function DungeonBoard({ state, size, roomName }: Props) {
       const tile = state.tiles[`${x},${y}`];
       if (tile) cls.push(`dun-tile-${tile}`);
       for (const z of state.zones) if (z.cells.some(c => c.x === x && c.y === y)) cls.push(`dun-zone-${z.kind}`);
-      // Los números visibles son de base 1; los datos, de base 0.
-      cells.push(<div key={`${x},${y}`} className={cls.join(' ')} aria-label={t('dun.cell', { x: x + 1, y: y + 1 })} />);
+      cells.push(<div key={`${x},${y}`} className={cls.join(' ')} />);
     }
   }
   return (
@@ -39,13 +43,13 @@ export default function DungeonBoard({ state, size, roomName }: Props) {
               key={p.id}
               className={cls.join(' ')}
               style={{ left: `${(p.cell.x / size.w) * 100}%`, top: `${(p.cell.y / size.h) * 100}%`, width: `${100 / size.w}%`, height: `${100 / size.h}%` }}
-              title={label}
               data-name={name}
               tabIndex={0}
               role="img"
               aria-label={label}
             >
-              <span>{p.label ?? name.charAt(0).toUpperCase()}</span>
+              <span>{tag(name)}</span>
+              {p.label && <em className="dun-badge" aria-hidden="true">{p.label}</em>}
             </div>
           );
         })}

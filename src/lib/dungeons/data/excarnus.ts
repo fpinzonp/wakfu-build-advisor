@@ -51,9 +51,9 @@ const d: Dungeon = {
       steps: [
         {
           text: {
-            es: 'Situación inicial: las +300 res. del tótem «tierra maldita» protegen al boss; el tótem macabro invoca 2 monstruos por turno.',
+            es: 'Situación inicial: las +300 res. del tótem «tierra maldita» protegen al boss; el tótem macabro invoca 2 monstruos/turno.',
             en: 'Initial situation: the “cursed earth” totem’s +300 res. protect the boss; the macabre totem summons 2 monsters per turn.',
-            fr: 'Situation initiale : les +300 rés. du totem « terre maudite » protègent le boss ; le totem macabre invoque 2 monstres par tour.',
+            fr: 'Situation initiale : les +300 rés. du totem « terre maudite » protègent le boss ; totem macabre : 2 monstres/tour.',
           },
           changes: [],
         },
@@ -92,7 +92,7 @@ const d: Dungeon = {
           text: {
             es: 'Sin las +300 res. el boss queda desprotegido: la guía pide ponerle -200 res. y matarlo antes de que se reactiven.',
             en: 'Without the +300 res. the boss is unprotected: the guide says to apply -200 res. and kill it before they reactivate.',
-            fr: 'Sans les +300 rés. le boss est sans protection : le guide demande de lui poser -200 rés. et de le tuer avant la réactivation.',
+            fr: 'Sans les +300 rés. le boss est exposé : le guide dit de lui poser -200 rés. et de le tuer avant la réactivation.',
           },
           changes: [{ type: 'aura', piece: 'boss', on: false }],
         },

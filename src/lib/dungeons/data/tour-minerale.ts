@@ -96,9 +96,9 @@ const d: Dungeon = {
       steps: [
         {
           text: {
-            es: 'Situación inicial: 4 barreras rodean al boss y bloquean la línea de visión (el número marca el color; posiciones de ejemplo).',
+            es: 'Situación inicial: 4 barreras rodean al boss y bloquean la línea de visión (el número marca el color; ejemplo).',
             en: 'Initial situation: 4 barriers surround the boss and block line of sight (the number marks the color; example positions).',
-            fr: 'Situation initiale : 4 barrières entourent le boss et bloquent la ligne de vue (le numéro marque la couleur ; positions d’exemple).',
+            fr: 'Situation initiale : 4 barrières entourent le boss et bloquent la ligne de vue (le numéro = la couleur ; exemple).',
           },
           changes: [],
         },
@@ -121,7 +121,7 @@ const d: Dungeon = {
       name: { es: 'Turno 3: cristales', en: 'Turn 3: crystals', fr: 'Tour 3 : cristaux' },
       size: { w: 9, h: 9 },
       pieces: [
-        { ...boss({ x: 4, y: 4 }, true), label: '+300 res.' },
+        { ...boss({ x: 4, y: 4 }, true), label: '+300' },
         crystal(1, { x: 1, y: 2 }),
         crystal(2, { x: 7, y: 2 }),
         crystal(3, { x: 7, y: 6 }),

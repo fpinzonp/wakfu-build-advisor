@@ -230,14 +230,26 @@ describe('registro de mazmorras', () => {
   it('Kannibouls, Cité Interdite y Kannivores están excluidas con motivo', () => {
     for (const id of ['kannibouls', 'cite-interdite', 'kannivores']) expect(EXCLUDED.find(e => e.id === id)?.reason.length).toBeGreaterThan(20);
   });
-  it('tramos 96-185: frases de paso de 120 caracteres como máximo en los 3 idiomas', () => {
-    const ids = ['magik-riktus', 'arene-dansante', 'corbeau-noir', 'hagen-glass', 'smarrante', 'cacterre', 'dragon-cochon',
-      'noirespore', 'potofeu', 'jawdin', 'source-du-mal', 'wa-wabbit', 'enutrosor', 'lampionaute', 'roub-bar', 'e-bou', 'fabrique-meka',
-      'tropikes', 'crocodailles', 'gerbouille'];
+  it('todas las mazmorras: frases de paso de 120 caracteres como máximo en los 3 idiomas', () => {
     const largas: string[] = [];
-    for (const d of DUNGEONS.filter(x => ids.includes(x.id)))
-      for (const r of d.rooms) for (const st of r.steps) for (const l of ['es', 'en', 'fr'] as const)
-        if (st.text[l].length > 120) largas.push(`${d.id}/${r.id} ${l} (${st.text[l].length}): ${st.text[l]}`);
+    for (const d of DUNGEONS)
+      for (const r of d.rooms) for (const [i, st] of r.steps.entries()) for (const l of ['es', 'en', 'fr'] as const)
+        if (st.text[l].length > 120) largas.push(`${d.id}/${r.id} paso ${i} ${l} (${st.text[l].length}): ${st.text[l]}`);
     expect(largas).toEqual([]);
+  });
+  it('todas las mazmorras: label y valores de contador sin palabras (no se traducen)', () => {
+    // Lista blanca mínima: "Slek" es el nombre propio con el que se rotula a un personaje en slekymoses.
+    const permitidos = new Set(['Slek']);
+    const malos: string[] = [];
+    for (const d of DUNGEONS)
+      for (const r of d.rooms) {
+        const textos = [
+          ...r.pieces.flatMap(p => (p.label ? [p.label] : [])),
+          ...r.steps.flatMap(st => st.changes.flatMap(c =>
+            c.type === 'label' && c.label ? [c.label] : c.type === 'counter' && c.value ? [c.value] : [])),
+        ];
+        for (const t of textos) if (/[A-Za-zÀ-ÿ]{3,}/.test(t) && !permitidos.has(t)) malos.push(`${d.id}/${r.id}: ${t}`);
+      }
+    expect(malos).toEqual([]);
   });
 });

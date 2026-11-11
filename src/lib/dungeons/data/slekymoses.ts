@@ -59,9 +59,9 @@ const d: Dungeon = {
         {
           actor: 'pj1',
           text: {
-            es: 'El Personaje 1 va al glifo (un hechizo Slek permite saltar hasta 5 casillas) y pasa su turno encima: se transforma en Slek.',
-            en: 'Character 1 goes to the glyph (a Slek spell lets you leap up to 5 cells) and passes the turn on it: it turns into a Slek.',
-            fr: 'Le Personnage 1 va sur le glyphe (un sort Slek permet de bondir à 5 cases) et passe son tour dessus : il se transforme en Slek.',
+            es: 'El Personaje 1 va al glifo (un hechizo Slek salta hasta 5 casillas) y pasa el turno encima: se transforma en Slek.',
+            en: 'Character 1 goes to the glyph (a Slek spell leaps up to 5 cells) and ends the turn on it: it turns into a Slek.',
+            fr: 'Le Personnage 1 va sur le glyphe (un sort Slek bondit à 5 cases) et finit son tour dessus : il devient Slek.',
           },
           changes: [
             { type: 'move', piece: 'pj1', to: { x: 3, y: 4 } },
@@ -92,9 +92,9 @@ const d: Dungeon = {
         {
           actor: 'pj1',
           text: {
-            es: 'Con «Manger des cailloux» el Personaje 1 vuelve a ser humano; el boss ya es vulnerable (la guía no indica cuánto dura).',
-            en: 'With “Manger des cailloux” Character 1 turns human again; the boss is now vulnerable (the guide does not say for how long).',
-            fr: 'Avec « Manger des cailloux » le Personnage 1 redevient humain ; le boss est vulnérable (le guide n’indique pas combien de temps).',
+            es: 'Con «Manger des cailloux» el Personaje 1 vuelve a ser humano; el boss ya es vulnerable (la guía no dice cuánto dura).',
+            en: 'With “Manger des cailloux” Character 1 is human again; the boss is vulnerable (the guide does not say how long).',
+            fr: 'Avec « Manger des cailloux » le Personnage 1 redevient humain ; le boss est vulnérable (durée non indiquée).',
           },
           changes: [{ type: 'label', piece: 'pj1', label: null }],
         },

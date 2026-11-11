@@ -604,7 +604,6 @@ const es = {
   "dun.tier": "Nivel {min}-{max}",
   "dun.room": "Sala",
   "dun.board": "Tablero: {room}",
-  "dun.cell": "Casilla {x}, {y}",
   "dun.piece": "{name}, casilla {x}, {y}",
   "dun.invulnerable": "invulnerable",
   "dun.step": "Paso {n} / {total}",

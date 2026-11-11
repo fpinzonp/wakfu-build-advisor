@@ -1,8 +1,10 @@
 import type { Dungeon, Excluded } from './types';
 import tropikes from './data/tropikes';
+import poulpe from './data/poulpe';
+import tourMinerale from './data/tour-minerale';
 
 // Orden: por tramo de nivel (mínimo) y luego por nombre francés.
-export const DUNGEONS: Dungeon[] = [tropikes].sort(
+export const DUNGEONS: Dungeon[] = [tropikes, poulpe, tourMinerale].sort(
   (a, b) => a.tier[0] - b.tier[0] || a.name.fr.localeCompare(b.name.fr, 'fr'),
 );
 

@@ -18,4 +18,16 @@ describe('registro de mazmorras', () => {
   });
   it('Tropikes tiene sala 1 y boss', () =>
     expect(DUNGEONS.find(d => d.id === 'tropikes')!.rooms.map(r => r.id)).toEqual(['room1', 'boss']));
+  it('Poulpe: el boss deja de ser invulnerable al matar los 4 tentáculos', () => {
+    const r = DUNGEONS.find(d => d.id === 'poulpe')!.rooms[0];
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(r.pieces.filter(p => p.id.startsWith('t')).length).toBe(4);
+    expect(r.steps[r.steps.length - 1].changes).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Tour Minérale: las +300 res. caen al destruir los 4 cristales', () => {
+    const r = DUNGEONS.find(d => d.id === 'tour-minerale')!.rooms.find(x => x.id === 'boss')!;
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(r.steps.flatMap(s => s.changes).filter(c => c.type === 'remove').length).toBe(4);
+    expect(r.steps[r.steps.length - 1].changes).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
 });

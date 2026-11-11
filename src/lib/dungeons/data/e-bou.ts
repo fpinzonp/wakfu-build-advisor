@@ -199,7 +199,7 @@ const d: Dungeon = {
           text: T(
             'Cada turno aparecen casillas rojas nuevas: con rojas el boss vuelve a ser invulnerable y hay que resetearlas otra vez.',
             'Each turn new red cells appear: with red cells the boss is invulnerable again and they must be reset again.',
-            'Chaque tour de nouvelles cases rouges apparaissent : avec des rouges le boss redevient invulnérable, à remettre en bleu.',
+            'Chaque tour de nouvelles cases rouges apparaissent : avec des rouges le boss redevient invulnérable.',
           ),
           changes: [
             { type: 'tiles', cells: [{ x: 2, y: 0 }, { x: 6, y: 8 }], color: 'red' },

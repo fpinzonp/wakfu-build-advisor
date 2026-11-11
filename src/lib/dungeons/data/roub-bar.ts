@@ -13,7 +13,7 @@ import type { Dungeon, L10n, Piece } from '../types';
 const T = (es: string, en: string, fr: string): L10n => ({ es, en, fr });
 
 const weak: L10n = T('Affaibli (turnos)', 'Affaibli (turns)', 'Affaibli (tours)'); // nombre pendiente: es, en
-const misted: L10n = T('Turnos hasta esconderse', 'Turns until it hides', 'Tours avant de se cacher');
+const misted: L10n = T('Turnos escondido (ejemplo)', 'Turns hidden (example)', 'Tours caché (exemple)');
 
 const pj = (n: number, cell: Piece['cell'], role?: L10n): Piece => ({
   id: `pj${n}`, kind: 'char', cell, ...(role ? { role } : {}),
@@ -60,9 +60,9 @@ const d: Dungeon = {
         pj(2, { x: 3, y: 5 }),
       ],
       condition: T(
-        'Todos los monstruos tienen +300 resistencias (aura verde). Se quitan con «Affaibli» (−400 res.), que da recoger la pólvora de un muro entre 2 personajes «Bombifié».',
-        'All monsters have +300 resistance (green aura). It is removed by “Affaibli” (−400 res.), got by picking up powder from a wall between 2 “Bombifié” characters.',
-        'Tous les monstres ont +300 de résistances (aura verte). Elles tombent avec « Affaibli » (−400 rés.), obtenu en récupérant la poudre d’un mur entre 2 personnages « Bombifié ».',
+        'Todos los monstruos tienen +300 resistencias (aura verde). Las anula «Affaibli» (−400 res., supera las +300), que da recoger la pólvora de un muro entre 2 personajes «Bombifié».',
+        'All monsters have +300 resistance (green aura). “Affaibli” (−400 res., more than the +300) cancels it; it is got by picking up powder from a wall between 2 “Bombifié” characters.',
+        'Tous les monstres ont +300 de résistances (aura verte). « Affaibli » (−400 rés., plus que les +300) les annule ; il s’obtient en récupérant la poudre d’un mur entre 2 personnages « Bombifié ».',
       ),
       duration: T(
         '«Affaibli» dura 3 turnos (ficha de la guía). La pólvora también daña a tus personajes si pasan por encima (4000 de daño, −4 PA, −4 PM según la ficha).',
@@ -108,9 +108,9 @@ const d: Dungeon = {
         },
         {
           text: T(
-            'Un monstruo recoge la pólvora (ejemplo) y queda «Affaibli»: −400 res., 3 turnos. Cae su +300.',
-            'A monster picks up the powder (example) and becomes “Affaibli”: −400 res., 3 turns. Its +300 falls.',
-            'Un monstre récupère la poudre (exemple) et devient « Affaibli » : −400 rés., 3 tours. Son +300 tombe.',
+            'Un monstruo recoge la pólvora (ejemplo) y queda «Affaibli»: −400 res. (supera las +300), 3 turnos.',
+            'A monster picks up the powder (example) and becomes “Affaibli”: −400 res. (more than +300), 3 turns.',
+            'Un monstre récupère la poudre (exemple) et devient « Affaibli » : −400 rés. (plus que +300), 3 tours.',
           ),
           changes: [
             { type: 'move', piece: 'm1', to: { x: 2, y: 5 }, path: [{ x: 4, y: 3 }, { x: 4, y: 4 }, { x: 3, y: 4 }, { x: 2, y: 4 }] },
@@ -121,9 +121,9 @@ const d: Dungeon = {
         },
         {
           text: T(
-            'Pasados los 3 turnos «Affaibli» termina y las +300 res. del monstruo vuelven (deducido).',
-            'After the 3 turns “Affaibli” ends and the monster’s +300 res. returns (deduced).',
-            'Après les 3 tours « Affaibli » se termine et les +300 rés. du monstre reviennent (déduit).',
+            'Pasados los 3 turnos «Affaibli» termina y el monstruo vuelve a +300 res. (deducido).',
+            'After the 3 turns “Affaibli” ends and the monster is back to +300 res. (deduced).',
+            'Après les 3 tours « Affaibli » se termine et le monstre revient à +300 rés. (déduit).',
           ),
           changes: [
             { type: 'aura', piece: 'm1', on: true },
@@ -168,9 +168,9 @@ const d: Dungeon = {
         {
           actor: 'boss',
           text: T(
-            'Al empezar el turno, Remington aplica «Bombifié» a un personaje (el Personaje 1 en este ejemplo).',
-            'At the start of the turn, Remington gives “Bombifié” to one character (Character 1 in this example).',
-            'Au début du tour, Remington applique « Bombifié » à un personnage (le Personnage 1 dans cet exemple).',
+            'Remington aplica «Bombifié» a un personaje (el Personaje 1 en este ejemplo).',
+            'Remington gives “Bombifié” to one character (Character 1 in this example).',
+            'Remington applique « Bombifié » à un personnage (le Personnage 1 dans cet exemple).',
           ),
           changes: [{ type: 'label', piece: 'pj1', label: '💣' }],
         },
@@ -204,16 +204,16 @@ const d: Dungeon = {
         },
         {
           text: T(
-            'Fase 2 (bajo el 50 % PV): cada 2 turnos Remington se esconde invisible en una niebla (ejemplo).',
-            'Phase 2 (below 50 % HP): every 2 turns Remington hides invisible in a mist (example).',
-            'Phase 2 (sous 50 % PV) : tous les 2 tours Remington se cache invisible dans une brume (exemple).',
+            'Fase 2: cada 2 turnos Remington se esconde en una niebla (ejemplo). La guía no dice si vuelve su invulnerabilidad.',
+            'Phase 2: every 2 turns Remington hides in a mist (example). The guide does not say if invulnerability returns.',
+            'Phase 2 : tous les 2 tours Remington se cache en brume (exemple). Le guide ne dit pas si l’invulnérabilité revient.',
           ),
           changes: [
             { type: 'tiles', cells: wall2, color: null },
             { type: 'tiles', cells: mist, color: 'white' },
             { type: 'move', piece: 'boss', to: { x: 9, y: 6 } },
             { type: 'label', piece: 'boss', label: '?' },
-            { type: 'counter', id: 'mist', name: misted, value: '2' },
+            { type: 'counter', id: 'mist', name: misted, value: '0' },
           ],
         },
         {

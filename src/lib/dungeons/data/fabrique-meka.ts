@@ -33,14 +33,14 @@ const dial: Piece = {
 
 const common = {
   rotate: T(
-    'Tras el turno de otro personaje el glifo gira un paso en sentido horario desde el centro del mapa.',
-    'After another character’s turn the glyph turns one step clockwise around the map center.',
-    'Après le tour d’un autre personnage le glyphe tourne d’un cran dans le sens horaire autour du centre.',
+    'Tras el turno del Personaje 2 el glifo gira un paso en sentido horario y llega a esa posición.',
+    'After Character 2’s turn the glyph turns one step clockwise and reaches that position.',
+    'Après le tour du Personnage 2 le glyphe tourne d’un cran dans le sens horaire jusqu’à cette position.',
   ),
   place: T(
-    'El Personaje 2 (colocador) coloca al Personaje 1 dentro del glifo, justo antes de su turno.',
-    'Character 2 (placer) places Character 1 inside the glyph, right before its turn.',
-    'Le Personnage 2 (placeur) place le Personnage 1 dans le glyphe, juste avant son tour.',
+    'El Personaje 2 (colocador) coloca al Personaje 1 en el siguiente glifo, antes de su turno.',
+    'Character 2 (placer) places Character 1 in the next glyph position, before its turn.',
+    'Le Personnage 2 (placeur) place le Personnage 1 dans le prochain glyphe, avant son tour.',
   ),
   start: T(
     'El Personaje 1 empieza su turno en el glifo azul oscuro: +50 % de daño infligido ese turno.',
@@ -55,8 +55,8 @@ const common = {
 };
 
 const openingSteps: Step[] = [
-  { text: common.rotate, changes: [{ type: 'tiles', cells: glyphA, color: null }, { type: 'tiles', cells: glyphB, color: 'dark' }] },
   { actor: 'pj2', text: common.place, changes: [{ type: 'move', piece: 'pj1', to: { x: 7, y: 3 } }] },
+  { text: common.rotate, changes: [{ type: 'tiles', cells: glyphA, color: null }, { type: 'tiles', cells: glyphB, color: 'dark' }] },
   { actor: 'pj1', text: common.start, changes: [{ type: 'counter', id: 'bonus', name: bonus, value: '+50 %' }] },
 ];
 
@@ -80,9 +80,9 @@ const rooms: Room[] = [
     ],
     tiles: [{ cells: glyphA, color: 'dark' }],
     condition: T(
-      '3 monstruos de la sala tienen resistencias enormes (aura azulada; la guía pide tratarlos como invulnerables, aura verde aquí). Con el glifo azul oscuro central se les puede vencer.',
-      '3 monsters in the room have huge resistances (bluish aura; the guide says to treat them as invulnerable, green aura here). The central dark blue glyph lets you beat them.',
-      '3 monstres de la salle ont d’énormes résistances (aura bleutée ; le guide dit de les considérer invulnérables, aura verte ici). Le glyphe bleu foncé central permet de les vaincre.',
+      '3 monstruos de la sala tienen resistencias enormes (aura azulada; la guía pide tratarlos como invulnerables, aura verde aquí). Con el glifo azul oscuro (gira desde el centro del mapa; zona dibujada de ejemplo) se les puede vencer.',
+      '3 monsters in the room have huge resistances (bluish aura; the guide says to treat them as invulnerable, green aura here). The dark blue glyph (it turns from the map center; drawn area is an example) lets you beat them.',
+      '3 monstres de la salle ont d’énormes résistances (aura bleutée ; le guide dit de les considérer invulnérables, aura verte ici). Le glyphe bleu foncé (il tourne depuis le centre de la carte ; zone dessinée d’exemple) permet de les vaincre.',
     ),
     duration: T(
       'Empezar el turno en el glifo da +50 % de daño infligido durante 1 turno. El glifo gira en sentido horario en cada turno de personaje y crece con cada vuelta.',
@@ -162,11 +162,12 @@ const rooms: Room[] = [
         ),
         changes: [],
       },
+      { actor: 'pj2', text: common.place, changes: [{ type: 'move', piece: 'pj1', to: { x: 7, y: 3 } }] },
       {
         text: T(
-          'Tras el turno de otro personaje el glifo y la zona de muerte giran un paso en sentido horario.',
-          'After another character’s turn the glyph and the death zone turn one step clockwise.',
-          'Après le tour d’un autre personnage le glyphe et la zone de mort tournent d’un cran dans le sens horaire.',
+          'Tras el turno del Personaje 2 el glifo y la zona de muerte giran un paso en sentido horario.',
+          'After Character 2’s turn the glyph and the death zone turn one step clockwise.',
+          'Après le tour du Personnage 2 le glyphe et la zone de mort tournent d’un cran dans le sens horaire.',
         ),
         changes: [
           { type: 'tiles', cells: glyphA, color: null },
@@ -175,7 +176,6 @@ const rooms: Room[] = [
           { type: 'tiles', cells: deathB, color: 'red' },
         ],
       },
-      { actor: 'pj2', text: common.place, changes: [{ type: 'move', piece: 'pj1', to: { x: 7, y: 3 } }] },
       { actor: 'pj1', text: common.start, changes: [{ type: 'counter', id: 'bonus', name: bonus, value: '+50 %' }] },
       {
         actor: 'pj1',

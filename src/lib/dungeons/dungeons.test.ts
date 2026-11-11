@@ -202,9 +202,38 @@ describe('registro de mazmorras', () => {
     expect(all(b)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
     expect(last(b)).toContainEqual({ type: 'aura', piece: 'boss', on: true });
   });
-  it('tramos 96-170: frases de paso de 120 caracteres como máximo en los 3 idiomas', () => {
+  it('Crocodailles: 3 monstruos pierden el +500 res. por colisión; el boss se vuelve invulnerable al 55 % y cae con otra colisión', () => {
+    const r = room('crocodailles');
+    for (const id of ['mob1', 'mob2', 'mob3']) {
+      expect(r.pieces.find(p => p.id === id)!.invulnerable).toBe(true);
+      expect(all(r)).toContainEqual({ type: 'aura', piece: id, on: false });
+    }
+    expect(all(r).filter(c => c.type === 'zone' && c.zone.kind === 'collision').length).toBe(3);
+    const b = room('crocodailles', 'boss');
+    expect(b.pieces.find(p => p.id === 'boss')!.invulnerable).toBeFalsy();
+    expect(all(b)).toContainEqual({ type: 'aura', piece: 'boss', on: true });
+    expect(all(b)).toContainEqual(expect.objectContaining({ type: 'zone', zone: expect.objectContaining({ kind: 'collision' }) }));
+    expect(last(b)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Gerbouille: Conductor, 8 burbujas que se limpian con dos golpes cuerpo a cuerpo y el boss queda con 2 PW', () => {
+    const r = room('gerbouille', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(r)).toContainEqual({ type: 'label', piece: 'pj1', label: '⚡' });
+    const puestas = all(r).filter(c => c.type === 'tiles' && c.color === 'blue').flatMap(c => (c.type === 'tiles' ? c.cells : []));
+    expect(puestas.length).toBe(8);
+    const quitadas = all(r).filter(c => c.type === 'tiles' && c.color === null).flatMap(c => (c.type === 'tiles' ? c.cells : []));
+    expect(new Set(quitadas.map(c => `${c.x},${c.y}`))).toEqual(new Set(puestas.map(c => `${c.x},${c.y}`)));
+    expect(all(r).filter(c => c.type === 'zone' && c.zone.kind === 'hit').length).toBe(2);
+    expect(all(r)).toContainEqual({ type: 'label', piece: 'boss', label: '+2 PW' });
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Kannibouls, Cité Interdite y Kannivores están excluidas con motivo', () => {
+    for (const id of ['kannibouls', 'cite-interdite', 'kannivores']) expect(EXCLUDED.find(e => e.id === id)?.reason.length).toBeGreaterThan(20);
+  });
+  it('tramos 96-185: frases de paso de 120 caracteres como máximo en los 3 idiomas', () => {
     const ids = ['magik-riktus', 'arene-dansante', 'corbeau-noir', 'hagen-glass', 'smarrante', 'cacterre', 'dragon-cochon',
-      'noirespore', 'potofeu', 'jawdin', 'source-du-mal', 'wa-wabbit', 'enutrosor', 'lampionaute', 'roub-bar', 'e-bou', 'fabrique-meka'];
+      'noirespore', 'potofeu', 'jawdin', 'source-du-mal', 'wa-wabbit', 'enutrosor', 'lampionaute', 'roub-bar', 'e-bou', 'fabrique-meka',
+      'tropikes', 'crocodailles', 'gerbouille'];
     const largas: string[] = [];
     for (const d of DUNGEONS.filter(x => ids.includes(x.id)))
       for (const r of d.rooms) for (const st of r.steps) for (const l of ['es', 'en', 'fr'] as const)

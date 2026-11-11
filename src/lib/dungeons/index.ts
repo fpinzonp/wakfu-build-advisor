@@ -24,18 +24,37 @@ import lampionaute from './data/lampionaute';
 import roubBar from './data/roub-bar';
 import eBou from './data/e-bou';
 import fabriqueMeka from './data/fabrique-meka';
+import crocodailles from './data/crocodailles';
+import gerbouille from './data/gerbouille';
 
 // Orden: por tramo de nivel (mínimo) y luego por nombre francés.
 export const DUNGEONS: Dungeon[] = [tropikes, poulpe, tourMinerale, corbeauCave, excarnus, truchiere, scarriere, slekymoses,
   magikRiktus, areneDansante, corbeauNoir, hagenGlass, smarrante, cacterre, dragonCochon,
   noirespore, potofeu, jawdin, sourceDuMal, waWabbit, enutrosor,
   lampionaute, roubBar, eBou, fabriqueMeka,
+  crocodailles, gerbouille,
 ].sort(
   (a, b) => a.tier[0] - b.tier[0] || a.name.fr.localeCompare(b.name.fr, 'fr'),
 );
 
 // Mazmorras revisadas pero sin mecánica clara: no se animan.
-export const EXCLUDED: Excluded[] = [];
+export const EXCLUDED: Excluded[] = [
+  {
+    id: 'kannibouls',
+    name: 'Donjon des Kannibouls',
+    reason: 'La guía no dice si el tótem absorbido se consume, cuánto dura la vulnerabilidad (la imagen solo muestra «Vulnérabilité Aquatique» de 1 turno) ni cómo el estado de los personajes permite dañar a los invulnerables; la absorción del boss («zona de tótems» y reglas de 20 % por elemento) tampoco se concreta.',
+  },
+  {
+    id: 'cite-interdite',
+    name: 'Cité Interdite',
+    reason: 'La guía dice que el boss es invulnerable al principio, pero nunca explica cómo se le quita; solo describe los 4 tonneaux (invulnerables a más de 3 PO) y la fase 2 tras matar 2.',
+  },
+  {
+    id: 'kannivores',
+    name: 'Donjon des Kannivores',
+    reason: 'La invulnerabilidad del boss dura 1 turno en cada cambio de fase y es automática; no hay una mecánica de los jugadores para quitarla. Las raíces solo reducen el daño un 25 % cada una, sin un paso a paso concreto.',
+  },
+];
 
 // Agrupa por tramo de nivel, en orden ascendente.
 export function byTier(list: Dungeon[] = DUNGEONS): { tier: [number, number]; dungeons: Dungeon[] }[] {

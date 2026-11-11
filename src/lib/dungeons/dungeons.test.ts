@@ -30,4 +30,36 @@ describe('registro de mazmorras', () => {
     expect(r.steps.flatMap(s => s.changes).filter(c => c.type === 'remove').length).toBe(4);
     expect(r.steps[r.steps.length - 1].changes).toContainEqual({ type: 'aura', piece: 'boss', on: false });
   });
+  const room = (id: string, rid = 'room1') => DUNGEONS.find(d => d.id === id)!.rooms.find(x => x.id === rid)!;
+  const last = (r: ReturnType<typeof room>) => r.steps[r.steps.length - 1].changes;
+  const all = (r: ReturnType<typeof room>) => r.steps.flatMap(s => s.changes);
+  it('Corbeau-Cave: el monstruo gana la aura de reflejo y la pierde con el hechizo de cura/boost', () => {
+    const r = room('corbeau-cave');
+    expect(all(r)).toContainEqual({ type: 'aura', piece: 'mob1', on: true });
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'mob1', on: false });
+  });
+  it('Excarnus: el boss empieza protegido, cae al desactivar el tótem y vuelve tras 3 turnos', () => {
+    const r = room('excarnus', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: true });
+  });
+  it('Truchière: la invulnerabilidad del boss cae al matar todos los huevos', () => {
+    const r = room('truchiere', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(r).filter(c => c.type === 'remove').length).toBe(r.pieces.filter(p => p.id.startsWith('egg')).length);
+    expect(last(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Scarrière: los 4 escarabajos existen y matar el de fuego quita la protección del boss', () => {
+    const r = room('scarriere', 'boss');
+    expect(r.pieces.filter(p => p.kind === 'mob').length).toBe(4);
+    expect(all(r)).toContainEqual({ type: 'remove', piece: 'fire' });
+    expect(all(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
+  it('Slekymoses: el boss es invulnerable y deja de serlo tras el hechizo del Slek', () => {
+    const r = room('slekymoses', 'boss');
+    expect(r.pieces.find(p => p.id === 'boss')!.invulnerable).toBe(true);
+    expect(all(r)).toContainEqual({ type: 'label', piece: 'pj1', label: 'Slek' });
+    expect(all(r)).toContainEqual({ type: 'aura', piece: 'boss', on: false });
+  });
 });

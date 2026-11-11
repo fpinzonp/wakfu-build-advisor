@@ -2,9 +2,14 @@ import type { Dungeon, Excluded } from './types';
 import tropikes from './data/tropikes';
 import poulpe from './data/poulpe';
 import tourMinerale from './data/tour-minerale';
+import corbeauCave from './data/corbeau-cave';
+import excarnus from './data/excarnus';
+import truchiere from './data/truchiere';
+import scarriere from './data/scarriere';
+import slekymoses from './data/slekymoses';
 
 // Orden: por tramo de nivel (mínimo) y luego por nombre francés.
-export const DUNGEONS: Dungeon[] = [tropikes, poulpe, tourMinerale].sort(
+export const DUNGEONS: Dungeon[] = [tropikes, poulpe, tourMinerale, corbeauCave, excarnus, truchiere, scarriere, slekymoses].sort(
   (a, b) => a.tier[0] - b.tier[0] || a.name.fr.localeCompare(b.name.fr, 'fr'),
 );
 

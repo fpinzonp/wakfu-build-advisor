@@ -12,17 +12,6 @@ export interface Requirement {
 
 export interface DungeonNeeds { size: 3 | 4 | 6; reqs: Requirement[] }
 
-// Ids aún sin curar; las tareas de curación los van quitando.
-export const PENDING = new Set<string>([
-  'e-bou',
-  'fabrique-meka',
-  'lampionaute',
-  'roub-bar',
-  'crocodailles',
-  'tropikes',
-  'gerbouille',
-]);
-
 export const REQUIREMENTS: Record<string, DungeonNeeds> = {
   // Guía 36-50: hay que matar los 4 tentáculos para que el jefe salga del agua; vale cualquier daño. Sin exigencias.
   'poulpe': { size: 6, reqs: [] },
@@ -180,13 +169,88 @@ export const REQUIREMENTS: Record<string, DungeonNeeds> = {
   // guía: «Donjon · 3 joueurs» (cabecera de la sección). Los Wabbits se matan cuando el boss les da el logo dorado y sus
   // explosiones se esquivan alejándose; nada depende de la clase. Sin exigencias.
   'wa-wabbit': { size: 3, reqs: [] },
-  'e-bou': { size: 6, reqs: [] }, // pendiente de curar
-  'fabrique-meka': { size: 6, reqs: [] }, // pendiente de curar
-  'lampionaute': { size: 6, reqs: [] }, // pendiente de curar
-  'roub-bar': { size: 6, reqs: [] }, // pendiente de curar
-  'crocodailles': { size: 6, reqs: [] }, // pendiente de curar
-  'tropikes': { size: 6, reqs: [] }, // pendiente de curar
-  'gerbouille': { size: 6, reqs: [] }, // pendiente de curar
+  'e-bou': { size: 6, reqs: [
+    // guía: «pour infliger des dégâts au boss, il faudra que celui-ci soit situé en dehors du carré central de la map»; «les
+    // supports vont devoir replacer le boss et les cases rouges de la dernière phase avant de pouvoir taper»; pasos: fase 3,
+    // paso 4 (el colocador saca al boss del cuadrado). Sin subtipo: la guía no dice cómo moverlo. Las casillas de la fase 1
+    // se pisan andando y las rojas se desactivan lanzando cualquier hechizo desde ellas: no son exigencias.
+    { need: 'place', required: true, why: {
+      es: 'Fase 3: el boss solo recibe daño fuera del cuadrado central, y hay que recolocarlo antes de poder pegarle.',
+      en: 'Phase 3: the boss only takes damage outside the central square, and it must be repositioned before you can hit it.',
+      fr: 'Phase 3 : le boss ne subit des dégâts qu’en dehors du carré central, et il faut le replacer avant de pouvoir taper.',
+    } },
+  ] },
+  'fabrique-meka': { size: 6, reqs: [
+    // guía: «il faudra que vos personnages “dégâts” commencent leurs tours sur le glyphe bleu foncé central»; «Le top sera
+    // donc d’avoir un personnage “placeur” qui joue juste avant votre personnage “dégâts”»; «Je vous conseil d’avoir des
+    // outils de placement sur un peu tous les persos de votre team au cas où»; pasos: sala 1 y boss, paso 2 (el Personaje 2
+    // coloca al Personaje 1). Consejo («le top», «je vous conseil»): recomendada.
+    { need: 'place', required: false, why: {
+      es: 'Los dañadores deben empezar su turno en el glifo azul oscuro, que gira: lo ideal es un colocador que juegue justo antes y los ponga en él.',
+      en: 'Damage dealers must start their turn on the rotating dark blue glyph: ideally a placer playing just before them puts them on it.',
+      fr: 'Les persos dégâts doivent commencer leur tour sur le glyphe bleu foncé, qui tourne : l’idéal est un placeur qui joue juste avant et les y place.',
+    } },
+  ] },
+  'lampionaute': { size: 6, reqs: [
+    // guía: «Il vous faudra tout d’abord avoir un personnage qui commence à 2 PO maximum du Cadran centrale»; «Placez
+    // rapidement (avec des persos placeurs) tous vos personnages dégâts proches du cadran». Acercarse al cuadrante también se
+    // puede andando: recomendada. El desplazamiento inverso hasta el boss no dice si es andando o con hechizo: se deja fuera.
+    { need: 'place', required: false, why: {
+      es: 'Cada dañador debe empezar su turno a 2 PO o menos del cuadrante central para obtener «Foudroyé»: los colocadores los acercan rápido.',
+      en: 'Each damage dealer must start its turn within 2 range of the central dial to get “Foudroyé”: placers bring them there quickly.',
+      fr: 'Chaque perso dégâts doit commencer son tour à 2 PO max du cadran central pour obtenir « Foudroyé » : les placeurs les y amènent vite.',
+    } },
+  ] },
+  'roub-bar': { size: 6, reqs: [
+    // guía: «il suffira alors de créer des lignes de murs de poudres entre vos personnages»; «d’avoir Remington dans le chemin
+    // de poudre pour lui retirer son invulnérabilité»; pasos: boss, paso 5 (el Personaje 3 coloca al boss). La guía no dice que
+    // haya que mover al boss (se puede alinear a los personajes a su alrededor): recomendada. «Placez une Stabilisation sur
+    // Remington à la fin de phase 1» no tiene necesidad que lo represente.
+    { need: 'place', required: false, why: {
+      es: 'Remington pierde la invulnerabilidad en el camino de un muro de pólvora entre 2 personajes «Bombifié»: moverlo ahí ayuda.',
+      en: 'Remington loses its invulnerability in the path of a powder wall between 2 “Bombifié” characters: moving it there helps.',
+      fr: 'Remington perd son invulnérabilité sur le chemin d’un mur de poudre entre 2 personnages « Bombifié » : le placer dessus aide.',
+    } },
+  ] },
+  'crocodailles': { size: 6, reqs: [
+    // guía: «le donjon Croco va surtout être un donjon de placement»; el boss «le deviendra [invulnérable] quand il arrivera à
+    // 55% de PV restants» y «il faudra alors lui infliger une collision»; «Le Roi Dunil est totalement indéplaçable»: la
+    // colisión se hace proyectando un personaje (teletransporte, transposición, empuje, atracción…; andar no desliza) contra él.
+    // pasos: boss, paso 3; sala 1, pasos 2-4. Sin subtipo: la guía acepta cualquier desplazamiento.
+    { need: 'place', required: true, why: {
+      es: 'Al 55 % de PV el boss (indesplazable) se vuelve invulnerable hasta chocar: hay que lanzar a un personaje contra él con un empuje, atracción o teletransporte.',
+      en: 'At 55 % HP the (immovable) boss becomes invulnerable until a collision: you must throw a character into it with a push, pull or teleport.',
+      fr: 'À 55 % de PV le boss (indéplaçable) devient invulnérable jusqu’à une collision : il faut projeter un personnage sur lui par poussée, attirance ou téléportation.',
+    } },
+  ] },
+  'gerbouille': { size: 6, reqs: [
+    // guía: «faites en sorte avec du retrait PM et du placement qu’elle ne puisse JAMAIS vous atteindre au corps à corps»
+    // (lanza su ultimate si llega al cuerpo a cuerpo); «vous pourrez facilement l’éloignez de vos personnages (vous en aurez
+    // besoin)». Es estrategia para evitar daño, no desbloqueo (la invulnerabilidad cae golpeando en melé con el estado
+    // Conducteur, que da el boss): recomendadas. Quitar PW («cases bords de map … ou avec des Eca/Zobal») no se modela.
+    { need: 'control', required: false, why: {
+      es: 'El boss lanza su ultimate si llega a tu cuerpo a cuerpo: quitarle PM ayuda a que nunca te alcance.',
+      en: 'The boss casts its ultimate if it reaches you in melee: removing its MP helps keep it from ever reaching you.',
+      fr: 'Le boss lance son ultime s’il arrive à votre corps à corps : lui retirer des PM aide à ce qu’il ne vous atteigne jamais.',
+    } },
+    { need: 'place', required: false, why: {
+      es: 'Sin invulnerabilidad el boss ya no está estabilizado: alejarlo de tus personajes evita su ultimate cuerpo a cuerpo.',
+      en: 'Once vulnerable the boss is no longer stabilized: moving it away from your characters avoids its melee ultimate.',
+      fr: 'Une fois vulnérable le boss n’est plus stabilisé : l’éloigner de vos personnages évite son ultime au corps à corps.',
+    } },
+  ] },
+  'tropikes': { size: 6, reqs: [
+    // guía: «Il est invulnérable tant qu’il n’a pas subi une explosion de nodkoko»; «Placez le boss près d’une nodkoko à 1PV
+    // avec des poussées/attirances»; «Il n’est déplaçable qu’avec des poussées et des attirances»; sala 1: «ayez des bons
+    // outils de placement». pasos: sala 1 y boss, paso 3 (el Empujador mueve a los monstruos/al boss). Subtipo empujar: la
+    // guía admite empujar o atraer y el modelo no tiene «o»; sin subtipo contaría intercambio/teletransporte, que no mueven
+    // al boss. Se elige el empuje (el de los pasos) para no dar por cubierto un equipo que no puede.
+    { need: 'place', place: 'push', required: true, why: {
+      es: 'El boss es invulnerable hasta que le alcanza la explosión de una Nodkoko a 1 PV, y solo se mueve con empujes o atracciones: hay que llevarlo cerca.',
+      en: 'The boss is invulnerable until a 1 HP Nodkoko’s explosion hits it, and it only moves by pushes or pulls: you must bring it close.',
+      fr: 'Le boss est invulnérable tant qu’une explosion de nodkoko à 1 PV ne le touche pas, et il ne bouge que par poussées ou attirances : il faut l’en approcher.',
+    } },
+  ] },
 };
 
 export const needsOf = (id: string): DungeonNeeds => {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DUNGEONS, EXCLUDED, byTier } from './index';
-import { REQUIREMENTS, PENDING, needsOf } from './requirements';
+import { REQUIREMENTS, needsOf } from './requirements';
+import requirementsSrc from './requirements.ts?raw';
 import { checkDungeon } from './validate';
 
 describe('registro de mazmorras', () => {
@@ -260,9 +261,6 @@ describe('exigencias', () => {
   it('cada mazmorra tiene entrada y no sobran entradas', () => {
     expect(Object.keys(REQUIREMENTS).sort()).toEqual([...ids].sort());
   });
-  it('PENDING solo contiene ids de DUNGEONS', () => {
-    for (const id of PENDING) expect(ids).toContain(id);
-  });
   it('needsOf lanza si no hay entrada', () => {
     expect(() => needsOf('no-existe')).toThrow();
     expect(needsOf(ids[0])).toBe(REQUIREMENTS[ids[0]]);
@@ -274,14 +272,10 @@ describe('exigencias', () => {
     for (const id of ids) for (const r of REQUIREMENTS[id].reqs)
       for (const l of ['es', 'en', 'fr'] as const) expect(r.why[l].trim()).not.toBe('');
   });
-  // Tramo 36-110 (Task 5a): ya curadas.
-  const CURATED = ['poulpe', 'tour-minerale', 'corbeau-cave', 'excarnus', 'truchiere',
-    'scarriere', 'slekymoses', 'arene-dansante', 'corbeau-noir', 'magik-riktus',
-    // tramo 111-155
-    'cacterre', 'dragon-cochon', 'hagen-glass', 'smarrante', 'jawdin',
-    'noirespore', 'potofeu', 'enutrosor', 'source-du-mal', 'wa-wabbit'];
-  it.each(CURATED)('%s ya no está pendiente de curar', (id) => {
-    expect(PENDING.has(id)).toBe(false);
+  // Todas las mazmorras están curadas (Tasks 5a-5c): ninguna entrada queda marcada como pendiente.
+  it('ninguna mazmorra queda pendiente de curar', () => {
+    expect(requirementsSrc).not.toMatch(/pendiente de curar/);
+    expect(requirementsSrc).not.toMatch(/PENDING/);
   });
   it('place solo con need place; count ≥ 1', () => {
     for (const id of ids) for (const r of REQUIREMENTS[id].reqs) {

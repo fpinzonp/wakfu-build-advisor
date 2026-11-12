@@ -274,6 +274,12 @@ describe('exigencias', () => {
     for (const id of ids) for (const r of REQUIREMENTS[id].reqs)
       for (const l of ['es', 'en', 'fr'] as const) expect(r.why[l].trim()).not.toBe('');
   });
+  // Tramo 36-110 (Task 5a): ya curadas.
+  const CURATED = ['poulpe', 'tour-minerale', 'corbeau-cave', 'excarnus', 'truchiere',
+    'scarriere', 'slekymoses', 'arene-dansante', 'corbeau-noir', 'magik-riktus'];
+  it.each(CURATED)('%s ya no está pendiente de curar', (id) => {
+    expect(PENDING.has(id)).toBe(false);
+  });
   it('place solo con need place; count ≥ 1', () => {
     for (const id of ids) for (const r of REQUIREMENTS[id].reqs) {
       if (r.place !== undefined) expect(r.need).toBe('place');

@@ -70,6 +70,12 @@ export default function App() {
   const [dialog, setDialog] = useState<'share' | 'save' | 'library' | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [section, setSection] = useState<'builds' | 'teams' | 'dungeons'>('builds');
+  // Mazmorra pedida desde Equipos; n cambia en cada petición para que se vuelva a abrir aunque sea la misma.
+  const [dungeonFocus, setDungeonFocus] = useState<{ id: string; n: number } | undefined>(undefined);
+  const openDungeon = (id: string) => {
+    setDungeonFocus((f) => ({ id, n: (f?.n ?? 0) + 1 }));
+    setSection('dungeons');
+  };
   const resultsRef = useRef<HTMLElement>(null);
 
   const notify = useCallback((text: string) => {
@@ -288,11 +294,11 @@ export default function App() {
       </nav>
 
       <div hidden={section !== 'teams'}>
-        <TeamsPanel spellData={spellData} initialClass={classId} onBuild={buildFromTeam} />
+        <TeamsPanel spellData={spellData} initialClass={classId} onBuild={buildFromTeam} onOpenDungeon={openDungeon} />
       </div>
 
       <div hidden={section !== 'dungeons'}>
-        <DungeonPanel active={section === 'dungeons'} />
+        <DungeonPanel active={section === 'dungeons'} focus={dungeonFocus} />
       </div>
 
       <main className="layout" hidden={section !== 'builds'}>

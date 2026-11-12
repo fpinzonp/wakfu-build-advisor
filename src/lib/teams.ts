@@ -1,4 +1,4 @@
-// Recomendador de equipos: reparte las necesidades de cada contenido entre las clases. Lo que aporta cada clase
+// Recomendador de equipos: reparte las necesidades de un grupo entre las clases. Lo que aporta cada clase
 // está curado a mano en KIT a partir de los textos de public/data/spells.json (solo efectos claros).
 import { CLASSES, type Role } from './game';
 import { getLang, type Lang } from './i18n';
@@ -8,13 +8,6 @@ export const NEEDS: Need[] = ['protect', 'heal', 'revive', 'debuff', 'support', 
 
 /** Subtipos de colocación: mover piezas (empujar, atraer, intercambiar posiciones, teletransportar). */
 export type PlaceKind = 'push' | 'pull' | 'swap' | 'teleport';
-
-/** @deprecated se borra en Task 6 */
-export type Content = 'rooms' | 'stasis' | 'ultimate' | 'trio';
-/** @deprecated se borra en Task 6 */
-export const SIX_CONTENTS: Content[] = ['rooms', 'stasis', 'ultimate'];
-/** @deprecated se borra en Task 6 */
-export type TeamSize = 3 | 6;
 
 export interface Member { classId: string; role: Role }
 
@@ -167,12 +160,8 @@ export const KIT: Record<string, Contribution[]> = {
 
 // Peso de cada necesidad en la puntuación general.
 const WEIGHTS: Record<Need, number> = { protect: 3, heal: 3, revive: 0.5, debuff: 1, support: 1, control: 0.5, melee: 1.5, ranged: 1.5, place: 1 };
-// Solo para bestTrio (deprecado): pesos del antiguo contenido de 3.
-const TRIO_WEIGHTS: Record<Need, number> = { protect: 4, heal: 4, revive: 0.5, debuff: 0.5, support: 0.5, control: 0.25, melee: 1.5, ranged: 1.5, place: 1 };
 
 const DAMAGE_ROLES: Role[] = ['melee', 'dist'];
-/** @deprecated se borra en Task 6 */
-export const contentSize = (content: Content): TeamSize => (content === 'trio' ? 3 : 6);
 
 /** Aportes que cuentan para un personaje según el rol que juega. */
 export const contributions = (m: Member) => (KIT[m.classId] ?? []).filter((x) => !x.role || x.role === m.role);
@@ -251,34 +240,6 @@ export function searchTeam(fixed: Member[], size: number, score: (t: Member[]) =
     }
   }
   return team;
-}
-
-/** @deprecated se borra en Task 6 (el contenido se descarta salvo 'trio', que sigue dando 3 personajes). */
-export const recommendTeam = (fixed: Member[], content: Content): Member[] =>
-  content === 'trio'
-    ? searchTeam(fixed, 3, (t) => weightedScore(t, TRIO_WEIGHTS, 1))
-    : searchTeam(fixed, 6, scoreTeam);
-
-/** @deprecated se borra en Task 6 */
-export function bestTrio(team: Member[]): Member[] {
-  let best = team.slice(0, 3);
-  let top = -Infinity;
-  for (let i = 1; i < team.length; i++) {
-    for (let j = i + 1; j < team.length; j++) {
-      const trio = [team[0], team[i], team[j]];
-      const s = weightedScore(trio, TRIO_WEIGHTS, 1);
-      if (s > top + 1e-9) { top = s; best = trio; }
-    }
-  }
-  return best;
-}
-
-/** @deprecated se borra en Task 6 */
-export function lostNeeds(before: Member[], after: Member[]): Need[] {
-  const rank: Record<NeedStatus, number> = { ok: 2, weak: 1, none: 0 };
-  const a = coverage(before);
-  const b = coverage(after);
-  return NEEDS.filter((n) => rank[needStatus(b[n])] < rank[needStatus(a[n])]);
 }
 
 /** Necesidad por la que un personaje está en el grupo, y si nadie más la cubre igual de bien. */

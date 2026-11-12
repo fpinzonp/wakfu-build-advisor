@@ -1,6 +1,6 @@
 import spellsRaw from '../../public/data/spells.json?raw';
 import { describe, expect, it } from 'vitest';
-import { KIT, contributions, memberPlaces, recommendTeam, searchTeam, scoreTeam, type PlaceKind } from './teams';
+import { KIT, contributions, memberPlaces, searchTeam, scoreTeam, type PlaceKind } from './teams';
 import { CLASSES } from './game';
 
 const data = JSON.parse(spellsRaw) as { classes: Record<string, { id: number }[]> };
@@ -36,16 +36,14 @@ describe('KIT', () => {
   });
 });
 
-describe('recommendTeam', () => {
+describe('searchTeam con scoreTeam', () => {
   // Fijado antes de extraer searchTeam: el refactor no debe cambiar los resultados.
   it('resultados fijados', () => {
     const ids = (t: { classId: string; role: string }[]) => t.map((m) => `${m.classId}:${m.role}`);
-    expect(ids(recommendTeam([{ classId: 'aniripsa', role: 'heal' }], 'rooms'))).toEqual(
+    expect(ids(searchTeam([{ classId: 'aniripsa', role: 'heal' }], 6, scoreTeam))).toEqual(
       ['aniripsa:heal', 'steamer:dist', 'uginak:melee', 'feca:tank', 'xelor:dist', 'osamodas:dist']);
-    expect(ids(recommendTeam([{ classId: 'sram', role: 'melee' }, { classId: 'feca', role: 'tank' }], 'stasis'))).toEqual(
+    expect(ids(searchTeam([{ classId: 'sram', role: 'melee' }, { classId: 'feca', role: 'tank' }], 6, scoreTeam))).toEqual(
       ['sram:melee', 'feca:tank', 'xelor:dist', 'aniripsa:heal', 'steamer:dist', 'anutrof:dist']);
-    expect(ids(recommendTeam([{ classId: 'ocra', role: 'dist' }], 'trio'))).toEqual(
-      ['ocra:dist', 'aniripsa:heal', 'feca:tank']);
   });
 });
 

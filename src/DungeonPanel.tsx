@@ -19,7 +19,11 @@ export function autoNext(step: number, total: number): { step: number; playing: 
 // Cambiar de mazmorra o de sala vuelve al primer paso y pausa.
 export const selectionReset = (): { step: 0; playing: false } => ({ step: 0, playing: false });
 
-export default function DungeonPanel({ active }: { active: boolean }) {
+// Mazmorra a abrir cuando se llega desde otra sección: la pedida si existe; si no, la primera.
+export const focusTarget = (focus: { id: string; n: number }): string =>
+  (DUNGEONS.some(d => d.id === focus.id) ? focus.id : DUNGEONS[0].id);
+
+export default function DungeonPanel({ active, focus }: { active: boolean; focus?: { id: string; n: number } }) {
   const { lang } = useLang();
   const [dungeonId, setDungeonId] = useState(DUNGEONS[0].id);
   const [roomId, setRoomId] = useState(DUNGEONS[0].rooms[0].id);
@@ -37,6 +41,11 @@ export default function DungeonPanel({ active }: { active: boolean }) {
     setDungeonId(d.id); setRoomId(d.rooms[0].id); reset();
   };
   const pickRoom = (id: string) => { setRoomId(id); reset(); };
+
+  // Cada petición nueva (n distinto) abre la mazmorra pedida, aunque sea la misma que la anterior.
+  useEffect(() => {
+    if (focus) pickDungeon(focusTarget(focus));
+  }, [focus?.n]);
 
   // Reproducción automática: solo con la sección visible y mientras se esté reproduciendo.
   useEffect(() => {

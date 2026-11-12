@@ -1,23 +1,55 @@
 import { useMemo, useState } from 'react';
 import { CLASSES, ROLES, type Role } from './lib/game';
-import { t, tk } from './lib/i18n';
+import { getLang, t, tk } from './lib/i18n';
 import { spellImage, type Spell, type SpellData } from './lib/spells';
+import { DUNGEONS } from './lib/dungeons';
+import { needsOf, type DungeonNeeds, type Requirement } from './lib/dungeons/requirements';
 import {
-  NEEDS, SIX_CONTENTS, bestRole, bestTrio, contributionNote, contributions, coverage, lostNeeds, mainNeed,
-  needStatus, recommendTeam, replacements,
-  type Content, type Member, type Need, type TeamSize,
+  NEEDS, bestRole, contributionNote, contributions, coverage, mainNeed, needStatus, replacements,
+  type Member, type Need,
 } from './lib/teams';
+import {
+  MISSING_DAMAGE, dungeonDiff, recommendBaseTeam, suggestFix, teamReport,
+  type DungeonResult, type Fix, type TeamReport,
+} from './lib/teamDungeons';
 
 const classLabel = (id: string) => CLASSES.find((c) => c.id === id)!.label;
 const roleLabel = (r: Role) => ROLES.find((x) => x.id === r)!.label;
 const needLabel = (n: Need) => tk(`team.need.${n}`);
 const joinNames = (members: Member[]) => members.map((m) => classLabel(m.classId)).join(', ');
+const dungeonName = (id: string) => DUNGEONS.find((d) => d.id === id)!.name[getLang()];
+const joinDungeons = (ids: string[]) => ids.map(dungeonName).join(', ');
 
-// Último cambio por gusto: permite ver lo perdido, pedir otra propuesta o volver atrás.
+/** Nombre visible de una exigencia: necesidad, subtipos de colocación ("empujar o atraer") y número de personajes. */
+export function reqLabel(r: Requirement): string {
+  let s = needLabel(r.need);
+  if (r.place !== undefined) {
+    const kinds = (Array.isArray(r.place) ? r.place : [r.place]).map((k) => tk(`team.place.${k}`).toLowerCase());
+    const list = kinds.length > 1 ? `${kinds.slice(0, -1).join(', ')} ${t('team.or')} ${kinds[kinds.length - 1]}` : kinds[0];
+    s += ` (${list})`;
+  }
+  if ((r.count ?? 1) > 1) s += ` ×${r.count}`;
+  return s;
+}
+
+/** Aplica un cambio de clase: la anterior deja de estar fijada y la nueva queda fijada. No modifica la entrada. */
+export function applySwap(state: { team: Member[]; pins: string[] }, index: number, m: Member): { team: Member[]; pins: string[] } {
+  const old = state.team[index].classId;
+  return {
+    team: state.team.map((x, i) => (i === index ? m : x)),
+    pins: [...state.pins.filter((id) => id !== old), m.classId],
+  };
+}
+
+/** Franjas que empiezan abiertas: las que tienen alguna mazmorra sin cubrir. */
+export const initiallyOpen = (report: TeamReport): boolean[] => report.tiers.map((g) => g.covered < g.total);
+
+// Último cambio por gusto: qué mazmorras se ganan o pierden, propuesta de equipo y vuelta atrás.
 interface Change {
   prevTeam: Member[];
   prevPins: string[];
-  lost: Need[];
+  gained: string[];
+  lost: string[];
   proposal: Member[] | null;
   checked: boolean;
 }
@@ -39,24 +71,65 @@ function Coverage({ team, label }: { team: Member[]; label: string }) {
   );
 }
 
-export default function TeamsPanel({ spellData, initialClass, onBuild }: {
+function Uncovered({ result, team, fix, total, onFix, onOpen }: {
+  result: DungeonResult; team: Member[]; fix: Fix | null; total: number;
+  onFix: (f: Fix) => void; onOpen: (id: string) => void;
+}) {
+  const name = dungeonName(result.id);
+  return (
+    <li className="team-dg">
+      <button type="button" className="team-dg-name" onClick={() => onOpen(result.id)} aria-label={t('team.openDungeon', { name })}>
+        <span aria-hidden="true">⚠ </span>{name}
+      </button>
+      <ul className="team-miss">
+        {result.missing.map((r, i) => (
+          <li key={i}>
+            <b>{r === MISSING_DAMAGE ? t('team.need.melee') + ' / ' + t('team.need.ranged') : reqLabel(r)}</b>
+            <span className="muted"> · {r.why[getLang()]}</span>
+          </li>
+        ))}
+      </ul>
+      {result.group.length < team.length && (
+        <p className="muted small">{t('team.subgroup', { n: result.group.length, names: joinNames(result.group) })}</p>
+      )}
+      {fix
+        ? (
+          <div className="row wrap">
+            <button type="button" className="btn" onClick={() => onFix(fix)}>
+              {t('team.fix', { out: classLabel(team[fix.index].classId), in: classLabel(fix.member.classId), total: fix.total, n: total })}
+            </button>
+          </div>
+        )
+        : <p className="muted small">{t('team.noFix')}</p>}
+    </li>
+  );
+}
+
+export default function TeamsPanel({ spellData, initialClass, onBuild, onOpenDungeon, needs = needsOf }: {
   spellData: SpellData | null; initialClass: string; onBuild: (classId: string, role: Role) => void;
+  onOpenDungeon: (id: string) => void;
+  /** Exigencias por mazmorra; se inyecta en las pruebas. */
+  needs?: (id: string) => DungeonNeeds;
 }) {
   const [classId, setClassId] = useState(initialClass);
   const [role, setRole] = useState<Role>(() => CLASSES.find((c) => c.id === initialClass)!.roles[0]);
-  const [size, setSize] = useState<TeamSize>(6);
-  const [sixContent, setSixContent] = useState<Content>('rooms');
-  const [team, setTeam] = useState<Member[]>(() => recommendTeam([{ classId: initialClass, role }], 'rooms'));
+  const [team, setTeam] = useState<Member[]>(() => recommendBaseTeam([{ classId: initialClass, role }], needs));
   const [pins, setPins] = useState<string[]>([]);   // clases elegidas a mano: se conservan en las propuestas
   const [selected, setSelected] = useState(0);
   const [change, setChange] = useState<Change | null>(null);
 
-  const content: Content = size === 3 ? 'trio' : sixContent;
   const cls = CLASSES.find((c) => c.id === classId)!;
-  const trio = useMemo(() => (size === 6 ? bestTrio(team) : null), [team, size]);
+  const report = useMemo(() => teamReport(team, needs), [team, needs]);
+  const fixes = useMemo(() => {
+    const out = new Map<string, Fix | null>();
+    for (const g of report.tiers) for (const r of g.results) if (!r.covered) out.set(r.id, suggestFix(team, r.id, needs));
+    return out;
+  }, [report, team, needs]);
+  // Las franjas se abren según el equipo de partida; luego el usuario las pliega a su gusto.
+  const [open] = useState(() => initiallyOpen(report));
 
-  const regenerate = (id: string, r: Role, c: Content) => {
-    setTeam(recommendTeam([{ classId: id, role: r }], c));
+  const regenerate = (id: string, r: Role) => {
+    setTeam(recommendBaseTeam([{ classId: id, role: r }], needs));
     setPins([]);
     setSelected(0);
     setChange(null);
@@ -66,23 +139,22 @@ export default function TeamsPanel({ spellData, initialClass, onBuild }: {
     const r = CLASSES.find((c) => c.id === id)!.roles[0];
     setClassId(id);
     setRole(r);
-    regenerate(id, r, content);
+    regenerate(id, r);
   };
-  const pickRole = (r: Role) => { setRole(r); regenerate(classId, r, content); };
-  const pickSize = (s: TeamSize) => { setSize(s); regenerate(classId, role, s === 3 ? 'trio' : sixContent); };
-  const pickContent = (c: Content) => { setSixContent(c); regenerate(classId, role, c); };
+  const pickRole = (r: Role) => { setRole(r); regenerate(classId, r); };
 
   const swap = (index: number, m: Member) => {
-    const next = team.map((x, i) => (i === index ? m : x));
-    setChange({ prevTeam: team, prevPins: pins, lost: lostNeeds(team, next), proposal: null, checked: false });
-    setTeam(next);
-    setPins([...pins.filter((id) => id !== team[index].classId), m.classId]);
+    const next = applySwap({ team, pins }, index, m);
+    const { gained, lost } = dungeonDiff(team, next.team, needs);
+    setChange({ prevTeam: team, prevPins: pins, gained, lost, proposal: null, checked: false });
+    setTeam(next.team);
+    setPins(next.pins);
   };
 
   const propose = () => {
     if (!change) return;
     const fixed = team.filter((m, i) => i === 0 || pins.includes(m.classId));
-    const proposal = recommendTeam(fixed, content);
+    const proposal = recommendBaseTeam(fixed, needs);
     const same = proposal.every((m) => team.some((x) => x.classId === m.classId));
     setChange({ ...change, checked: true, proposal: same ? null : proposal });
   };
@@ -108,6 +180,7 @@ export default function TeamsPanel({ spellData, initialClass, onBuild }: {
   const others = CLASSES.filter((c) => !team.some((m) => m.classId === c.id) && !alternatives.some((a) => a.classId === c.id));
   const leaving = change?.proposal ? team.filter((m) => !change.proposal!.some((x) => x.classId === m.classId)) : [];
   const entering = change?.proposal ? change.proposal.filter((m) => !team.some((x) => x.classId === m.classId)) : [];
+  const pct = (a: number, b: number) => (b ? Math.round((100 * a) / b) : 100);
 
   return (
     <div className="teams">
@@ -137,39 +210,19 @@ export default function TeamsPanel({ spellData, initialClass, onBuild }: {
               </div>
             </div>
           )}
-          <div className="field">
-            <span className="label" id="team-size">{t('team.size')}</span>
-            <div className="seg" role="group" aria-labelledby="team-size">
-              {([6, 3] as TeamSize[]).map((s) => (
-                <button key={s} type="button" className={size === s ? 'on' : ''} aria-pressed={size === s} onClick={() => pickSize(s)}>
-                  {tk(`team.size.${s}`)}
-                </button>
-              ))}
-            </div>
-          </div>
-          {size === 6 && (
-            <div className="field">
-              <span className="label" id="team-content">{t('team.content')}</span>
-              <div className="seg" role="group" aria-labelledby="team-content">
-                {SIX_CONTENTS.map((c) => (
-                  <button key={c} type="button" className={sixContent === c ? 'on' : ''} aria-pressed={sixContent === c} onClick={() => pickContent(c)}>
-                    {tk(`team.content.${c}`)}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
-        <p className="muted small">{tk(`team.content.${content}.hint`)}</p>
       </div>
 
       {change && (
         <div className={`panel team-notice ${change.lost.length ? 'warn' : ''}`} role="status">
-          <p>
-            {change.lost.length
-              ? t('team.lost', { needs: change.lost.map(needLabel).join(', ') })
-              : t('team.noLoss')}
-          </p>
+          {change.gained.length === 0 && change.lost.length === 0
+            ? <p>{t('team.noDiff')}</p>
+            : (
+              <>
+                {change.gained.length > 0 && <p>{t('team.gained', { names: joinDungeons(change.gained) })}</p>}
+                {change.lost.length > 0 && <p>{t('team.lostDungeons', { names: joinDungeons(change.lost) })}</p>}
+              </>
+            )}
           {change.proposal && (
             <div className="team-proposal">
               <h3>{t('team.proposalTitle')}</h3>
@@ -183,8 +236,8 @@ export default function TeamsPanel({ spellData, initialClass, onBuild }: {
           )}
           {change.checked && !change.proposal && <p className="muted">{t('team.noBetter')}</p>}
           <div className="row wrap">
-            {change.lost.length > 0 && !change.proposal && !change.checked && (
-              <button type="button" className="btn primary" onClick={propose}>{t('team.seeProposal')}</button>
+            {!change.proposal && !change.checked && (
+              <button type="button" className={`btn ${change.lost.length ? 'primary' : ''}`} onClick={propose}>{t('team.seeProposal')}</button>
             )}
             <button type="button" className="btn ghost" onClick={undo}>{t('team.undo')}</button>
           </div>
@@ -198,10 +251,7 @@ export default function TeamsPanel({ spellData, initialClass, onBuild }: {
               <li key={m.classId}>
                 <button type="button" className={selected === i ? 'on' : ''} aria-pressed={selected === i} onClick={() => setSelected(i)}>
                   <b>{classLabel(m.classId)}{i === 0 ? ` · ${t('team.you')}` : ''}</b>
-                  <span className="team-row-meta">
-                    {trio?.some((x) => x.classId === m.classId) && <span className="team-badge">{t('team.trioBadge')}</span>}
-                    <span>{roleLabel(m.role)}</span>
-                  </span>
+                  <span className="team-row-meta"><span>{roleLabel(m.role)}</span></span>
                 </button>
               </li>
             ))}
@@ -227,10 +277,10 @@ export default function TeamsPanel({ spellData, initialClass, onBuild }: {
             {contributions(member).map((x) => {
               const spell = spellOf(x.spell);
               return (
-                <li key={`${x.need}-${x.spell}`}>
+                <li key={`${x.need}-${x.spell}-${x.place ?? ''}`}>
                   {spell && <img src={spellImage(spell.icon)} alt="" loading="lazy" referrerPolicy="no-referrer" />}
                   <div>
-                    <b>{needLabel(x.need)}</b>
+                    <b>{needLabel(x.need)}{x.place ? ` (${tk(`team.place.${x.place}`).toLowerCase()})` : ''}</b>
                     {spell && <span className="muted"> · {spell.name}{spell.lvl ? ` (${t('common.lvlShort', { n: spell.lvl })})` : ''}</span>}
                     <p className="muted">{contributionNote(x)}</p>
                   </div>
@@ -270,13 +320,52 @@ export default function TeamsPanel({ spellData, initialClass, onBuild }: {
         </div>
       </div>
 
-      {trio && (
-        <div className="panel">
-          <h3>{t('team.trioTitle')}</h3>
-          <p>{t('team.trioText', { names: joinNames(trio) })}</p>
-          <Coverage team={trio} label={t('team.trioTitle')} />
-        </div>
-      )}
+      <div className="panel team-report">
+        <h2>{t('team.coverTotal', { n: report.covered, total: report.total })}</h2>
+        <ul className="team-bars" aria-label={t('team.coverTiers')}>
+          {report.tiers.map((g) => (
+            <li key={g.tier[0]}>
+              <span className="team-bar-label">{g.tier[0]}–{g.tier[1]}</span>
+              <span className="team-bar" aria-hidden="true"><span style={{ width: `${pct(g.covered, g.total)}%` }} /></span>
+              <span className="team-bar-n">{g.covered}/{g.total}</span>
+            </li>
+          ))}
+        </ul>
+
+        <h3>{t('team.dungeonsTitle')}</h3>
+        {report.tiers.map((g, gi) => {
+          const uncovered = g.results.filter((r) => !r.covered);
+          const covered = g.results.filter((r) => r.covered);
+          return (
+            <details key={g.tier[0]} className="team-tier" open={open[gi]}>
+              <summary>{`${g.tier[0]}–${g.tier[1]} · ${g.covered}/${g.total}`}</summary>
+              {uncovered.length > 0 && (
+                <ul className="team-dgs">
+                  {uncovered.map((r) => (
+                    <Uncovered key={r.id} result={r} team={team} fix={fixes.get(r.id) ?? null} total={report.total}
+                      onFix={(f) => swap(f.index, f.member)} onOpen={onOpenDungeon} />
+                  ))}
+                </ul>
+              )}
+              {covered.length > 0 && (
+                <p className="team-ok">
+                  <span className="muted">{t('team.coveredList')}: </span>
+                  {covered.map((r, i) => (
+                    <span key={r.id}>
+                      {i > 0 && ', '}
+                      <button type="button" className="team-dg-link" onClick={() => onOpenDungeon(r.id)}
+                        aria-label={t('team.openDungeon', { name: dungeonName(r.id) })}>
+                        <span aria-hidden="true">✓ </span>{dungeonName(r.id)}
+                      </button>
+                    </span>
+                  ))}
+                </p>
+              )}
+            </details>
+          );
+        })}
+        <p className="muted small">{t('team.guidesNote')}</p>
+      </div>
 
       <p className="muted small">{t('team.disclaimer')}</p>
     </div>

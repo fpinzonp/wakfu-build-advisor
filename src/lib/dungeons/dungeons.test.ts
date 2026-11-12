@@ -276,7 +276,10 @@ describe('exigencias', () => {
   });
   // Tramo 36-110 (Task 5a): ya curadas.
   const CURATED = ['poulpe', 'tour-minerale', 'corbeau-cave', 'excarnus', 'truchiere',
-    'scarriere', 'slekymoses', 'arene-dansante', 'corbeau-noir', 'magik-riktus'];
+    'scarriere', 'slekymoses', 'arene-dansante', 'corbeau-noir', 'magik-riktus',
+    // tramo 111-155
+    'cacterre', 'dragon-cochon', 'hagen-glass', 'smarrante', 'jawdin',
+    'noirespore', 'potofeu', 'enutrosor', 'source-du-mal', 'wa-wabbit'];
   it.each(CURATED)('%s ya no está pendiente de curar', (id) => {
     expect(PENDING.has(id)).toBe(false);
   });

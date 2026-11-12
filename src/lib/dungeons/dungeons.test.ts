@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DUNGEONS, EXCLUDED, byTier } from './index';
+import { REQUIREMENTS, PENDING, needsOf } from './requirements';
 import { checkDungeon } from './validate';
 
 describe('registro de mazmorras', () => {
@@ -251,5 +252,32 @@ describe('registro de mazmorras', () => {
         for (const t of textos) if (/[A-Za-zÀ-ÿ]{3,}/.test(t) && !permitidos.has(t)) malos.push(`${d.id}/${r.id}: ${t}`);
       }
     expect(malos).toEqual([]);
+  });
+});
+
+describe('exigencias', () => {
+  const ids = DUNGEONS.map(d => d.id);
+  it('cada mazmorra tiene entrada y no sobran entradas', () => {
+    expect(Object.keys(REQUIREMENTS).sort()).toEqual([...ids].sort());
+  });
+  it('PENDING solo contiene ids de DUNGEONS', () => {
+    for (const id of PENDING) expect(ids).toContain(id);
+  });
+  it('needsOf lanza si no hay entrada', () => {
+    expect(() => needsOf('no-existe')).toThrow();
+    expect(needsOf(ids[0])).toBe(REQUIREMENTS[ids[0]]);
+  });
+  it('size ∈ {3, 4, 6}', () => {
+    for (const id of ids) expect([3, 4, 6]).toContain(REQUIREMENTS[id].size);
+  });
+  it('why con es, en y fr no vacíos', () => {
+    for (const id of ids) for (const r of REQUIREMENTS[id].reqs)
+      for (const l of ['es', 'en', 'fr'] as const) expect(r.why[l].trim()).not.toBe('');
+  });
+  it('place solo con need place; count ≥ 1', () => {
+    for (const id of ids) for (const r of REQUIREMENTS[id].reqs) {
+      if (r.place !== undefined) expect(r.need).toBe('place');
+      if (r.count !== undefined) expect(r.count).toBeGreaterThanOrEqual(1);
+    }
   });
 });

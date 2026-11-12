@@ -221,16 +221,18 @@ export function scoreTeam(team: Member[], content: Content): number {
 
 const candidates = (): Member[] => CLASSES.flatMap((cl) => cl.roles.map((role) => ({ classId: cl.id, role })));
 
-/** Mejor grupo que incluye a los personajes fijados: añade por ganancia y luego prueba cambios uno a uno. */
-export function recommendTeam(fixed: Member[], content: Content): Member[] {
-  const size = contentSize(content);
+/**
+ * Búsqueda del mejor grupo de `size` que incluye a los fijados, según `score`: añade por ganancia y luego prueba
+ * cambios uno a uno (sin repetir clase) hasta que ninguno mejora.
+ */
+export function searchTeam(fixed: Member[], size: number, score: (t: Member[]) => number): Member[] {
   const team = [...fixed].slice(0, size);
   const free = (cur: Member[]) => candidates().filter((m) => !cur.some((x) => x.classId === m.classId));
   while (team.length < size) {
     let best: Member | null = null;
     let top = -Infinity;
     for (const m of free(team)) {
-      const s = scoreTeam([...team, m], content);
+      const s = score([...team, m]);
       if (s > top + 1e-9) { top = s; best = m; }
     }
     team.push(best!);
@@ -239,15 +241,19 @@ export function recommendTeam(fixed: Member[], content: Content): Member[] {
     improved = false;
     for (let i = fixed.length; i < team.length; i++) {
       const others = team.filter((_, j) => j !== i);
-      const top = scoreTeam(team, content);
+      const top = score(team);
       const better = free(others)
-        .map((m) => ({ m, s: scoreTeam([...others, m], content) }))
+        .map((m) => ({ m, s: score([...others, m]) }))
         .reduce((a, b) => (b.s > a.s + 1e-9 ? b : a), { m: team[i], s: top });
       if (better.s > top + 1e-9) { team[i] = better.m; improved = true; }
     }
   }
   return team;
 }
+
+/** Mejor grupo que incluye a los personajes fijados para un contenido. */
+export const recommendTeam = (fixed: Member[], content: Content): Member[] =>
+  searchTeam(fixed, contentSize(content), (t) => scoreTeam(t, content));
 
 /** Los 3 del grupo que mejor funcionan juntos; team[0] (tu clase) siempre está incluida. */
 export function bestTrio(team: Member[]): Member[] {

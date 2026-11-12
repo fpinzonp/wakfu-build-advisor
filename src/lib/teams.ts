@@ -9,8 +9,11 @@ export const NEEDS: Need[] = ['protect', 'heal', 'revive', 'debuff', 'support', 
 /** Subtipos de colocación: mover piezas (empujar, atraer, intercambiar posiciones, teletransportar). */
 export type PlaceKind = 'push' | 'pull' | 'swap' | 'teleport';
 
+/** @deprecated se borra en Task 6 */
 export type Content = 'rooms' | 'stasis' | 'ultimate' | 'trio';
+/** @deprecated se borra en Task 6 */
 export const SIX_CONTENTS: Content[] = ['rooms', 'stasis', 'ultimate'];
+/** @deprecated se borra en Task 6 */
 export type TeamSize = 3 | 6;
 
 export interface Member { classId: string; role: Role }
@@ -162,15 +165,13 @@ export const KIT: Record<string, Contribution[]> = {
   ],
 };
 
-// Peso de cada necesidad según el contenido.
-const WEIGHTS: Record<Content, Record<Need, number>> = {
-  rooms: { protect: 3, heal: 3, revive: 0.5, debuff: 1, support: 1, control: 0.5, melee: 1.5, ranged: 1.5, place: 1 },
-  stasis: { protect: 3.5, heal: 3.5, revive: 2, debuff: 1, support: 1.5, control: 1, melee: 1, ranged: 1, place: 1 },
-  ultimate: { protect: 2, heal: 2.5, revive: 1.5, debuff: 3, support: 2, control: 0.5, melee: 1.5, ranged: 1.5, place: 1 },
-  trio: { protect: 4, heal: 4, revive: 0.5, debuff: 0.5, support: 0.5, control: 0.25, melee: 1.5, ranged: 1.5, place: 1 },
-};
+// Peso de cada necesidad en la puntuación general.
+const WEIGHTS: Record<Need, number> = { protect: 3, heal: 3, revive: 0.5, debuff: 1, support: 1, control: 0.5, melee: 1.5, ranged: 1.5, place: 1 };
+// Solo para bestTrio (deprecado): pesos del antiguo contenido de 3.
+const TRIO_WEIGHTS: Record<Need, number> = { protect: 4, heal: 4, revive: 0.5, debuff: 0.5, support: 0.5, control: 0.25, melee: 1.5, ranged: 1.5, place: 1 };
 
 const DAMAGE_ROLES: Role[] = ['melee', 'dist'];
+/** @deprecated se borra en Task 6 */
 export const contentSize = (content: Content): TeamSize => (content === 'trio' ? 3 : 6);
 
 /** Aportes que cuentan para un personaje según el rol que juega. */
@@ -211,13 +212,14 @@ export function coverage(team: Member[]): Record<Need, number> {
 export type NeedStatus = 'ok' | 'weak' | 'none';
 export const needStatus = (value: number): NeedStatus => (value >= 2 ? 'ok' : value > 0 ? 'weak' : 'none');
 
-export function scoreTeam(team: Member[], content: Content): number {
+function weightedScore(team: Member[], w: Record<Need, number>, wanted: number): number {
   const cov = coverage(team);
-  const w = WEIGHTS[content];
   const dealers = team.filter((m) => DAMAGE_ROLES.includes(m.role)).length;
-  const wanted = contentSize(content) === 6 ? 3 : 1;
   return NEEDS.reduce((sum, n) => sum + (w[n] * cov[n]) / 3, 0) + (3 * Math.min(dealers, wanted)) / wanted;
 }
+
+/** Puntuación general de un grupo (pensada para 6 personajes). */
+export const scoreTeam = (team: Member[]): number => weightedScore(team, WEIGHTS, 3);
 
 const candidates = (): Member[] => CLASSES.flatMap((cl) => cl.roles.map((role) => ({ classId: cl.id, role })));
 
@@ -251,25 +253,27 @@ export function searchTeam(fixed: Member[], size: number, score: (t: Member[]) =
   return team;
 }
 
-/** Mejor grupo que incluye a los personajes fijados para un contenido. */
+/** @deprecated se borra en Task 6 (el contenido se descarta salvo 'trio', que sigue dando 3 personajes). */
 export const recommendTeam = (fixed: Member[], content: Content): Member[] =>
-  searchTeam(fixed, contentSize(content), (t) => scoreTeam(t, content));
+  content === 'trio'
+    ? searchTeam(fixed, 3, (t) => weightedScore(t, TRIO_WEIGHTS, 1))
+    : searchTeam(fixed, 6, scoreTeam);
 
-/** Los 3 del grupo que mejor funcionan juntos; team[0] (tu clase) siempre está incluida. */
+/** @deprecated se borra en Task 6 */
 export function bestTrio(team: Member[]): Member[] {
   let best = team.slice(0, 3);
   let top = -Infinity;
   for (let i = 1; i < team.length; i++) {
     for (let j = i + 1; j < team.length; j++) {
       const trio = [team[0], team[i], team[j]];
-      const s = scoreTeam(trio, 'trio');
+      const s = weightedScore(trio, TRIO_WEIGHTS, 1);
       if (s > top + 1e-9) { top = s; best = trio; }
     }
   }
   return best;
 }
 
-/** Necesidades que empeoran de estado al pasar de un grupo a otro. */
+/** @deprecated se borra en Task 6 */
 export function lostNeeds(before: Member[], after: Member[]): Need[] {
   const rank: Record<NeedStatus, number> = { ok: 2, weak: 1, none: 0 };
   const a = coverage(before);
@@ -278,8 +282,8 @@ export function lostNeeds(before: Member[], after: Member[]): Need[] {
 }
 
 /** Necesidad por la que un personaje está en el grupo, y si nadie más la cubre igual de bien. */
-export function mainNeed(team: Member[], index: number, content: Content): { need: Need; only: boolean } {
-  const w = WEIGHTS[content];
+export function mainNeed(team: Member[], index: number): { need: Need; only: boolean } {
+  const w = WEIGHTS;
   const mine = memberPower(team[index]);
   const others = team.filter((_, i) => i !== index).map(memberPower);
   const gain = (n: Need) => w[n] * Math.max(0, mine[n] - Math.max(0, ...others.map((p) => p[n])));
@@ -289,21 +293,21 @@ export function mainNeed(team: Member[], index: number, content: Content): { nee
 }
 
 /** Rol con el que una clase rinde más en el hueco de `index`. */
-export function bestRole(classId: string, team: Member[], index: number, content: Content): Role {
+export function bestRole(classId: string, team: Member[], index: number): Role {
   const others = team.filter((_, i) => i !== index);
   const roles = CLASSES.find((x) => x.id === classId)!.roles;
   return roles.reduce((a, b) => (
-    scoreTeam([...others, { classId, role: b }], content) > scoreTeam([...others, { classId, role: a }], content) + 1e-9 ? b : a
+    scoreTeam([...others, { classId, role: b }]) > scoreTeam([...others, { classId, role: a }]) + 1e-9 ? b : a
   ));
 }
 
 /** Reemplazos para un hueco: primero las clases que cubren lo mismo, de mejor a peor. */
-export function replacements(team: Member[], index: number, content: Content, max = 4): Member[] {
-  const { need } = mainNeed(team, index, content);
+export function replacements(team: Member[], index: number, max = 4): Member[] {
+  const { need } = mainNeed(team, index);
   return CLASSES.filter((x) => !team.some((m) => m.classId === x.id))
-    .map((x) => ({ classId: x.id, role: bestRole(x.id, team, index, content) }))
+    .map((x) => ({ classId: x.id, role: bestRole(x.id, team, index) }))
     .filter((m) => memberPower(m)[need] > 0)
-    .map((m) => ({ m, s: scoreTeam(team.map((x, i) => (i === index ? m : x)), content) }))
+    .map((m) => ({ m, s: scoreTeam(team.map((x, i) => (i === index ? m : x))) }))
     .sort((a, b) => b.s - a.s)
     .slice(0, max)
     .map((x) => x.m);

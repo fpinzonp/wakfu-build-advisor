@@ -89,7 +89,7 @@ export function dungeonResult(team: Member[], id: string, needs: NeedsFn = needs
     const r = evaluate(g, id, reqs);
     if (best && (r.missing.length > best.missing.length
       || (r.missing.length === best.missing.length && r.recommendedMet < best.recommendedMet))) continue;
-    const s = scoreTeam(g, 'rooms');
+    const s = scoreTeam(g);
     if (best && r.missing.length === best.missing.length && r.recommendedMet === best.recommendedMet && s <= bestScore + 1e-9) continue;
     best = r;
     bestScore = s;
@@ -136,7 +136,7 @@ function summary(team: Member[], needs: NeedsFn): Summary {
       if (r.covered) covered++;
       recommended += r.recommendedMet;
     }
-    s = { covered, score: 1000 * covered + 10 * recommended + scoreTeam(team, 'rooms') };
+    s = { covered, score: 1000 * covered + 10 * recommended + scoreTeam(team) };
     if (cache.size >= MAX_SUMMARIES) cache.clear();
     cache.set(k, s);
   }
@@ -162,7 +162,7 @@ export function suggestFix(team: Member[], id: string, needs: NeedsFn = needsOf)
   for (let index = 1; index < team.length; index++) {
     for (const cl of CLASSES) {
       if (team.some((m) => m.classId === cl.id)) continue;
-      const member: Member = { classId: cl.id, role: bestRole(cl.id, team, index, 'rooms') };
+      const member: Member = { classId: cl.id, role: bestRole(cl.id, team, index) };
       const after = team.map((m, i) => (i === index ? member : m));
       if (!dungeonResult(after, id, needs).covered) continue;
       const { covered: total, score: s } = summary(after, needs);

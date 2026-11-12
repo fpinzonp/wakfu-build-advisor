@@ -112,7 +112,7 @@ describe('baseScore', () => {
     const rep = teamReport(NO_REVIVE, needs);
     const rec = rep.tiers.flatMap((t) => t.results).reduce((s, r) => s + r.recommendedMet, 0);
     expect(rec).toBe(1);
-    expect(baseScore(NO_REVIVE, needs)).toBeCloseTo(1000 * rep.covered + 10 * rec + scoreTeam(NO_REVIVE, 'rooms'));
+    expect(baseScore(NO_REVIVE, needs)).toBeCloseTo(1000 * rep.covered + 10 * rec + scoreTeam(NO_REVIVE));
   });
 });
 

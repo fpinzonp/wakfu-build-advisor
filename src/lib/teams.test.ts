@@ -43,7 +43,7 @@ describe('recommendTeam', () => {
     expect(ids(recommendTeam([{ classId: 'aniripsa', role: 'heal' }], 'rooms'))).toEqual(
       ['aniripsa:heal', 'steamer:dist', 'uginak:melee', 'feca:tank', 'xelor:dist', 'osamodas:dist']);
     expect(ids(recommendTeam([{ classId: 'sram', role: 'melee' }, { classId: 'feca', role: 'tank' }], 'stasis'))).toEqual(
-      ['sram:melee', 'feca:tank', 'aniripsa:heal', 'xelor:dist', 'anutrof:dist', 'steamer:dist']);
+      ['sram:melee', 'feca:tank', 'xelor:dist', 'aniripsa:heal', 'steamer:dist', 'anutrof:dist']);
     expect(ids(recommendTeam([{ classId: 'ocra', role: 'dist' }], 'trio'))).toEqual(
       ['ocra:dist', 'aniripsa:heal', 'feca:tank']);
   });
@@ -51,9 +51,19 @@ describe('recommendTeam', () => {
 
 describe('searchTeam', () => {
   it('respeta el tamaño, los fijados y no repite clase', () => {
-    const t = searchTeam([{ classId: 'ocra', role: 'dist' }], 4, (x) => scoreTeam(x, 'rooms'));
+    const t = searchTeam([{ classId: 'ocra', role: 'dist' }], 4, (x) => scoreTeam(x));
     expect(t).toHaveLength(4);
     expect(t[0]).toEqual({ classId: 'ocra', role: 'dist' });
     expect(new Set(t.map((m) => m.classId)).size).toBe(4);
+  });
+});
+
+describe('scoreTeam', () => {
+  it('puntuación general fijada (igual que la antigua de salas)', () => {
+    const team = [
+      { classId: 'aniripsa', role: 'heal' }, { classId: 'feca', role: 'tank' }, { classId: 'sram', role: 'melee' },
+      { classId: 'steamer', role: 'dist' }, { classId: 'xelor', role: 'dist' }, { classId: 'osamodas', role: 'dist' },
+    ] as const;
+    expect(scoreTeam([...team])).toBeCloseTo(15.8333333, 5);
   });
 });

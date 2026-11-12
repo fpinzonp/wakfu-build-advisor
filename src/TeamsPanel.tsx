@@ -102,9 +102,9 @@ export default function TeamsPanel({ spellData, initialClass, onBuild }: {
   };
 
   const member = team[selected];
-  const why = mainNeed(team, selected, content);
+  const why = mainNeed(team, selected);
   const spellOf = (id: number): Spell | undefined => spellData?.classes[member.classId]?.find((s) => s.id === id);
-  const alternatives = selected === 0 ? [] : replacements(team, selected, content);
+  const alternatives = selected === 0 ? [] : replacements(team, selected);
   const others = CLASSES.filter((c) => !team.some((m) => m.classId === c.id) && !alternatives.some((a) => a.classId === c.id));
   const leaving = change?.proposal ? team.filter((m) => !change.proposal!.some((x) => x.classId === m.classId)) : [];
   const entering = change?.proposal ? change.proposal.filter((m) => !team.some((x) => x.classId === m.classId)) : [];
@@ -255,7 +255,7 @@ export default function TeamsPanel({ spellData, initialClass, onBuild }: {
                 <div className="field">
                   <label htmlFor="team-other" className="label">{t('team.otherClass')}</label>
                   <select id="team-other" value="" onChange={(e) => {
-                    if (e.target.value) swap(selected, { classId: e.target.value, role: bestRole(e.target.value, team, selected, content) });
+                    if (e.target.value) swap(selected, { classId: e.target.value, role: bestRole(e.target.value, team, selected) });
                   }}>
                     <option value="">{t('team.otherPlaceholder')}</option>
                     {others.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}

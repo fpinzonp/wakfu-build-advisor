@@ -6,7 +6,7 @@ export interface Requirement {
   required: boolean;      // true = obligatoria; false = recomendada
   level?: 1 | 2 | 3;      // por defecto 2
   count?: number;         // personajes distintos que deben cumplirla; por defecto 1
-  place?: PlaceKind;      // solo con need 'place'; ausente = cualquier subtipo
+  place?: PlaceKind | PlaceKind[]; // solo con need 'place'; ausente = cualquier subtipo; lista = cualquiera de ellos
   why: L10n;              // motivo visible
 }
 
@@ -133,17 +133,19 @@ export const REQUIREMENTS: Record<string, DungeonNeeds> = {
   'jawdin': { size: 6, reqs: [
     // guía: «Le boss doit être dans l’explosion d’une Cawotte pour perdre son invulnérabilité (pour 1 tour) : il faut donc le
     // placer proche d’une cawotte à 1PV»; pasos: sala del boss, paso 2 (el Personaje 1 coloca al boss)
-    { need: 'place', required: true, why: {
-      es: 'El boss solo pierde la invulnerabilidad dentro de la explosión de una Cawotte: hay que moverlo junto a una a 1 PV.',
-      en: 'The boss only loses its invulnerability inside a Cawotte’s explosion: you must move it next to one at 1 HP.',
-      fr: 'Le boss ne perd son invulnérabilité que dans l’explosion d’une Cawotte : il faut le placer près d’une cawotte à 1 PV.',
+    // Sin teletransporte: hay que mover al boss, y en KIT el teletransporte es sobre todo del propio personaje.
+    { need: 'place', place: ['push', 'pull', 'swap'], required: true, why: {
+      es: 'El boss solo pierde la invulnerabilidad dentro de la explosión de una Cawotte: hay que moverlo cerca (a 3 casillas o menos) de una Cawotte a 1 PV.',
+      en: 'The boss only loses its invulnerability inside a Cawotte’s explosion: you must move it near (within 3 cells of) a Cawotte at 1 HP.',
+      fr: 'Le boss ne perd son invulnérabilité que dans l’explosion d’une Cawotte : il faut le placer près (à 3 cases ou moins) d’une Cawotte à 1 PV.',
     } },
   ] },
   'noirespore': { size: 6, reqs: [
     // guía: «il faut tuer son invocation ... à moins de 3 PO de lui»; «Prévoyez des bons placeurs dans votre équipe pour
     // ramener l’invocation du boss à moins de 4PO de lui (l’invocation peut parfois courir n’importe où)»; pasos: boss fase 1,
-    // paso 2 (el colocador trae la invocación). Sin subtipo: la guía no dice cómo traerla.
-    { need: 'place', required: true, why: {
+    // paso 2 (el colocador trae la invocación). La guía no dice cómo traerla; sin teletransporte porque hay que mover a la
+    // invocación (enemiga), y en KIT el teletransporte es sobre todo del propio personaje.
+    { need: 'place', place: ['push', 'pull', 'swap'], required: true, why: {
       es: 'El boss es invulnerable hasta matar su invocación a 3 casillas o menos de él, y la invocación se aleja: hay que traerla.',
       en: 'The boss is invulnerable until its summon dies within 3 cells of it, and the summon wanders off: you must bring it back.',
       fr: 'Le boss est invulnérable tant que son invocation n’est pas tuée à 3 cases ou moins de lui, et elle s’éloigne : il faut la ramener.',
@@ -172,9 +174,10 @@ export const REQUIREMENTS: Record<string, DungeonNeeds> = {
   'e-bou': { size: 6, reqs: [
     // guía: «pour infliger des dégâts au boss, il faudra que celui-ci soit situé en dehors du carré central de la map»; «les
     // supports vont devoir replacer le boss et les cases rouges de la dernière phase avant de pouvoir taper»; pasos: fase 3,
-    // paso 4 (el colocador saca al boss del cuadrado). Sin subtipo: la guía no dice cómo moverlo. Las casillas de la fase 1
-    // se pisan andando y las rojas se desactivan lanzando cualquier hechizo desde ellas: no son exigencias.
-    { need: 'place', required: true, why: {
+    // paso 4 (el colocador saca al boss del cuadrado). La guía no dice cómo moverlo; sin teletransporte porque hay que mover
+    // al boss, y en KIT el teletransporte es sobre todo del propio personaje. Las casillas de la fase 1 se pisan andando y las
+    // rojas se desactivan lanzando cualquier hechizo desde ellas: no son exigencias.
+    { need: 'place', place: ['push', 'pull', 'swap'], required: true, why: {
       es: 'Fase 3: el boss solo recibe daño fuera del cuadrado central, y hay que recolocarlo antes de poder pegarle.',
       en: 'Phase 3: the boss only takes damage outside the central square, and it must be repositioned before you can hit it.',
       fr: 'Phase 3 : le boss ne subit des dégâts qu’en dehors du carré central, et il faut le replacer avant de pouvoir taper.',
@@ -242,13 +245,12 @@ export const REQUIREMENTS: Record<string, DungeonNeeds> = {
   'tropikes': { size: 6, reqs: [
     // guía: «Il est invulnérable tant qu’il n’a pas subi une explosion de nodkoko»; «Placez le boss près d’une nodkoko à 1PV
     // avec des poussées/attirances»; «Il n’est déplaçable qu’avec des poussées et des attirances»; sala 1: «ayez des bons
-    // outils de placement». pasos: sala 1 y boss, paso 3 (el Empujador mueve a los monstruos/al boss). Subtipo empujar: la
-    // guía admite empujar o atraer y el modelo no tiene «o»; sin subtipo contaría intercambio/teletransporte, que no mueven
-    // al boss. Se elige el empuje (el de los pasos) para no dar por cubierto un equipo que no puede.
-    { need: 'place', place: 'push', required: true, why: {
-      es: 'El boss es invulnerable hasta que le alcanza la explosión de una Nodkoko a 1 PV, y solo se mueve con empujes o atracciones: hay que llevarlo cerca.',
-      en: 'The boss is invulnerable until a 1 HP Nodkoko’s explosion hits it, and it only moves by pushes or pulls: you must bring it close.',
-      fr: 'Le boss est invulnérable tant qu’une explosion de nodkoko à 1 PV ne le touche pas, et il ne bouge que par poussées ou attirances : il faut l’en approcher.',
+    // outils de placement». pasos: sala 1 y boss, paso 3 (el Empujador mueve a los monstruos/al boss); boss: vulnerable
+    // 1 turno y se repite. Empujar o atraer (no intercambio ni teletransporte, que no lo mueven).
+    { need: 'place', place: ['push', 'pull'], required: true, why: {
+      es: 'El boss es invulnerable hasta que le alcanza la explosión de una Nodkoko a 1 PV, y solo se mueve con empujes o atracciones: hay que llevarlo cerca en cada ciclo.',
+      en: 'The boss is invulnerable until a 1 HP Nodkoko’s explosion hits it, and it only moves by pushes or pulls: you must bring it close each cycle.',
+      fr: 'Le boss est invulnérable tant qu’une explosion de nodkoko à 1 PV ne le touche pas, et il ne bouge que par poussées ou attirances : il faut l’en approcher à chaque cycle.',
     } },
   ] },
 };

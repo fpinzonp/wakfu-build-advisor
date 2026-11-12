@@ -50,6 +50,14 @@ describe('meets', () => {
     expect(meets([M('aniripsa', 'dist')], r)).toBe(false);
     expect(meets([M('sacrogrito', 'melee')], r)).toBe(true);
   });
+
+  it('place con lista: basta con cualquiera de los subtipos', () => {
+    const r = req({ need: 'place', place: ['push', 'pull'] });
+    // Sadida solo atrae: cumple.
+    expect(meets([M('sadida', 'dist')], r)).toBe(true);
+    // Yopuka solo se teletransporta: no cumple.
+    expect(meets([M('yopuka', 'melee')], r)).toBe(false);
+  });
 });
 
 describe('dungeonResult', () => {

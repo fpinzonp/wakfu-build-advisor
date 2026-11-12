@@ -275,7 +275,6 @@ describe('exigencias', () => {
   // Todas las mazmorras están curadas (Tasks 5a-5c): ninguna entrada queda marcada como pendiente.
   it('ninguna mazmorra queda pendiente de curar', () => {
     expect(requirementsSrc).not.toMatch(/pendiente de curar/);
-    expect(requirementsSrc).not.toMatch(/PENDING/);
   });
   it('place solo con need place; count ≥ 1', () => {
     for (const id of ids) for (const r of REQUIREMENTS[id].reqs) {

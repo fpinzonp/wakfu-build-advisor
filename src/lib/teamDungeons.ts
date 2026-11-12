@@ -48,7 +48,10 @@ export function meets(group: Member[], r: Requirement): boolean {
   const t = r.level ?? 2;
   const count = r.count ?? 1;
   if (r.place || count > 1) {
-    const ok = group.filter((m) => powerOf(m)[r.need] >= t && (!r.place || (placesOf(m).get(r.place) ?? 0) >= t));
+    // Con una lista de subtipos basta con que el personaje llegue al umbral en cualquiera de ellos.
+    const kinds = r.place === undefined ? [] : Array.isArray(r.place) ? r.place : [r.place];
+    const ok = group.filter((m) => powerOf(m)[r.need] >= t
+      && (kinds.length === 0 || kinds.some((k) => (placesOf(m).get(k) ?? 0) >= t)));
     return ok.length >= count;
   }
   return coverageOf(group, r.need) >= t;

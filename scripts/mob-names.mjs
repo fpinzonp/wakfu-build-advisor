@@ -49,6 +49,28 @@ export function buildNames(en, es, fr) {
   return result;
 }
 
+// Aclaraciones de la wiki que no forman parte del nombre ("Srambad (family)", "Nox (boss)"…).
+const GENERIC = /^(family|monster|boss)$/i;
+
+/**
+ * Nombres de la wiki -> nombre en `lang` según data/mob-names.json. Sin coincidencia exacta se traduce el nombre
+ * sin el paréntesis final, que se conserva si es una variante ("Jadarmed (36-50)" -> "Jadarmado (36-50)").
+ * Solo se devuelven los que cambian.
+ */
+export function translateNames(dict, used, lang) {
+  const out = {};
+  for (const en of used) {
+    let tr = dict?.[en]?.[lang];
+    if (!tr) {
+      const m = /^(.*?)\s*\(([^)]*)\)\s*$/.exec(en);
+      const base = m && dict?.[m[1]]?.[lang];
+      if (base) tr = GENERIC.test(m[2]) ? base : `${base} (${m[2]})`;
+    }
+    if (tr && tr !== en) out[en] = tr;
+  }
+  return out;
+}
+
 /** Lector zip mínimo: devuelve el contenido del archivo `entry` dentro del .jar. */
 function readZipEntry(buf, entry) {
   let eocd = buf.length - 22;

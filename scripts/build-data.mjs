@@ -2,6 +2,7 @@
 // un archivo compacto con solo el equipamiento y sus estadísticas ya interpretadas.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { linkDrops } from './drops.mjs';
+import { translateNames } from './mob-names.mjs';
 import { parseLuaTable } from './lua-table.mjs';
 import { parseInfobox, parseMob, parseSpellCast, pickSpellPage, spellTitleCandidates } from './wiki-parse.mjs';
 
@@ -762,17 +763,11 @@ await writeFile(new URL('recipes.json', OUT_DIR), JSON.stringify({ version, reci
 // Nombres por idioma
 await mkdir(new URL('lang/', OUT_DIR), { recursive: true });
 const itemTitles = new Map(items.map((i) => [i.definition.item.id, i.title ?? {}]));
-// Nombres oficiales sacados del cliente (npm run mob-names). La wiki desambigua con "(family)", "(boss)"…: sin
-// coincidencia exacta se prueba sin ese paréntesis.
-const mobNames = JSON.parse(await readFile(new URL('../data/mob-names.json', import.meta.url), 'utf8').catch(() => '{}'));
-const translate = (dict, used, lang) => {
-  const out = {};
-  for (const en of used) {
-    const tr = dict?.[en] ?? dict?.[en.replace(/\s*\([^)]*\)\s*$/, '')];
-    if (tr?.[lang] && tr[lang] !== en) out[en] = tr[lang];
-  }
-  return out;
-};
+// Nombres oficiales sacados del cliente (npm run mob-names).
+const mobNames = JSON.parse(await readFile(new URL('../data/mob-names.json', import.meta.url), 'utf8').catch(() => {
+  console.warn('Aviso: falta data/mob-names.json (npm run mob-names); los monstruos irán en inglés.');
+  return '{}';
+}));
 for (const lang of LANGS) {
   const names = {
     items: Object.fromEntries(out.map((i) => [i.id, titleIn(itemTitles.get(i.id), lang) ?? i.name])),
@@ -781,15 +776,15 @@ for (const lang of LANGS) {
     shards: Object.fromEntries(shards.map((s) => [s.id, titleIn(itemTitles.get(s.id), lang) ?? s.name])),
     subs: subNames[lang],
     spells: spellNames[lang],
-    ...(lang !== 'en' && { mobs: translate(mobNames.monsters, usedMobs, lang), families: translate(mobNames.families, usedFamilies, lang) }),
+    ...(lang !== 'en' && { mobs: translateNames(mobNames.monsters, usedMobs, lang), families: translateNames(mobNames.families, usedFamilies, lang) }),
   };
   await writeFile(new URL(`lang/${lang}.json`, OUT_DIR), JSON.stringify(names));
 }
 console.log(`Nombres en ${LANGS.join(', ')} escritos en public/data/lang/`);
 {
-  const missing = [...usedMobs].filter((n) => !Object.keys(translate(mobNames.monsters, [n], 'es')).length
-    && !mobNames.monsters?.[n]?.es);
-  console.log(`Monstruos: ${usedMobs.size - missing.length} de ${usedMobs.size} con nombre oficial (data/mob-names.json)`);
+  const named = Object.keys(translateNames(mobNames.monsters, usedMobs, 'es')).length
+    + [...usedMobs].filter((n) => mobNames.monsters?.[n]?.es === n).length;
+  console.log(`Monstruos: ${named} de ${usedMobs.size} con nombre oficial en español (data/mob-names.json)`);
 }
 if (untranslatedFr.size) console.warn(`Aviso: ${untranslatedFr.size} textos de la wiki sin traducir en data/wiki-fr.json (se muestran en inglés).`);
 for (const lang of ['es', 'fr']) {

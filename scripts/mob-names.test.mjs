@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { buildNames, parseProperties } from './mob-names.mjs';
+import { buildNames, parseProperties, translateNames } from './mob-names.mjs';
 
 it('lee claves, escapes \\u y recorta espacios', () => {
   const p = parseProperties('# comentario\ncontent.7.1=Gobball \ncontent.7.2=Caf\\u00e9\r\nfoo=bar');
@@ -16,4 +16,11 @@ it('cruza monstruos y familias por id y gana la traducción más frecuente', () 
   expect(n.monsters.Gobball).toEqual({ es: 'Jalató', fr: 'Bouftou' });
   expect(n.families.Gobballs).toEqual({ es: 'Jalatós', fr: 'Bouftous' });
   expect(n.monsters['Gobball Wool']).toBeUndefined();
+});
+
+it('translateNames conserva las variantes y quita las aclaraciones genéricas de la wiki', () => {
+  const dict = { Jadarmed: { es: 'Jadarmado' }, Srambad: { es: 'Sramvil' }, Gobball: { es: 'Jalató' }, Tofu: { es: 'Tofu' } };
+  expect(translateNames(dict, ['Jadarmed (36-50)', 'Srambad (family)', 'Gobball', 'Tofu', 'Nadie'], 'es')).toEqual({
+    'Jadarmed (36-50)': 'Jadarmado (36-50)', 'Srambad (family)': 'Sramvil', Gobball: 'Jalató',
+  });
 });

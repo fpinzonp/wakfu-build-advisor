@@ -4,7 +4,7 @@ import SimAlly from './SimAlly';
 import SimMap from './SimMap';
 import SimSteps from './SimSteps';
 import SimTarget, { DUMMY, type MobLoad, type TargetState } from './SimTarget';
-import { fmt, t, useLang } from './lib/i18n';
+import { fmt, mobName, t, useLang } from './lib/i18n';
 import type { Element, Item } from './lib/game';
 import type { BuildResult } from './lib/optimizer';
 import type { StoredBuild } from './lib/share';
@@ -77,6 +77,9 @@ function Totals({ title, damage, extra }: { title: string; damage: Triple; extra
   );
 }
 
+/** Nombre del objetivo en el idioma elegido: el mob traducido o el muñeco. */
+export const targetLabel = (target: TargetState) => (target.mob ? mobName(target.mob.name) : t('sim.dummy'));
+
 export default function SimPanel({ result, classId, level, elements, deck, spells, items, spellData, active, onGoToDeck }: {
   result: BuildResult; classId: string; level: number; elements: Element[]; deck: Deck; spells: Spell[] | null;
   items: Item[]; spellData: SpellData | null; active: boolean; onGoToDeck: () => void;
@@ -124,12 +127,12 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
     [mainActor, ally, wpPerTurn],
   );
   const actor = actors.find((a) => a.id === acting) ?? mainActor;
-  const mobName = target.mob?.name ?? t('sim.dummy');
+  const targetName = targetLabel(target);
 
   const sim = useMemo(() => simulate({
     actors, steps, comboExtraPct,
-    target: { name: mobName, hp: target.hp, res: target.res, resBack: target.resBack, resCrit: target.resCrit, cell: mobCell, facing },
-  }), [actors, steps, comboExtraPct, target, mobName, mobCell, facing]);
+    target: { name: targetName, hp: target.hp, res: target.res, resBack: target.resBack, resCrit: target.resCrit, cell: mobCell, facing },
+  }), [actors, steps, comboExtraPct, target, targetName, mobCell, facing]);
 
   const last = sim.steps.length - 1;
   const idx = view === null ? last : Math.min(view, last);
@@ -203,7 +206,7 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
   const others = actors.filter((a) => a.id !== acting);
   const targetOptions: { id: CastTarget | null; label: string }[] = [
     { id: null, label: t('sim.castTo.auto') },
-    { id: 'mob', label: mobName },
+    { id: 'mob', label: targetName },
     ...(others[0] ? [{ id: 'ally' as const, label: others[0].name }] : []),
     { id: 'self', label: t('sim.castTo.self') },
   ];
@@ -328,7 +331,7 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
           </div>
 
           <SimSteps steps={sim.steps} selected={idx} spellName={spellOf}
-            names={ally ? { main: mainActor.name, ally: ally.name, mob: mobName } : undefined}
+            names={ally ? { main: mainActor.name, ally: ally.name, mob: targetName } : undefined}
             onSelect={(i) => { setPlaying(false); setView(i); }} onRemove={remove} />
         </div>
 

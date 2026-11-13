@@ -2,13 +2,13 @@
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import SimMap from './SimMap';
-import SimPanel, { needsAlly, shownFacing } from './SimPanel';
+import SimPanel, { needsAlly, shownFacing, targetLabel } from './SimPanel';
 import { castTarget } from './lib/sim/castTarget';
 import { facingStep } from './SimAdjust';
 import { AllyList } from './SimAlly';
 import SimSteps from './SimSteps';
-import { mobOption } from './SimTarget';
-import { setLang } from './lib/i18n';
+import { DUMMY, mobOption } from './SimTarget';
+import { setLang, setNames, t, type LangData } from './lib/i18n';
 import type { BuildResult } from './lib/optimizer';
 import type { Mob } from './lib/sim/mobs';
 import type { StepResult } from './lib/sim/engine';
@@ -189,5 +189,13 @@ describe('mobOption', () => {
   it('rotula el nivel, y lo omite si la wiki no lo da', () => {
     expect(mobOption(mob(35, 35))).toBe('Tofu · Tofus · nv. 35-35');
     expect(mobOption(mob(0, 0))).toBe('Tofu · Tofus');
+  });
+});
+
+describe('targetLabel', () => {
+  it('traduce el nombre del mob y usa el muñeco sin mob', () => {
+    setNames({ mobs: { Gobball: 'Jalató' } } as unknown as LangData);
+    expect(targetLabel({ ...DUMMY, mob: { name: 'Gobball' } as Mob })).toBe('Jalató');
+    expect(targetLabel(DUMMY)).toBe(t('sim.dummy'));
   });
 });

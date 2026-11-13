@@ -91,6 +91,10 @@ export interface RecipeData {
   ingredients: Record<number, [name: string, gfx: number, rarity?: number]>;
 }
 
+// Monstruos que sueltan cada pieza sin receta ni tienda (public/data/drops.json, de wakfu.wiki.gg).
+export interface Drop { monster: string; rate: number; type?: string; minLevel?: number; maxLevel?: number }
+export interface DropData { version: string; source: string; drops: Record<number, Drop[]> }
+
 // Ranuras que no se filtran con "solo crafteables" (casi nunca se craftean)
 // Mascota y montura siempre se colocan: no les aplican los filtros de nivel mínimo, rareza ni fabricación.
 export const ALWAYS_EQUIPPED_SLOTS: ItemSlot[] = ['pet', 'mount'];

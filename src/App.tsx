@@ -2,13 +2,14 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import {
   BUILD_SLOTS, CLASSES, ELEMENTS, EPIC, LEVEL_BANDS, RARITIES, RELIC, ROLES, ROLE_DEFAULT_TARGETS, SOURCE_LABELS, STAT_LABELS,
   bandOf, isDamageRole, itemImage,
-  type BuildSlot, type EnchantData, type Element, type Item, type RecipeData, type Role, type SocketColor, type Sublimation,
+  type BuildSlot, type DropData, type EnchantData, type Element, type Item, type RecipeData, type Role, type SocketColor, type Sublimation,
 } from './lib/game';
 import {
   evaluateBuild, rankAlternatives, recommend, requiredItems, swapItem,
   type BuildRequest, type BuildResult, type BuildSlots,
 } from './lib/optimizer';
 import TeamsPanel from './TeamsPanel';
+import DropList from './DropList';
 import { condLabel, condMet, registerItems } from './lib/conditions';
 import { materialsFor, upgradeChain } from './lib/materials';
 import { planRunes, runeBonus, runeGroups } from './lib/runes';
@@ -616,13 +617,17 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
   const [recipes, setRecipes] = useState<RecipeData | null>(null);
   const [enchantData, setEnchantData] = useState<EnchantData | null>(null);
   const [openRecipe, setOpenRecipe] = useState<number | null>(null);
+  const [drops, setDrops] = useState<DropData | null>(null);
+  const [openDrops, setOpenDrops] = useState<number | null>(null);
   useEffect(() => {
     fetch(import.meta.env.BASE_URL + 'data/recipes.json').then((r) => r.json()).then(setRecipes).catch(() => undefined);
+    fetch(import.meta.env.BASE_URL + 'data/drops.json').then((r) => r.json()).then(setDrops).catch(() => undefined);
     fetch(import.meta.env.BASE_URL + 'data/enchant.json').then((r) => r.json()).then(setEnchantData).catch(() => undefined);
   }, []);
   if (names && recipes) localizeRecipes(recipes, names);
   if (names && enchantData) localizeEnchant(enchantData, names);
   const toggleRecipe = (id: number) => setOpenRecipe((cur) => (cur === id ? null : id));
+  const toggleDrops = (id: number) => setOpenDrops((cur) => (cur === id ? null : id));
 
   const reqKey = JSON.stringify({ ...request, excluded: [...request.excluded], locked: undefined });
   const subById = useMemo(() => new Map(enchantData?.sublimations.map((s) => [s.id, s]) ?? []), [enchantData]);
@@ -786,6 +791,11 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
                           {openRecipe === item.id ? t('equip.hideRecipe') : t('equip.showRecipe')}
                         </button>
                       )}
+                      {item.src === 'other' && drops?.drops[item.id]?.length ? (
+                        <button className="link" aria-expanded={openDrops === item.id} onClick={() => toggleDrops(item.id)}>
+                          {openDrops === item.id ? t('equip.hideDrops') : t('equip.showDrops')}
+                        </button>
+                      ) : null}
                     </div>
                     {(runes || subs.length > 0) && (
                       <div className="item-enchant">
@@ -798,6 +808,7 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
                       </div>
                     )}
                     {openRecipe === item.id && <RecipeView item={item} data={recipes} />}
+                    {openDrops === item.id && drops?.drops[item.id] && <DropList drops={drops.drops[item.id]} />}
                     <ul className="item-stats">
                       {item.multiMast && <li>{t('item.multiMast', { v: item.multiMast.v, n: item.multiMast.n })}</li>}
                       {item.multiRes && <li>{t('item.multiRes', { v: item.multiRes.v, n: item.multiRes.n })}</li>}

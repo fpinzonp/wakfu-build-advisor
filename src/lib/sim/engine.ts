@@ -11,6 +11,7 @@ import {
   inZone, isBerserk, isCasterCentred, isMelee, positionOf, type Cell, type Facing, type Position,
 } from './formulas';
 import { iopRules } from './rules/iop';
+import { rogueRules } from './rules/rogue';
 import { sacrierRules } from './rules/sacrier';
 
 export type ActorId = 'main' | 'ally';
@@ -99,7 +100,7 @@ export interface ClassRules {
 }
 
 /** Reglas por clase: cada clase se añade en su propia tarea. */
-export const CLASS_RULES: Partial<Record<string, ClassRules>> = { yopuka: iopRules, sacrogrito: sacrierRules };
+export const CLASS_RULES: Partial<Record<string, ClassRules>> = { yopuka: iopRules, sacrogrito: sacrierRules, tymador: rogueRules };
 
 /** Qué hace una rama condicional en este lanzamiento: se aplica, no corresponde, o el motor no sabe decidirlo. */
 // `skipTarget`: la rama es de otro destino; `skipRange`: el alcance (melé o distancia) la descarta.

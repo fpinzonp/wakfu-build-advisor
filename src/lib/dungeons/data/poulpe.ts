@@ -9,9 +9,9 @@ import type { Dungeon, L10n, Piece, Step } from '../types';
 const tentacle = (n: number, cell: Cell): Piece => ({
   id: `t${n}`, kind: 'mob', cell,
   name: {
-    es: `Tentacule ${n}`, // nombre pendiente: es
-    en: `Tentacle ${n}`, // nombre pendiente: en
-    fr: `Tentacule ${n}`, // nombre pendiente: fr
+    es: `Tentáculo ${n}`,
+    en: `Tentacle ${n}`,
+    fr: `Tentacule ${n}`,
   },
 });
 

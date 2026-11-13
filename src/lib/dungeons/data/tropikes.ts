@@ -8,8 +8,8 @@ import type { Dungeon, L10n, Piece, Step } from '../types';
 const nodkoko = (cell: Cell, label: string): Piece => ({
   id: 'nodkoko', kind: 'special', cell, label,
   name: {
-    es: 'Nodkoko', // nombre pendiente: es
-    en: 'Nodkoko', // nombre pendiente: en
+    es: 'Nozdekoko',
+    en: 'Kokonut',
     fr: 'Nodkoko',
   },
 });
@@ -30,8 +30,8 @@ const orienter = (cell: Cell): Piece => ({
 const orientStep: Step = {
   actor: 'pj2',
   text: {
-    es: 'El Personaje 2 golpea a la Nodkoko desde el este para que mire al oeste.',
-    en: 'Character 2 hits the Nodkoko from the east so it faces west.',
+    es: 'El Personaje 2 golpea a la Nozdekoko desde el este para que mire al oeste.',
+    en: 'Character 2 hits the Kokonut from the east so it faces west.',
     fr: 'Le Personnage 2 frappe la Nodkoko depuis l’est pour qu’elle regarde vers l’ouest.',
   },
   changes: [{ type: 'label', piece: 'nodkoko', label: '1 PV ←' }],
@@ -41,8 +41,8 @@ const orientStep: Step = {
 const advanceStep: Step = {
   actor: 'nodkoko',
   text: {
-    es: 'Al final del turno la Nodkoko pierde 1 PV (0 PV) y, al inicio del siguiente, avanza 2 casillas al oeste.',
-    en: 'At the end of the turn the Nodkoko loses 1 HP (0 HP) and, at the start of the next, advances 2 cells west.',
+    es: 'Al final del turno la Nozdekoko pierde 1 PV (0 PV) y, al inicio del siguiente, avanza 2 casillas al oeste.',
+    en: 'At the end of the turn the Kokonut loses 1 HP (0 HP) and, at the start of the next, advances 2 cells west.',
     fr: 'En fin de tour la Nodkoko perd 1 PV (0 PV) et, au début du suivant, avance de 2 cases vers l’ouest.',
   },
   changes: [
@@ -66,23 +66,23 @@ const d: Dungeon = {
       pieces: [
         {
           id: 'mob1', kind: 'mob', cell: { x: 2, y: 4 }, invulnerable: true,
-          name: { es: 'Kokolosse', en: 'Kokoloss', fr: 'Kokolosse' }, // nombre pendiente: es
+          name: { es: 'Kokoloso', en: 'Kokoloss', fr: 'Kokolosse' },
         },
         {
           id: 'mob2', kind: 'mob', cell: { x: 2, y: 5 }, invulnerable: true,
-          name: { es: 'Psykoko', en: 'Psykoko', fr: 'PsyKoko' }, // nombre pendiente: es
+          name: { es: 'Psikokópata', en: 'Psykoko', fr: 'Psykoko' },
         },
         {
           id: 'mob3', kind: 'mob', cell: { x: 2, y: 6 }, invulnerable: true,
-          name: { es: 'Kokolérik', en: 'Kokoleric', fr: 'Kokolérik' }, // nombre pendiente: es
+          name: { es: 'Kokolériko', en: 'Kokoleric', fr: 'Kokolérik' },
         },
         nodkoko({ x: 8, y: 5 }, '1 PV ↑'),
         pusher({ x: 0, y: 5 }),
         orienter({ x: 9, y: 5 }),
       ],
       condition: {
-        es: 'Los 3 monstruos están invulnerables (aura verde) hasta que les alcance la explosión de una Nodkoko.',
-        en: 'The 3 monsters are invulnerable (green aura) until a Nodkoko explosion reaches them.',
+        es: 'Los 3 monstruos están invulnerables (aura verde) hasta que les alcance la explosión de una Nozdekoko.',
+        en: 'The 3 monsters are invulnerable (green aura) until a Kokonut explosion reaches them.',
         fr: 'Les 3 monstres sont invulnérables (aura verte) tant qu’une explosion de Nodkoko ne les atteint pas.',
       },
       duration: {
@@ -93,8 +93,8 @@ const d: Dungeon = {
       steps: [
         {
           text: {
-            es: 'Situación inicial: los 3 monstruos son invulnerables; la Nodkoko tiene 1 PV y mira al norte.',
-            en: 'Initial situation: the 3 monsters are invulnerable; the Nodkoko has 1 HP and faces north.',
+            es: 'Situación inicial: los 3 monstruos son invulnerables; la Nozdekoko tiene 1 PV y mira al norte.',
+            en: 'Initial situation: the 3 monsters are invulnerable; the Kokonut has 1 HP and faces north.',
             fr: 'Situation initiale : les 3 monstres sont invulnérables ; la Nodkoko a 1 PV et regarde vers le nord.',
           },
           changes: [],
@@ -117,8 +117,8 @@ const d: Dungeon = {
         {
           actor: 'nodkoko',
           text: {
-            es: 'La Nodkoko (0 PV) explota en radio 2 y alcanza a los 3 monstruos.',
-            en: 'The Nodkoko (0 HP) explodes in radius 2 and hits all 3 monsters.',
+            es: 'La Nozdekoko (0 PV) explota en radio 2 y alcanza a los 3 monstruos.',
+            en: 'The Kokonut (0 HP) explodes in radius 2 and hits all 3 monsters.',
             fr: 'La Nodkoko (0 PV) explose dans un rayon de 2 et touche les 3 monstres.',
           },
           changes: [
@@ -142,20 +142,20 @@ const d: Dungeon = {
     },
     {
       id: 'boss',
-      name: { es: 'Boss: Koko el Nutt', en: 'Boss: Koko the Nutt', fr: 'Boss : Koko le Nutt' }, // nombre pendiente: es
+      name: { es: 'Boss: Koko, el Kolgado', en: 'Boss: Koko the Nutt', fr: 'Boss : Koko le Nutt' },
       size: { w: 10, h: 9 },
       pieces: [
         {
           id: 'boss', kind: 'boss', cell: { x: 2, y: 5 }, invulnerable: true,
-          name: { es: 'Koko el Nutt', en: 'Koko the Nutt', fr: 'Koko le Nutt' }, // nombre pendiente: es
+          name: { es: 'Koko, el Kolgado', en: 'Koko the Nutt', fr: 'Koko le Nutt' },
         },
         nodkoko({ x: 8, y: 5 }, '1 PV ↑'),
         pusher({ x: 0, y: 5 }),
         orienter({ x: 9, y: 5 }),
       ],
       condition: {
-        es: 'El boss es invulnerable hasta que le alcanza una explosión de Nodkoko; solo se mueve con empujes y atracciones.',
-        en: 'The boss is invulnerable until a Nodkoko explosion reaches it; it only moves by pushes and pulls.',
+        es: 'El boss es invulnerable hasta que le alcanza una explosión de Nozdekoko; solo se mueve con empujes y atracciones.',
+        en: 'The boss is invulnerable until a Kokonut explosion reaches it; it only moves by pushes and pulls.',
         fr: 'Le boss est invulnérable tant qu’une explosion de Nodkoko ne l’atteint pas ; il ne bouge que par poussées et attirances.',
       },
       duration: {
@@ -166,8 +166,8 @@ const d: Dungeon = {
       steps: [
         {
           text: {
-            es: 'Situación inicial: el boss es invulnerable; la Nodkoko tiene 1 PV y mira al norte.',
-            en: 'Initial situation: the boss is invulnerable; the Nodkoko has 1 HP and faces north.',
+            es: 'Situación inicial: el boss es invulnerable; la Nozdekoko tiene 1 PV y mira al norte.',
+            en: 'Initial situation: the boss is invulnerable; the Kokonut has 1 HP and faces north.',
             fr: 'Situation initiale : le boss est invulnérable ; la Nodkoko a 1 PV et regarde vers le nord.',
           },
           changes: [],
@@ -186,8 +186,8 @@ const d: Dungeon = {
         {
           actor: 'nodkoko',
           text: {
-            es: 'La Nodkoko (0 PV) explota en radio 2 y alcanza al boss.',
-            en: 'The Nodkoko (0 HP) explodes in radius 2 and hits the boss.',
+            es: 'La Nozdekoko (0 PV) explota en radio 2 y alcanza al boss.',
+            en: 'The Kokonut (0 HP) explodes in radius 2 and hits the boss.',
             fr: 'La Nodkoko (0 PV) explose dans un rayon de 2 et touche le boss.',
           },
           changes: [
@@ -208,8 +208,8 @@ const d: Dungeon = {
         },
         {
           text: {
-            es: 'Pasado ese turno vuelve la invulnerabilidad: hay que repetir con otra Nodkoko.',
-            en: 'After that turn the invulnerability returns: repeat with another Nodkoko.',
+            es: 'Pasado ese turno vuelve la invulnerabilidad: hay que repetir con otra Nozdekoko.',
+            en: 'After that turn the invulnerability returns: repeat with another Kokonut.',
             fr: 'Après ce tour l’invulnérabilité revient : il faut recommencer avec une autre Nodkoko.',
           },
           changes: [

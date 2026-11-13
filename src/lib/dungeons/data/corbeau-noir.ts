@@ -25,11 +25,11 @@ const d: Dungeon = {
       pieces: [
         {
           id: 'boss', kind: 'boss', cell: { x: 5, y: 1 }, invulnerable: true,
-          name: { es: 'Corbeau Noir', en: 'Neo Black Crow', fr: 'Corbeau Noir' }, // nombre pendiente: es
+          name: { es: 'Cuervo Negro', en: 'Black Crow', fr: 'Corbeau Noir' },
         },
         {
           id: 'corbac', kind: 'mob', cell: { x: 2, y: 4 },
-          name: { es: 'Corbac', en: 'Crobak', fr: 'Corbac' }, // nombre pendiente: es, en
+          name: { es: 'Cuerbok', en: 'Crobak', fr: 'Corbac' },
         },
         pj(1, { x: 3, y: 5 }),
         pj(2, { x: 5, y: 6 }),

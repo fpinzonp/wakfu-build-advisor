@@ -16,7 +16,7 @@ const pj = (n: number, cell: Piece['cell'], role?: L10n): Piece => ({
 
 const boss = (): Piece => ({
   id: 'boss', kind: 'boss', cell: { x: 5, y: 3 }, invulnerable: true,
-  name: { es: 'Dragon-Cochon', en: 'Dragon Pig', fr: 'Dragon-Cochon' }, // nombre pendiente: es
+  name: { es: 'Dragocerdo', en: 'Dragon Pig', fr: 'Dragon-Cochon' },
 });
 
 const support: L10n = { es: 'Soporte', en: 'Support', fr: 'Support' };
@@ -124,7 +124,7 @@ const d: Dungeon = {
         fr: 'À 70 % PV le boss redevient invulnérable (aura verte). Il gagne 1 niveau de frénésie par action différente ; au niveau 7 il sera vulnérable.',
       },
       duration: {
-        es: 'Vulnerable de 70 % a 30 % de PV, desde el turno del Dragon-Cochon. Los 7 niveles se repiten cada turno si hace falta. A 30 % vuelve a ser invulnerable hasta su siguiente turno.',
+        es: 'Vulnerable de 70 % a 30 % de PV, desde el turno del Dragocerdo. Los 7 niveles se repiten cada turno si hace falta. A 30 % vuelve a ser invulnerable hasta su siguiente turno.',
         en: 'Vulnerable from 70% to 30% HP, from the Dragon Pig’s turn. The 7 levels are repeated every turn if needed. At 30% it is invulnerable until its next turn.',
         fr: 'Vulnérable de 70 % à 30 % PV, à partir du tour du Dragon-Cochon. Les 7 niveaux se répètent à chaque tour si besoin. À 30 % il est invulnérable jusqu’à son prochain tour.',
       },
@@ -187,7 +187,7 @@ const d: Dungeon = {
         },
         {
           text: {
-            es: 'Con frenesí 7, al empezar el turno del Dragon-Cochon el boss pierde la invulnerabilidad: se le baja de 70 % a 30 %.',
+            es: 'Con frenesí 7, al empezar el turno del Dragocerdo el boss pierde la invulnerabilidad: se le baja de 70 % a 30 %.',
             en: 'At frenzy 7, when the Dragon Pig’s turn starts the boss loses its invulnerability: it can go from 70% to 30%.',
             fr: 'À frénésie 7, au début du tour du Dragon-Cochon le boss perd son invulnérabilité : on le descend de 70 % à 30 %.',
           },

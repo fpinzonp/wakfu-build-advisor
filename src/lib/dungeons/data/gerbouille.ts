@@ -16,9 +16,9 @@ const T = (es: string, en: string, fr: string): L10n => ({ es, en, fr });
 const boss: Piece = {
   id: 'boss', kind: 'boss', cell: { x: 4, y: 4 }, invulnerable: true,
   name: {
-    es: 'Maman Gerbouille', // nombre pendiente: es
+    es: 'Mamá Gerbilinda',
     en: 'Mama Gerbean',
-    fr: 'Maman Gerbouille', // nombre pendiente: fr (deducido de Mama Gerbean)
+    fr: 'Maman Gerbouille',
   },
 };
 
@@ -52,7 +52,7 @@ const d: Dungeon = {
   rooms: [
     {
       id: 'boss',
-      name: { es: 'Boss: Maman Gerbouille', en: 'Boss: Mama Gerbean', fr: 'Boss : Maman Gerbouille' }, // nombre pendiente: es, fr
+      name: { es: 'Boss: Mamá Gerbilinda', en: 'Boss: Mama Gerbean', fr: 'Boss : Maman Gerbouille' },
       size: { w: 9, h: 9 },
       pieces: [boss, pj1],
       condition: {

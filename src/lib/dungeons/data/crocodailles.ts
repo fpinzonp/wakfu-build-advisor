@@ -101,15 +101,15 @@ const d: Dungeon = {
     },
     {
       id: 'boss',
-      name: { es: 'Boss: Roi Dunil', en: 'Boss: Nyl King', fr: 'Boss : Roi Dunil' }, // nombre pendiente: es
+      name: { es: 'Boss: Rey Delnilo', en: 'Boss: Nyl King', fr: 'Boss : Roi Dunîl' },
       size: { w: 8, h: 7 },
       pieces: [
         {
           id: 'boss', kind: 'boss', cell: { x: 5, y: 3 }, label: '100 %',
           name: {
-            es: 'Roi Dunil', // nombre pendiente: es
+            es: 'Rey Delnilo',
             en: 'Nyl King',
-            fr: 'Roi Dunil',
+            fr: 'Roi Dunîl',
           },
         },
         pj(1, { x: 1, y: 3 }),

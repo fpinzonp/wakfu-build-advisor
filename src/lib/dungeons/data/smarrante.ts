@@ -24,7 +24,7 @@ const d: Dungeon = {
       pieces: [
         {
           id: 'boss', kind: 'boss', cell: { x: 6, y: 3 }, invulnerable: true,
-          name: { es: 'Smarillion', en: 'Smarillion', fr: 'Smarillion' }, // nombre pendiente: es, en
+          name: { es: 'Samarilion', en: 'Silmawhirly', fr: 'Smarillion' },
         },
         pj(1, { x: 2, y: 5 }),
       ],

@@ -25,7 +25,7 @@ const d: Dungeon = {
       pieces: [
         {
           id: 'boss', kind: 'boss', cell: { x: 5, y: 3 }, invulnerable: true,
-          name: { es: 'Excarnus', en: 'Excarnus', fr: 'Excarnus' }, // nombre pendiente: es
+          name: { es: 'Excarnus', en: 'Excarnus', fr: 'Excarnus' },
         },
         {
           id: 'totem-tierra', kind: 'special', cell: { x: 10, y: 1 },
@@ -33,7 +33,7 @@ const d: Dungeon = {
         },
         {
           id: 'totem-macabro', kind: 'special', cell: { x: 5, y: 0 },
-          name: { es: 'Tótem macabro', en: 'Macabre totem', fr: 'Totem macabre' }, // nombre pendiente: es, en
+          name: { es: 'Tótem macabro', en: 'Macabre Totem', fr: 'Totem macabre' },
         },
         pj(1, { x: 1, y: 3 }, { es: 'Corredor cuerpo a cuerpo', en: 'Melee runner', fr: 'Coureur au corps à corps' }),
         pj(2, { x: 2, y: 5 }, { es: 'A distancia', en: 'Ranged', fr: 'À distance' }),

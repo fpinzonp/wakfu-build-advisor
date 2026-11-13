@@ -1,6 +1,7 @@
 // Descarga los datos oficiales de Wakfu (CDN de Ankama) y genera public/data/items.json,
 // un archivo compacto con solo el equipamiento y sus estadísticas ya interpretadas.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { linkDrops } from './drops.mjs';
 import { parseLuaTable } from './lua-table.mjs';
 import { parseInfobox, parseMob, parseSpellCast, pickSpellPage, spellTitleCandidates } from './wiki-parse.mjs';
 
@@ -265,7 +266,7 @@ async function fetchWiki() {
   return {
     source: WIKI, license: 'CC BY-SA', fetchedAt: new Date().toISOString(), states, sources,
     spells, conditions: await fetchConditions(),
-    spellPages: await fetchSpellPages(spells), mobs: await fetchMobs(),
+    spellPages: await fetchSpellPages(spells), mobs: await fetchMobs(), drops: await fetchDrops(),
   };
 }
 
@@ -351,6 +352,23 @@ async function fetchMobs() {
   return rows.map((r) => ({ ...r, infobox: /\{\{Infobox monster[^{}]*\}\}/i.exec(texts.get(r.page) ?? '')?.[0] ?? '' }));
 }
 
+// Drops de monstruos (tabla Cargo "Monster_drops" de la wiki; Ankama no los publica).
+async function fetchDrops() {
+  const rows = [];
+  for (let offset = 0; ; offset += 500) {
+    const params = new URLSearchParams({
+      action: 'cargoquery', format: 'json', limit: '500', offset: String(offset),
+      tables: 'Monster_drops', fields: 'monster,item,rate',
+    });
+    const res = await wikiJson(`${WIKI}/api.php?${params}`);
+    if (!res.cargoquery) throw new Error(res.error?.info ?? 'respuesta inesperada de Monster_drops');
+    rows.push(...res.cargoquery.map((r) => r.title));
+    if (res.cargoquery.length < 500) break;
+    await sleep(400);
+  }
+  return rows;
+}
+
 // Condiciones para equipar cada objeto (tabla Cargo "Items" de la wiki; Ankama no las publica).
 async function fetchConditions() {
   const rows = [];
@@ -433,6 +451,15 @@ if (wiki && !wiki.conditions) {
     console.log(`Wiki: añadidas las condiciones de ${wiki.conditions.length} objetos a la copia local`);
   } catch (e) {
     console.warn(`No se pudieron descargar las condiciones de los objetos (${e.message}).`);
+  }
+}
+if (wiki && !wiki.drops) {
+  try {
+    wiki.drops = await fetchDrops();
+    await writeFile(WIKI_CACHE, JSON.stringify(wiki, null, 1));
+    console.log(`Wiki: añadidos ${wiki.drops.length} drops de monstruos a la copia local`);
+  } catch (e) {
+    console.warn(`No se pudieron descargar los drops de monstruos (${e.message}); las piezas irán sin drops.`);
   }
 }
 const wikiStates = wiki?.states ?? {};
@@ -712,6 +739,14 @@ for (const line of castStats.critFixed) console.log(`  ${line}`);
   }
   await writeFile(new URL('mobs.json', OUT_DIR), JSON.stringify({ version, mobs }));
   console.log(`Mobs: ${mobs.length} guardados y ${dropped} descartados (sin PV ni resistencias) en public/data/mobs.json`);
+
+  // Drops de las piezas sin receta ni tienda: nombre inglés + rareza contra la tabla de la wiki; tipo y niveles salen de los mobs.
+  const enName = new Map(items.map((i) => [i.definition.item.id, i.title?.en]));
+  const drops = linkDrops(wiki?.drops ?? [], out.filter((i) => i.src === 'other').map((i) => ({ id: i.id, en: enName.get(i.id), rarity: i.rarity })),
+    // Primero las filas en bruto (cubren mobs sin ficha) y luego las fichas interpretadas, que mandan.
+    [...(wiki?.mobs ?? []).map((r) => ({ name: r.name, type: r.type, minLevel: Number(r.minLevel) || 0, maxLevel: Number(r.maxLevel) || 0 })), ...mobs]);
+  await writeFile(new URL('drops.json', OUT_DIR), JSON.stringify({ version, source: WIKI, drops }));
+  console.log(`Drops: ${Object.keys(drops).length} objetos con drops en public/data/drops.json`);
 }
 await writeFile(new URL('enchant.json', OUT_DIR), JSON.stringify({ version, shards, sublimations }));
 console.log(`${shards.length} runas y ${sublimations.length} sublimaciones escritas en public/data/enchant.json`,

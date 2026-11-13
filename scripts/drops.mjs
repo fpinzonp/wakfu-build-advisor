@@ -1,15 +1,15 @@
 // Drops de monstruos (tabla Cargo "Monster_drops" de wakfu.wiki.gg) cruzados con los objetos del juego.
 // La wiki nombra cada objeto en inglés, con "/Rareza" cuando existe en varias rarezas.
 
-// Rarezas de la wiki por índice de rareza del juego.
-const RARITY_NAMES = ['Common', 'Unusual', 'Rare', 'Mythical', 'Legendary', 'Relic', 'Souvenir', 'Epic'];
+// Rarezas de la wiki por índice de rareza del juego (la wiki llama "Common" a la rareza 1; la 0 no la usa).
+const RARITY_NAMES = [null, 'Common', 'Rare', 'Mythical', 'Legendary', 'Relic', 'Souvenir', 'Epic'];
 
 const norm = (n) => String(n ?? '').toLowerCase().replace(/[’`]/g, "'").replace(/\s+/g, ' ').trim();
 
 /** "Nombre/Rareza" -> { name, rarity }; un sufijo que no es rareza se queda en el nombre. */
 function splitItem(item) {
   const i = item.lastIndexOf('/');
-  const rarity = i < 0 ? -1 : RARITY_NAMES.indexOf(item.slice(i + 1).trim());
+  const rarity = i < 0 ? -1 : RARITY_NAMES.indexOf(item.slice(i + 1).trim() || null);
   return rarity < 0 ? { name: item, rarity: undefined } : { name: item.slice(0, i), rarity };
 }
 
@@ -30,15 +30,21 @@ export function linkDrops(rows, items, mobs) {
     const rate = Number(r.rate);
     if (r.rate === '' || r.rate == null || !Number.isFinite(rate)) continue;
     const { name, rarity } = splitItem(String(r.item ?? ''));
-    const targets = (byName.get(norm(name)) ?? []).filter((it) => rarity === undefined || it.rarity === rarity);
+    // La wiki desambigua a veces con "(amulet)", "(shield)"…: sin coincidencia, se prueba sin ese paréntesis.
+    const named = byName.get(norm(name)) ?? byName.get(norm(name.replace(/\s*\([^)]*\)\s*$/, ''))) ?? [];
+    const targets = named.filter((it) => rarity === undefined || it.rarity === rarity);
     if (!targets.length) continue;
     const mob = mobByName.get(norm(r.monster));
     const drop = {
       monster: r.monster, rate,
       ...(mob?.type && { type: mob.type }),
-      ...(mob?.minLevel && { minLevel: mob.minLevel, maxLevel: mob.maxLevel ?? mob.minLevel }),
+      ...(mob?.minLevel && { minLevel: mob.minLevel, maxLevel: mob.maxLevel || mob.minLevel }),
     };
-    for (const it of targets) (out[it.id] ??= []).push(drop);
+    // La wiki repite a veces la misma fila: solo se muestra una vez.
+    for (const it of targets) {
+      const list = (out[it.id] ??= []);
+      if (!list.some((d) => d.monster === drop.monster && d.rate === drop.rate)) list.push(drop);
+    }
   }
   for (const list of Object.values(out)) list.sort((a, b) => b.rate - a.rate);
   return out;

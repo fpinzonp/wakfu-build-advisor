@@ -29,3 +29,20 @@ it('nombres se comparan sin mayúsculas ni apóstrofos tipográficos', () => {
   const d = linkDrops([{ monster: 'X', item: 'gobball’s hat/Rare', rate: '1' }], [{ id: 7, en: "Gobball's Hat", rarity: 2 }], []);
   expect(d[7]).toHaveLength(1);
 });
+
+it('"Common" de la wiki es la rareza 1 del juego', () => {
+  const d = linkDrops([{ monster: 'X', item: 'Boots of Destiny/Common', rate: '1' }], [{ id: 5, en: 'Boots of Destiny', rarity: 1 }], []);
+  expect(d[5]).toHaveLength(1);
+});
+it('filas duplicadas idénticas se muestran una vez', () => {
+  const row = { monster: 'Wolfix', item: 'Dh Trophy', rate: '2' };
+  expect(linkDrops([row, { ...row }], items, [])[3]).toHaveLength(1);
+});
+it('quita la aclaración entre paréntesis de la wiki', () => {
+  const d = linkDrops([{ monster: 'X', item: 'Rose of the Sands (amulet)/Rare', rate: '1' }], [{ id: 8, en: 'Rose of the Sands', rarity: 2 }], []);
+  expect(d[8]).toHaveLength(1);
+});
+it('sin nivel máximo usa el mínimo', () => {
+  const d = linkDrops([{ monster: 'M', item: 'Dh Trophy', rate: '1' }], items, [{ name: 'M', minLevel: 150, maxLevel: 0 }]);
+  expect(d[3][0]).toMatchObject({ minLevel: 150, maxLevel: 150 });
+});

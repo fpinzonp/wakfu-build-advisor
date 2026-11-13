@@ -140,12 +140,12 @@ export const CLASSES: {
   L('class.sadida', { id: 'sadida', elements: ['water', 'earth', 'air'], roles: ['dist', 'heal'] }),
   L('class.sacrogrito', { id: 'sacrogrito', elements: ['fire', 'earth', 'air'], roles: ['melee', 'tank'], berserk: true }),
   L('class.pandawa', { id: 'pandawa', elements: ['fire', 'water', 'earth'], roles: ['tank', 'melee'] }),
-  L('class.tymador', { id: 'tymador', elements: ['fire', 'water', 'earth'], roles: ['melee', 'dist'], hybridMastery: true }),
+  L('class.tymador', { id: 'tymador', elements: ['fire', 'earth', 'air'], roles: ['melee', 'dist'], hybridMastery: true }),
   L('class.zobal', { id: 'zobal', elements: ['fire', 'water', 'air'], roles: ['melee', 'tank'] }),
   L('class.steamer', { id: 'steamer', elements: ['fire', 'water', 'earth'], roles: ['dist', 'heal'] }),
-  L('class.selotrop', { id: 'selotrop', elements: ['fire', 'water', 'air'], roles: ['dist', 'melee'] }),
+  L('class.selotrop', { id: 'selotrop', elements: ['water', 'earth', 'air'], roles: ['dist', 'melee'] }),
   L('class.hipermago', { id: 'hipermago', elements: ['fire', 'water', 'earth', 'air'], roles: ['dist'] }),
-  L('class.uginak', { id: 'uginak', elements: ['fire', 'water', 'earth'], roles: ['melee', 'tank'] }),
+  L('class.uginak', { id: 'uginak', elements: ['water', 'earth', 'air'], roles: ['melee', 'tank'] }),
 ];
 
 export const RARITIES: Record<number, { label: string; color: string }> = {

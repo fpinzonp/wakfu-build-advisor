@@ -65,8 +65,13 @@ export interface LangData {
   shards: Record<number, string>;
   subs: Record<number, [name: string, text: string[], source?: string]>;
   spells: Record<number, [name: string, text: string[]]>;
+  mobs?: Record<string, string>;       // nombre inglés del monstruo (wiki) -> nombre en el idioma
+  families?: Record<string, string>;   // familia tal como la da la wiki -> nombre en el idioma
 }
 
 let names: LangData | null = null;
 export const setNames = (d: LangData) => { names = d; };
 export const jobName = (id: number) => names?.jobs[id] ?? `#${id}`;
+/** Nombre de un monstruo o familia en el idioma elegido; sin traducción, el inglés de la wiki. */
+export const mobName = (en: string) => names?.mobs?.[en] ?? en;
+export const familyName = (en: string) => names?.families?.[en] ?? en;

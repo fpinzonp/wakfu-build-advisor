@@ -725,6 +725,9 @@ for (const [cls, names] of Object.entries(castStats.missing)) console.log(`  Sin
 console.log(`Críticos corregidos con ×1,25 (${castStats.critFixed.length} líneas):`);
 for (const line of castStats.critFixed) console.log(`  ${line}`);
 
+// Nombres de monstruos y familias que usa la página (simulador y drops), para traducirlos en lang/{idioma}.json.
+const usedMobs = new Set();
+const usedFamilies = new Set();
 // Monstruos para el simulador: se descartan las fichas sin PV ni resistencias.
 {
   const mobs = [];
@@ -738,6 +741,7 @@ for (const line of castStats.critFixed) console.log(`  ${line}`);
     mobs.push({ ...mob, minLevel, maxLevel, name: r.name || mob.name, family: mob.family || r.family || '', type: mob.type || r.type || '' });
   }
   await writeFile(new URL('mobs.json', OUT_DIR), JSON.stringify({ version, mobs }));
+  for (const m of mobs) { usedMobs.add(m.name); if (m.family) usedFamilies.add(m.family); }
   console.log(`Mobs: ${mobs.length} guardados y ${dropped} descartados (sin PV ni resistencias) en public/data/mobs.json`);
 
   // Drops de las piezas sin receta ni tienda: nombre inglés + rareza contra la tabla de la wiki; tipo y niveles salen de los mobs.
@@ -746,6 +750,7 @@ for (const line of castStats.critFixed) console.log(`  ${line}`);
     // Primero las filas en bruto (cubren mobs sin ficha) y luego las fichas interpretadas, que mandan.
     [...(wiki?.mobs ?? []).map((r) => ({ name: r.name, type: r.type, minLevel: Number(r.minLevel) || 0, maxLevel: Number(r.maxLevel) || 0 })), ...mobs]);
   await writeFile(new URL('drops.json', OUT_DIR), JSON.stringify({ version, source: WIKI, drops }));
+  for (const list of Object.values(drops)) for (const d of list) usedMobs.add(d.monster);
   console.log(`Drops: ${Object.keys(drops).length} objetos con drops en public/data/drops.json`);
 }
 await writeFile(new URL('enchant.json', OUT_DIR), JSON.stringify({ version, shards, sublimations }));
@@ -757,6 +762,17 @@ await writeFile(new URL('recipes.json', OUT_DIR), JSON.stringify({ version, reci
 // Nombres por idioma
 await mkdir(new URL('lang/', OUT_DIR), { recursive: true });
 const itemTitles = new Map(items.map((i) => [i.definition.item.id, i.title ?? {}]));
+// Nombres oficiales sacados del cliente (npm run mob-names). La wiki desambigua con "(family)", "(boss)"…: sin
+// coincidencia exacta se prueba sin ese paréntesis.
+const mobNames = JSON.parse(await readFile(new URL('../data/mob-names.json', import.meta.url), 'utf8').catch(() => '{}'));
+const translate = (dict, used, lang) => {
+  const out = {};
+  for (const en of used) {
+    const tr = dict?.[en] ?? dict?.[en.replace(/\s*\([^)]*\)\s*$/, '')];
+    if (tr?.[lang] && tr[lang] !== en) out[en] = tr[lang];
+  }
+  return out;
+};
 for (const lang of LANGS) {
   const names = {
     items: Object.fromEntries(out.map((i) => [i.id, titleIn(itemTitles.get(i.id), lang) ?? i.name])),
@@ -765,10 +781,16 @@ for (const lang of LANGS) {
     shards: Object.fromEntries(shards.map((s) => [s.id, titleIn(itemTitles.get(s.id), lang) ?? s.name])),
     subs: subNames[lang],
     spells: spellNames[lang],
+    ...(lang !== 'en' && { mobs: translate(mobNames.monsters, usedMobs, lang), families: translate(mobNames.families, usedFamilies, lang) }),
   };
   await writeFile(new URL(`lang/${lang}.json`, OUT_DIR), JSON.stringify(names));
 }
 console.log(`Nombres en ${LANGS.join(', ')} escritos en public/data/lang/`);
+{
+  const missing = [...usedMobs].filter((n) => !Object.keys(translate(mobNames.monsters, [n], 'es')).length
+    && !mobNames.monsters?.[n]?.es);
+  console.log(`Monstruos: ${usedMobs.size - missing.length} de ${usedMobs.size} con nombre oficial (data/mob-names.json)`);
+}
 if (untranslatedFr.size) console.warn(`Aviso: ${untranslatedFr.size} textos de la wiki sin traducir en data/wiki-fr.json (se muestran en inglés).`);
 for (const lang of ['es', 'fr']) {
   if (missingSpell[lang].size) console.warn(`Aviso: ${missingSpell[lang].size} textos de hechizos sin traducir en data/spells-${lang}.json (se muestran en inglés).`);

@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { ELEMENTS, type Element } from './lib/game';
-import { t } from './lib/i18n';
+import { familyName, mobName, t } from './lib/i18n';
 import type { Facing } from './lib/sim/formulas';
 import { mobAtLevel, type Mob } from './lib/sim/mobs';
 
@@ -21,8 +21,8 @@ export function targetOf(mob: Mob, level: number): TargetState {
 
 /** Texto de un mob en la lista; unos pocos no traen nivel en la wiki. */
 export const mobOption = (m: Mob) => (m.minLevel
-  ? t('sim.mob.option', { name: m.name, family: m.family, min: m.minLevel, max: m.maxLevel })
-  : t('sim.mob.optionNoLevel', { name: m.name, family: m.family }));
+  ? t('sim.mob.option', { name: mobName(m.name), family: familyName(m.family), min: m.minLevel, max: m.maxLevel })
+  : t('sim.mob.optionNoLevel', { name: mobName(m.name), family: familyName(m.family) }));
 
 const MAX_SHOWN = 50;
 const FACINGS: Facing[] = ['n', 'e', 's', 'w'];
@@ -50,26 +50,24 @@ export default function SimTarget({ load, target, facing, onTarget, onFacing, on
   const [query, setQuery] = useState('');
   const mobs = load.status === 'ready' ? load.mobs : null;
 
-  // Texto en minúsculas de cada mob, calculado una vez: con 1340 entradas filtrar en cada tecla es instantáneo.
-  const index = useMemo(() => (mobs ?? []).map((m) => `${m.name} ${m.family}`.toLowerCase()), [mobs]);
-  const { shown, total } = useMemo(() => {
-    const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-    const out: Mob[] = [];
-    let n = 0;
-    (mobs ?? []).forEach((m, i) => {
-      if (!words.every((w) => index[i].includes(w))) return;
-      n++;
-      if (out.length < MAX_SHOWN) out.push(m);
-    });
-    return { shown: out, total: n };
-  }, [mobs, index, query]);
+  // Texto en minúsculas de cada mob con el nombre traducido y el inglés, para encontrarlo por cualquiera de los dos.
+  // Depende del idioma y de los nombres cargados, así que se filtra en cada render (1340 entradas: instantáneo).
+  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const shown: Mob[] = [];
+  let total = 0;
+  for (const m of mobs ?? []) {
+    const text = `${mobName(m.name)} ${familyName(m.family)} ${m.name} ${m.family}`.toLowerCase();
+    if (!words.every((w) => text.includes(w))) continue;
+    total++;
+    if (shown.length < MAX_SHOWN) shown.push(m);
+  }
 
   const set = (patch: Partial<TargetState>) => onTarget({ ...target, ...patch });
 
   return (
     <div className="panel sim-target">
       <h2>{t('sim.target')}</h2>
-      <p className="sim-current"><b>{target.mob ? target.mob.name : t('sim.dummy')}</b>
+      <p className="sim-current"><b>{target.mob ? mobName(target.mob.name) : t('sim.dummy')}</b>
         {target.mob && <> <button type="button" className="link" onClick={() => onTarget(DUMMY)}>{t('sim.mob.clear')}</button></>}
       </p>
 

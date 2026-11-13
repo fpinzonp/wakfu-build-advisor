@@ -1,6 +1,6 @@
 // Recomendador de builds: puntúa una combinación de objetos según el rol y busca la mejor
 // combinación con ascenso por coordenadas, reinicios aleatorios y respeto de las reglas del juego.
-import { ALWAYS_EQUIPPED_SLOTS, BUILD_SLOTS, EPIC, RELIC, isDamageRole, type BuildSlot, type Element, type Item, type Role } from './game';
+import { ALWAYS_EQUIPPED_SLOTS, BUILD_SLOTS, CLASSES, EPIC, RELIC, isDamageRole, type BuildSlot, type Element, type Item, type Role } from './game';
 import { planAptitudes, type AptitudePlan } from './aptitudes';
 import type { DeckBonus } from './spells';
 import { t } from './i18n';
@@ -58,7 +58,7 @@ const ELEMENT_KEYS: Record<Element, { mast: string; res: string }> = {
   air: { mast: 'mastAir', res: 'resAir' },
 };
 
-function toVector(stats: Record<string, number>, multiMast: Item['multiMast'], multiRes: Item['multiRes'], elements: Element[]) {
+export function toVector(stats: Record<string, number>, multiMast: Item['multiMast'], multiRes: Item['multiRes'], elements: Element[]) {
   const v = new Float64Array(N);
   const k = Math.max(1, elements.length);
   const s = (key: string) => stats[key] ?? 0;
@@ -121,9 +121,17 @@ const ROLE_WEIGHTS: Record<Role, RoleWeights> = {
   },
 };
 
-type DeriveOptions = Pick<BuildRequest, 'role' | 'level' | 'berserk' | 'back'>;
+type DeriveOptions = Pick<BuildRequest, 'role' | 'level' | 'berserk' | 'back' | 'classId'>;
 
-export function derive(t: Float64Array, { role, level, berserk, back }: DeriveOptions): Derived {
+// Dominio del otro tipo (distancia en melé, melé en distancia) para clases híbridas como el Tymador.
+function hybridExtra(t: Float64Array, role: Role, classId: string): number {
+  if (!CLASSES.find((c) => c.id === classId)?.hybridMastery) return 0;
+  if (role === 'melee') return t[IDX.mastDist];
+  if (role === 'dist') return t[IDX.mastMelee];
+  return 0;
+}
+
+export function derive(t: Float64Array, { role, level, berserk, back, classId }: DeriveOptions): Derived {
   const w = ROLE_WEIGHTS[role];
   const hp = (50 + 10 * level + t[IDX.hp]) * (1 + t[IDX.hpPct] / 100);
   const c = Math.min(Math.max(t[IDX.crit], 0), 100) / 100;
@@ -131,6 +139,7 @@ export function derive(t: Float64Array, { role, level, berserk, back }: DeriveOp
   // Berserker: se juega por debajo del 50 % de PdV, así que su dominio cuenta entero en los roles de daño.
   // Espalda priorizada (Sram, Ocra…): el dominio espalda cuenta casi como dominio general.
   const m = w.mastery(t)
+    + hybridExtra(t, role, classId)
     + (berserk && damage ? t[IDX.mastBerserk] : 0)
     + (back && damage ? (role === 'melee' ? 0.4 : 0.6) * t[IDX.mastBack] : 0);
   const base = Math.max(0.1, 1 + m / 100);

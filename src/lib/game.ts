@@ -118,8 +118,11 @@ export const ROLES: { id: Role; label: string; hint: string }[] = [
 
 // Ramas elementales habituales de cada clase (editables en la interfaz).
 // `focus`: especialidades de daño que conviene priorizar por defecto en esa clase.
+// `hybridMastery`: pasiva innata que convierte el dominio melé en distancia y viceversa
+// según cómo pegue (Tymador), así que en los roles de daño ambos dominios se suman.
 export const CLASSES: {
   id: string; label: string; elements: Element[]; roles: Role[]; berserk?: boolean; focus?: ('crit' | 'back')[];
+  hybridMastery?: boolean;
 }[] = [
   L('class.feca', { id: 'feca', elements: ['fire', 'water', 'earth'], roles: ['tank', 'dist'] }),
   L('class.osamodas', { id: 'osamodas', elements: ['fire', 'earth', 'air'], roles: ['dist', 'heal'] }),
@@ -133,7 +136,7 @@ export const CLASSES: {
   L('class.sadida', { id: 'sadida', elements: ['water', 'earth', 'air'], roles: ['dist', 'heal'] }),
   L('class.sacrogrito', { id: 'sacrogrito', elements: ['fire', 'earth', 'air'], roles: ['melee', 'tank'], berserk: true }),
   L('class.pandawa', { id: 'pandawa', elements: ['fire', 'water', 'earth'], roles: ['tank', 'melee'] }),
-  L('class.tymador', { id: 'tymador', elements: ['fire', 'water', 'earth'], roles: ['melee', 'dist'] }),
+  L('class.tymador', { id: 'tymador', elements: ['fire', 'water', 'earth'], roles: ['melee', 'dist'], hybridMastery: true }),
   L('class.zobal', { id: 'zobal', elements: ['fire', 'water', 'air'], roles: ['melee', 'tank'] }),
   L('class.steamer', { id: 'steamer', elements: ['fire', 'water', 'earth'], roles: ['dist', 'heal'] }),
   L('class.selotrop', { id: 'selotrop', elements: ['fire', 'water', 'air'], roles: ['dist', 'melee'] }),

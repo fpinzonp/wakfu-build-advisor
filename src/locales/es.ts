@@ -468,6 +468,7 @@ const es = {
   "gear.usedBy": "La llevan: {names}",
   "gear.fights": "≈ {n} combates de media",
   "gear.allMonsters": "Ver los {n} monstruos",
+  "gear.craftLeft": "Faltan {n} de {total} piezas crafteables. Marca las que ya tienes para quitarlas de la receta.",
   "gear.owned": "Ya la tengo",
   "gear.ownedCount": "Tengo",
   "gear.dropsLeft": "Faltan {n} de {total} piezas de drop.",

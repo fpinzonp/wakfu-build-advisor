@@ -48,6 +48,7 @@ export function teamShopping(
   builds: { classId: string; slots: BuildSlots }[],
   recipes: RecipeData | null,
   drops: DropData | null,
+  owned: Record<number, number> = {},   // unidades que ya se tienen: no entran en la receta
 ): TeamShopping {
   const pieces = new Map<number, TeamPiece>();
   for (const b of builds) {
@@ -65,7 +66,7 @@ export function teamShopping(
   return {
     craft,
     materials: recipes
-      ? materialsFor(craft.flatMap((p) => Array<number>(p.count).fill(p.item.id)), recipes, { expand: true, fullChain: true })
+      ? materialsFor(craft.flatMap((p) => Array<number>(stillNeeded(p, owned)).fill(p.item.id)), recipes, { expand: true, fullChain: true })
       : null,
     drops: rest.filter((p) => dropOf(p).length > 0).map((p) => ({ ...p, drops: dropOf(p) })),
     others: rest.filter((p) => dropOf(p).length === 0),

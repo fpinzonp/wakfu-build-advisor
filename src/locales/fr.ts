@@ -470,6 +470,7 @@ const fr: Dict = {
   "gear.usedBy": "Portée par : {names}",
   "gear.fights": "≈ {n} combats en moyenne",
   "gear.allMonsters": "Voir les {n} monstres",
+  "gear.craftLeft": "Il reste {n} pièces craftables sur {total}. Cochez celles que vous avez déjà pour les retirer de la recette.",
   "gear.owned": "Je l'ai déjà",
   "gear.ownedCount": "J'en ai",
   "gear.dropsLeft": "Il reste {n} pièces à dropper sur {total}.",

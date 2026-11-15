@@ -6,7 +6,7 @@ import {
   type DropData, type Element, type Item, type RecipeData, type Role,
 } from './lib/game';
 import { recommend, type BuildSlots } from './lib/optimizer';
-import { defaultChoice, dropsToFarm, expectedFights, gearRequest, teamShopping, type GearChoice } from './lib/teamGear';
+import { defaultChoice, dropsToFarm, expectedFights, gearRequest, stillNeeded, teamShopping, type GearChoice } from './lib/teamGear';
 import type { Member } from './lib/teams';
 import { jobName, locale, mobName, t, type LangData } from './lib/i18n';
 import { localizeRecipes } from './lib/localize';
@@ -23,6 +23,27 @@ function loadOwned(): Record<number, number> {
 }
 function saveOwned(o: Record<number, number>) {
   try { localStorage.setItem(OWNED_KEY, JSON.stringify(o)); } catch { /* sin almacenamiento local */ }
+}
+
+/** "Ya la tengo" para una unidad; contador "Tengo n / total" cuando el equipo necesita varias. */
+function OwnedControl({ count, have, id, onChange }: { count: number; have: number; id: number; onChange: (n: number) => void }) {
+  if (count === 1) {
+    return (
+      <label className="check small">
+        <input type="checkbox" checked={have > 0} onChange={(e) => onChange(e.target.checked ? 1 : 0)} />
+        <span>{t('gear.owned')}</span>
+      </label>
+    );
+  }
+  const inputId = `gear-owned-${id}`;
+  return (
+    <div className="row small">
+      <label htmlFor={inputId}>{t('gear.ownedCount')}</label>
+      <input id={inputId} className="input tgear-owned" type="number" min={0} max={count} value={have}
+        onChange={(e) => onChange(Math.min(count, Math.max(0, +e.target.value || 0)))} />
+      <span className="muted">/ {count}</span>
+    </div>
+  );
 }
 
 interface Generated { key: string; builds: { classId: string; slots: BuildSlots }[] }
@@ -79,8 +100,8 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
   };
 
   const shopping = useMemo(
-    () => (generated ? teamShopping(generated.builds, recipes, drops) : null),
-    [generated, recipes, drops],
+    () => (generated ? teamShopping(generated.builds, recipes, drops, owned) : null),
+    [generated, recipes, drops, owned],
   );
 
   const farm = useMemo(() => (shopping ? dropsToFarm(shopping.drops, owned) : []), [shopping, owned]);
@@ -212,8 +233,26 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
             <button className="small-btn" onClick={copy}>{copied ? t('mat.copied') : t('mat.copy')}</button>
           </div>
           <p className="muted small">{t('gear.recipeHint')}</p>
+          {shopping.craft.length > 0 && (
+            <>
+              <p className="small" role="status">
+                {t('gear.craftLeft', { n: shopping.craft.reduce((s, p) => s + stillNeeded(p, owned), 0), total: shopping.craft.reduce((s, p) => s + p.count, 0) })}
+              </p>
+              <ul className="tgear-crafts">
+                {shopping.craft.map((p) => (
+                  <li key={p.item.id} className={stillNeeded(p, owned) === 0 ? 'done' : ''}>
+                    <b style={{ color: RARITIES[p.item.rarity].color }}>{p.count > 1 && `${p.count}× `}{p.item.name}</b>
+                    <span className="muted small">{owners(p.owners)}</span>
+                    <OwnedControl count={p.count} have={p.count - stillNeeded(p, owned)} id={p.item.id}
+                      onChange={(n) => setOwnedCount(p.item.id, n)} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           {shopping.craft.length === 0 ? <p className="muted">{t('gear.noCraft')}</p>
-            : !shopping.materials ? <p className="muted">{t('mat.loading')}</p> : (
+            : !shopping.materials ? <p className="muted">{t('mat.loading')}</p>
+            : shopping.materials.crafts.length === 0 ? <p className="muted">{t('mat.allOwned')}</p> : (
               <div className="mat-grid">
                 <div>
                   <h3>{t('mat.jobs')}</h3>
@@ -268,7 +307,6 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
                 {farm.map(({ piece: p, need }) => {
                   const best = p.drops[0];
                   const have = p.count - need;
-                  const ownedId = `gear-owned-${p.item.id}`;
                   return (
                     <li key={p.item.id} className={need === 0 ? 'done' : ''}>
                       <div className="tgear-drop-head">
@@ -286,19 +324,7 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
                           <span className="muted"> · {t('gear.fights', { n: fmt(expectedFights(best.rate, need)) })}</span>
                         </p>
                       )}
-                      {p.count === 1 ? (
-                        <label className="check small">
-                          <input type="checkbox" checked={have > 0} onChange={(e) => setOwnedCount(p.item.id, e.target.checked ? 1 : 0)} />
-                          <span>{t('gear.owned')}</span>
-                        </label>
-                      ) : (
-                        <div className="row small">
-                          <label htmlFor={ownedId}>{t('gear.ownedCount')}</label>
-                          <input id={ownedId} className="input tgear-owned" type="number" min={0} max={p.count} value={have}
-                            onChange={(e) => setOwnedCount(p.item.id, Math.min(p.count, Math.max(0, +e.target.value || 0)))} />
-                          <span className="muted">/ {p.count}</span>
-                        </div>
-                      )}
+                      <OwnedControl count={p.count} have={have} id={p.item.id} onChange={(n) => setOwnedCount(p.item.id, n)} />
                       {need > 0 && p.drops.length > 1 && (
                         <details>
                           <summary className="small">{t('gear.allMonsters', { n: p.drops.length })}</summary>

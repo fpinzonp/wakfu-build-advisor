@@ -43,6 +43,19 @@ describe('sets del equipo', () => {
     expect(s.others.map((p) => p.item.id)).toEqual([4]);
   });
 
+  it('las piezas crafteables que ya se tienen salen de la receta', () => {
+    const builds = [
+      { classId: 'feca', slots: { head: item(1, 'craft'), neck: item(2, 'craft', 'neck') } },
+      { classId: 'sram', slots: { head: item(1, 'craft') } },
+    ];
+    const qty = (owned: Record<number, number>) =>
+      Object.fromEntries(teamShopping(builds, recipes, drops, owned).materials!.materials.map((m) => [m.id, m.qty]));
+    expect(qty({ 1: 1 })).toEqual({ 100: 5, 5: 1, 101: 1 });
+    expect(qty({ 1: 2, 2: 1 })).toEqual({});
+    // La lista de piezas sigue completa para poder desmarcarlas.
+    expect(teamShopping(builds, recipes, drops, { 1: 2 }).craft).toHaveLength(2);
+  });
+
   it('las piezas de drop que ya se tienen dejan de contar', () => {
     const p = (id: number, count: number, r: number) =>
       ({ item: item(id, 'other'), count, owners: [], drops: [{ monster: 'm', rate: r }] });

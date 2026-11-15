@@ -470,6 +470,7 @@ const en: Dict = {
   "gear.usedBy": "Worn by: {names}",
   "gear.fights": "≈ {n} fights on average",
   "gear.allMonsters": "Show all {n} monsters",
+  "gear.craftLeft": "{n} of {total} craftable pieces left. Tick the ones you already have to remove them from the recipe.",
   "gear.owned": "I already have it",
   "gear.ownedCount": "I have",
   "gear.dropsLeft": "{n} of {total} drop pieces left.",

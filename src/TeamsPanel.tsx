@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { CLASSES, ROLES, type Role } from './lib/game';
-import { getLang, t, tk } from './lib/i18n';
+import type { Item } from './lib/game';
+import { getLang, t, tk, type LangData } from './lib/i18n';
+import TeamGearPanel from './TeamGearPanel';
 import { spellImage, type Spell, type SpellData } from './lib/spells';
 import { DUNGEONS } from './lib/dungeons';
 import { needsOf, type DungeonNeeds, type Requirement } from './lib/dungeons/requirements';
@@ -105,9 +107,11 @@ function Uncovered({ result, team, fix, total, onFix, onOpen }: {
   );
 }
 
-export default function TeamsPanel({ spellData, initialClass, onBuild, onOpenDungeon, needs = needsOf }: {
+export default function TeamsPanel({ spellData, initialClass, onBuild, onOpenDungeon, needs = needsOf, items = null, names = null }: {
   spellData: SpellData | null; initialClass: string; onBuild: (classId: string, role: Role) => void;
   onOpenDungeon: (id: string) => void;
+  /** Objetos y nombres traducidos para armar los sets de todo el equipo. */
+  items?: Item[] | null; names?: LangData | null;
   /** Exigencias por mazmorra; se inyecta en las pruebas. */
   needs?: (id: string) => DungeonNeeds;
 }) {
@@ -319,6 +323,8 @@ export default function TeamsPanel({ spellData, initialClass, onBuild, onOpenDun
           </div>
         </div>
       </div>
+
+      <TeamGearPanel team={team} items={items} names={names} />
 
       <div className="panel team-report">
         <h2>{t('team.coverTotal', { n: report.covered, total: report.total })}</h2>

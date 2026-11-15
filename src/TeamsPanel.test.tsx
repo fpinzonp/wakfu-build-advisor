@@ -109,3 +109,13 @@ describe('Mazmorras: abrir desde Equipos', () => {
     expect(focusTarget({ id: 'no-existe', n: 2 })).toBe(DUNGEONS[0].id);
   });
 });
+
+describe('Equipos: sets de todo el equipo', () => {
+  it('muestra nivel común y tipo de set por cada integrante', () => {
+    const h = render();
+    expect(h).toContain('Sets del equipo');
+    expect(h).toContain('Nivel del equipo');
+    expect(h.match(/id="gear-role-/g)?.length).toBe(6);
+    expect(h).toContain('Generar los 6 sets');
+  });
+});

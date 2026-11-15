@@ -295,7 +295,8 @@ export default function App() {
       </nav>
 
       <div hidden={section !== 'teams'}>
-        <TeamsPanel spellData={spellData} initialClass={classId} onBuild={buildFromTeam} onOpenDungeon={openDungeon} />
+        <TeamsPanel spellData={spellData} initialClass={classId} onBuild={buildFromTeam} onOpenDungeon={openDungeon}
+          items={data?.items ?? null} names={names} />
       </div>
 
       <div hidden={section !== 'dungeons'}>

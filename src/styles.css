@@ -506,6 +506,8 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .tgear-drops li { display: flex; flex-direction: column; gap: 6px; background: var(--panel-2); border-radius: var(--radius-sm); padding: 10px 12px; min-width: 0; }
 .tgear-drop-head { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
 .tgear-drop-head img { width: 32px; height: 32px; }
+.tgear-drops li.done { opacity: .6; }
+.tgear-owned { width: 64px; }
 .tgear-rate { font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
 @media (max-width: 760px) {
   .team-grid { grid-template-columns: minmax(0, 1fr); }

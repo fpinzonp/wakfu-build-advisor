@@ -72,5 +72,15 @@ export function teamShopping(
   };
 }
 
+/** Unidades que aún faltan de una pieza, descontando las que ya se tienen (nunca menos de 0). */
+export const stillNeeded = (p: TeamPiece, owned: Record<number, number>) => Math.max(0, p.count - (owned[p.item.id] ?? 0));
+
+/** Piezas de drop pendientes primero (las que más combates piden arriba) y las ya conseguidas al final. */
+export function dropsToFarm(drops: DropPiece[], owned: Record<number, number>): { piece: DropPiece; need: number }[] {
+  const list = drops.map((piece) => ({ piece, need: stillNeeded(piece, owned) }));
+  const fights = (x: { piece: DropPiece; need: number }) => (x.need ? expectedFights(x.piece.drops[0].rate, x.need) : -1);
+  return list.sort((a, b) => fights(b) - fights(a));
+}
+
 /** Combates de media contra un monstruo para conseguir `count` unidades con una probabilidad de `rate` %. */
 export const expectedFights = (rate: number, count = 1) => (rate > 0 ? Math.ceil((100 * count) / rate) : Infinity);

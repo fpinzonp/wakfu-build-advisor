@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { DropData, Item, RecipeData } from './game';
-import { defaultChoice, expectedFights, gearRequest, teamShopping } from './teamGear';
+import { defaultChoice, dropsToFarm, expectedFights, gearRequest, stillNeeded, teamShopping } from './teamGear';
 
 const item = (id: number, src: Item['src'], slot: Item['slot'] = 'head', lvl = 50): Item =>
   ({ id, name: `I${id}`, lvl, type: 0, slot, rarity: 3, gfx: 0, stats: {}, src });
@@ -41,6 +41,14 @@ describe('sets del equipo', () => {
     expect(s.drops[0]).toMatchObject({ count: 2, owners: ['feca', 'sram'] });
     expect(s.drops[0].drops.map((d) => d.monster)).toEqual(['b', 'a']);
     expect(s.others.map((p) => p.item.id)).toEqual([4]);
+  });
+
+  it('las piezas de drop que ya se tienen dejan de contar', () => {
+    const p = (id: number, count: number, r: number) =>
+      ({ item: item(id, 'other'), count, owners: [], drops: [{ monster: 'm', rate: r }] });
+    const list = dropsToFarm([p(1, 1, 10), p(2, 2, 1), p(3, 1, 50)], { 1: 1, 2: 1 });
+    expect(list.map((x) => [x.piece.item.id, x.need])).toEqual([[2, 1], [3, 1], [1, 0]]);
+    expect(stillNeeded(p(2, 2, 1), { 2: 5 })).toBe(0);
   });
 
   it('combates de media según la probabilidad', () => {

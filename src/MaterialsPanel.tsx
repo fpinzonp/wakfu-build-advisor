@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { BUILD_SLOTS, RARITIES, itemImage, type Item, type RecipeData } from './lib/game';
+import { BUILD_SLOTS, RARITIES, type Item, type RecipeData } from './lib/game';
+import GatheredList, { CheckRow, GATHERED_KEYS, useGathered } from './GatheredList';
 import { materialsFor } from './lib/materials';
 import type { BuildSlots } from './lib/optimizer';
 import { jobName, locale, t } from './lib/i18n';
@@ -11,6 +12,9 @@ export default function MaterialsPanel({ slots, recipes }: { slots: BuildSlots; 
   const [fullChain, setFullChain] = useState(true);
   const [owned, setOwned] = useState<Set<number>>(new Set());
   const [copied, setCopied] = useState(false);
+  const gathered = useGathered(GATHERED_KEYS.materials);
+  const plansDone = useGathered(GATHERED_KEYS.plans);
+  const craftsDone = useGathered(GATHERED_KEYS.crafts);
 
   const pieces = BUILD_SLOTS.map((s) => slots[s.id]).filter((i): i is Item => !!i);
   const craftable = pieces.filter((i) => i.src === 'craft');
@@ -39,12 +43,13 @@ export default function MaterialsPanel({ slots, recipes }: { slots: BuildSlots; 
     if (!list) return;
     const lines = [
       `${t('mat.copy.materials')}:`,
-      ...list.materials.map((m) => `- ${m.qty}x ${name(m.id)}`),
+      ...list.materials.filter((m) => !gathered.isGathered(m)).map((m) => `- ${m.qty}x ${name(m.id)}`),
       '',
       `${t('mat.copy.crafts')}:`,
-      ...list.crafts.map((c) => `- ${c.times}x ${name(c.id)} (${jobName(c.job)} ${t('common.lvlShort', { n: c.lvl })}${c.upgrade ? `, ${t('mat.upgrade')}` : ''})`),
+      ...list.crafts.filter((c) => !craftsDone.isGathered({ id: c.id, qty: c.times })).map((c) => `- ${c.times}x ${name(c.id)} (${jobName(c.job)} ${t('common.lvlShort', { n: c.lvl })}${c.upgrade ? `, ${t('mat.upgrade')}` : ''})`),
     ];
-    if (list.plans.length) lines.push('', `${t('mat.copy.plans')}:`, ...list.plans.map((p) => `- ${name(p)}`));
+    const plans = list.plans.filter((p) => !plansDone.isGathered({ id: p, qty: 1 }));
+    if (plans.length) lines.push('', `${t('mat.copy.plans')}:`, ...plans.map((p) => `- ${name(p)}`));
     if (others.length) lines.push('', `${t('mat.copy.others')}:`, ...others.map((i) => `- ${i.name}`));
     navigator.clipboard.writeText(lines.join('\n')).then(() => {
       setCopied(true);
@@ -96,31 +101,31 @@ export default function MaterialsPanel({ slots, recipes }: { slots: BuildSlots; 
                   <>
                     <h3>{t('mat.plans')}</h3>
                     <ul className="mat-list">
-                      {list.plans.map((p) => <li key={p} className="plan">{name(p)}</li>)}
+                      {list.plans.map((p) => (
+                        <CheckRow key={p} className="plan" on={plansDone.isGathered({ id: p, qty: 1 })}
+                          onChange={(on) => plansDone.toggle({ id: p, qty: 1 }, on)} label={t('mat.gathered', { name: name(p) })}>
+                          <span className="mat-name">{name(p)}</span>
+                        </CheckRow>
+                      ))}
                     </ul>
                   </>
                 )}
                 <h3>{t('mat.copy.crafts')} <small>{t('mat.recipes', { n: list.crafts.length })}</small></h3>
                 <ul className="mat-list">
                   {list.crafts.map((c) => (
-                    <li key={c.id}>
-                      <span className="qty">{fmt(c.times)}×</span> {name(c.id)}
-                      <small className="muted"> {jobName(c.job)} {t('common.lvlShort', { n: c.lvl })}{c.upgrade && ` · ${t('mat.upgrade')}`}</small>
-                    </li>
+                    <CheckRow key={c.id} on={craftsDone.isGathered({ id: c.id, qty: c.times })}
+                      onChange={(on) => craftsDone.toggle({ id: c.id, qty: c.times }, on)} label={t('mat.crafted', { name: name(c.id) })}>
+                      <span className="qty">{fmt(c.times)}×</span>
+                      <span className="mat-name">{name(c.id)}
+                        <small className="muted"> {jobName(c.job)} {t('common.lvlShort', { n: c.lvl })}{c.upgrade && ` · ${t('mat.upgrade')}`}</small>
+                      </span>
+                    </CheckRow>
                   ))}
                 </ul>
               </div>
               <div>
                 <h3>{expand ? t('mat.raw') : t('mat.ingredients')} <small>{t('mat.distinct', { n: list.materials.length })}</small></h3>
-                <ul className="mat-list">
-                  {list.materials.map((m) => (
-                    <li key={m.id}>
-                      <img src={itemImage(gfx(m.id))} alt="" loading="lazy" referrerPolicy="no-referrer"
-                        onError={(e) => { (e.target as HTMLImageElement).style.visibility = 'hidden'; }} />
-                      <span className="qty">{fmt(m.qty)}×</span> {name(m.id)}
-                    </li>
-                  ))}
-                </ul>
+                <GatheredList materials={list.materials} name={name} gfx={gfx} gathered={gathered} />
               </div>
             </div>
           )}

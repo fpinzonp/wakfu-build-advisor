@@ -315,6 +315,10 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .mat-list li { display: flex; align-items: center; gap: 8px; }
 .mat-list img { width: 22px; height: 22px; }
 .mat-list .qty { color: var(--accent); font-weight: 600; min-width: 46px; text-align: right; }
+.mat-check { display: flex; align-items: center; gap: 8px; cursor: pointer; min-width: 0; }
+.mat-check input { accent-color: var(--accent); margin: 0; flex-shrink: 0; }
+.mat-list li.done .mat-check { opacity: .55; }
+.mat-list li.done .mat-name { text-decoration: line-through; }
 
 /* Ventanas */
 .overlay {

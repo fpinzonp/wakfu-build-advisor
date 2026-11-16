@@ -11,6 +11,7 @@ import type { Member } from './lib/teams';
 import { jobName, locale, mobName, t, type LangData } from './lib/i18n';
 import { localizeRecipes } from './lib/localize';
 import DropList from './DropList';
+import GatheredList, { CheckRow, GATHERED_KEYS, useGathered } from './GatheredList';
 
 const classLabel = (id: string) => CLASSES.find((c) => c.id === id)!.label;
 const fmt = (n: number) => n.toLocaleString(locale());
@@ -58,6 +59,9 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
   const [drops, setDrops] = useState<DropData | null>(null);
   const [copied, setCopied] = useState(false);
   const [owned, setOwned] = useState<Record<number, number>>(loadOwned);
+  const gathered = useGathered(GATHERED_KEYS.materials);
+  const plansDone = useGathered(GATHERED_KEYS.plans);
+  const craftsDone = useGathered(GATHERED_KEYS.crafts);
 
   // Recetas y drops se cargan la primera vez que se generan los sets.
   const [wantData, setWantData] = useState(false);
@@ -127,10 +131,11 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
     if (!shopping) return;
     const lines: string[] = [];
     if (shopping.materials) {
-      lines.push(`${t('mat.raw')}:`, ...shopping.materials.materials.map((m) => `- ${m.qty}x ${name(m.id)}`));
-      lines.push('', `${t('mat.copy.crafts')}:`, ...shopping.materials.crafts.map((c) =>
+      lines.push(`${t('mat.raw')}:`, ...shopping.materials.materials.filter((m) => !gathered.isGathered(m)).map((m) => `- ${m.qty}x ${name(m.id)}`));
+      lines.push('', `${t('mat.copy.crafts')}:`, ...shopping.materials.crafts.filter((c) => !craftsDone.isGathered({ id: c.id, qty: c.times })).map((c) =>
         `- ${c.times}x ${name(c.id)} (${jobName(c.job)} ${t('common.lvlShort', { n: c.lvl })})`));
-      if (shopping.materials.plans.length) lines.push('', `${t('mat.copy.plans')}:`, ...shopping.materials.plans.map((p) => `- ${name(p)}`));
+      const plans = shopping.materials.plans.filter((p) => !plansDone.isGathered({ id: p, qty: 1 }));
+      if (plans.length) lines.push('', `${t('mat.copy.plans')}:`, ...plans.map((p) => `- ${name(p)}`));
     }
     const pending = farm.filter((x) => x.need > 0);
     if (pending.length) {
@@ -262,36 +267,38 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
                   {shopping.materials.plans.length > 0 && (
                     <>
                       <h3>{t('mat.plans')}</h3>
-                      <ul className="mat-list">{shopping.materials.plans.map((p) => <li key={p} className="plan">{name(p)}</li>)}</ul>
+                      <ul className="mat-list">
+                        {shopping.materials.plans.map((p) => (
+                          <CheckRow key={p} className="plan" on={plansDone.isGathered({ id: p, qty: 1 })}
+                            onChange={(on) => plansDone.toggle({ id: p, qty: 1 }, on)} label={t('mat.gathered', { name: name(p) })}>
+                            <span className="mat-name">{name(p)}</span>
+                          </CheckRow>
+                        ))}
+                      </ul>
                     </>
                   )}
                   <details>
                     <summary>{t('mat.copy.crafts')} · {t('mat.recipes', { n: shopping.materials.crafts.length })}</summary>
                     <ul className="mat-list">
                       {shopping.materials.crafts.map((c) => (
-                        <li key={c.id}>
-                          <span className="qty">{fmt(c.times)}×</span> {name(c.id)}
-                          <small className="muted"> {jobName(c.job)} {t('common.lvlShort', { n: c.lvl })}{c.upgrade && ` · ${t('mat.upgrade')}`}</small>
-                        </li>
+                        <CheckRow key={c.id} on={craftsDone.isGathered({ id: c.id, qty: c.times })}
+                          onChange={(on) => craftsDone.toggle({ id: c.id, qty: c.times }, on)} label={t('mat.crafted', { name: name(c.id) })}>
+                          <span className="qty">{fmt(c.times)}×</span>
+                          <span className="mat-name">{name(c.id)}
+                            <small className="muted"> {jobName(c.job)} {t('common.lvlShort', { n: c.lvl })}{c.upgrade && ` · ${t('mat.upgrade')}`}</small>
+                          </span>
+                        </CheckRow>
                       ))}
                     </ul>
                   </details>
                 </div>
                 <div>
                   <h3>{t('mat.raw')} <small>{t('mat.distinct', { n: shopping.materials.materials.length })}</small></h3>
-                  <ul className="mat-list">
-                    {shopping.materials.materials.map((m) => {
-                      const d = bestDrop(m.id);
-                      return (
-                        <li key={m.id}>
-                          <img src={itemImage(gfx(m.id))} alt="" loading="lazy" referrerPolicy="no-referrer"
-                            onError={(e) => { (e.target as HTMLImageElement).style.visibility = 'hidden'; }} />
-                          <span className="qty">{fmt(m.qty)}×</span> {name(m.id)}
-                          {d && <small className="muted"> · {t('gear.materialDrop', { name: mobName(d.monster), n: rate(d.rate) })}</small>}
-                        </li>
-                      );
-                    })}
-                  </ul>
+                  <GatheredList materials={shopping.materials.materials} name={name} gfx={gfx} gathered={gathered}
+                    extra={(id) => {
+                      const d = bestDrop(id);
+                      return d && <small className="muted"> · {t('gear.materialDrop', { name: mobName(d.monster), n: rate(d.rate) })}</small>;
+                    }} />
                 </div>
               </div>
             )}

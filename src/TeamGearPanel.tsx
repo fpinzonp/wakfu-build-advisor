@@ -6,7 +6,7 @@ import {
   type DropData, type Element, type Item, type RecipeData, type Role,
 } from './lib/game';
 import { recommend, type BuildSlots } from './lib/optimizer';
-import { defaultChoice, dropsToFarm, expectedFights, gearRequest, stillNeeded, teamShopping, type GearChoice } from './lib/teamGear';
+import { defaultChoice, dropsToFarm, expectedFights, gearRequest, keepWithout, stillNeeded, teamShopping, type GearChoice } from './lib/teamGear';
 import type { Member } from './lib/teams';
 import { jobName, locale, mobName, t, type LangData } from './lib/i18n';
 import { localizeRecipes } from './lib/localize';
@@ -47,6 +47,15 @@ function OwnedControl({ count, have, id, onChange }: { count: number; have: numb
   );
 }
 
+// Piezas que no se pueden conseguir: el optimizador no las vuelve a usar. Se recuerdan en este navegador.
+const EXCLUDED_KEY = 'wba.gearExcluded';
+function loadExcluded(): number[] {
+  try { const v = JSON.parse(localStorage.getItem(EXCLUDED_KEY) ?? '[]'); return Array.isArray(v) ? v : []; } catch { return []; }
+}
+function saveExcluded(ids: number[]) {
+  try { localStorage.setItem(EXCLUDED_KEY, JSON.stringify(ids)); } catch { /* sin almacenamiento local */ }
+}
+
 interface Generated { key: string; builds: { classId: string; slots: BuildSlots }[] }
 
 export default function TeamGearPanel({ team, items, names }: { team: Member[]; items: Item[] | null; names: LangData | null }) {
@@ -59,6 +68,8 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
   const [drops, setDrops] = useState<DropData | null>(null);
   const [copied, setCopied] = useState(false);
   const [owned, setOwned] = useState<Record<number, number>>(loadOwned);
+  const [excluded, setExcluded] = useState<number[]>(loadExcluded);
+  const [replacing, setReplacing] = useState<number | null>(null);
   const gathered = useGathered(GATHERED_KEYS.materials);
   const plansDone = useGathered(GATHERED_KEYS.plans);
   const craftsDone = useGathered(GATHERED_KEYS.crafts);
@@ -96,12 +107,38 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
       setProgress(i);
       setTimeout(() => {
         const p = plan[i];
-        out.push({ classId: p.classId, slots: recommend(items, gearRequest(p.classId, p.choice, settings)).slots });
+        out.push({ classId: p.classId, slots: recommend(items, gearRequest(p.classId, p.choice, settings, excluded)).slots });
         step(i + 1);
       }, 20);
     };
     step(0);
   };
+
+  // Descarta una pieza que no se puede conseguir: los personajes que la llevan se recalculan sin ella
+  // conservando el resto de sus piezas, y deja de proponerse en los siguientes sets.
+  const exclude = (id: number) => {
+    if (!items || !generated || replacing !== null) return;
+    const next = excluded.includes(id) ? excluded : [...excluded, id];
+    setExcluded(next);
+    saveExcluded(next);
+    setReplacing(id);
+    const settings = { level, craftOnly };
+    setTimeout(() => {
+      const builds = generated.builds.map((b) => {
+        if (!Object.values(b.slots).some((i) => i?.id === id)) return b;
+        const m = team.find((x) => x.classId === b.classId);
+        const choice = m ? choiceOf(m) : defaultChoice(b.classId, 'dist');
+        return { ...b, slots: recommend(items, gearRequest(b.classId, choice, settings, next, keepWithout(b.slots, id))).slots };
+      });
+      setGenerated({ ...generated, builds });
+      setReplacing(null);
+    }, 20);
+  };
+  const allowAgain = (id: number) => setExcluded((cur) => {
+    const next = cur.filter((x) => x !== id);
+    saveExcluded(next);
+    return next;
+  });
 
   const shopping = useMemo(
     () => (generated ? teamShopping(generated.builds, recipes, drops, owned) : null),
@@ -219,6 +256,8 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
       {generated && shopping && (
         <>
           <h3>{t('gear.builds')}</h3>
+          <p className="muted small">{t('gear.replaceHint')}</p>
+          {replacing !== null && <p className="small" role="status">{t('gear.replacing', { name: itemById.get(replacing)?.name ?? `#${replacing}` })}</p>}
           <div className="tgear-builds">
             {generated.builds.map((b) => {
               const pieces = BUILD_SLOTS.map((s) => b.slots[s.id]).filter((i): i is Item => !!i);
@@ -226,12 +265,31 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
                 <details key={b.classId} className="team-tier">
                   <summary>{classLabel(b.classId)} · {t('gear.pieces', { n: pieces.length })}</summary>
                   <div className="row wrap">
-                    {pieces.map((i) => <span key={i.id} className="chip" style={{ color: RARITIES[i.rarity].color }}>{i.name}</span>)}
+                    {pieces.map((i) => (
+                      <span key={i.id} className="chip tgear-piece" style={{ color: RARITIES[i.rarity].color }}>
+                        {i.name}
+                        <button type="button" className="tgear-swap" disabled={replacing !== null}
+                          title={t('gear.replace')} aria-label={`${t('gear.replace')}: ${i.name}`} onClick={() => exclude(i.id)}>✕</button>
+                      </span>
+                    ))}
                   </div>
                 </details>
               );
             })}
           </div>
+          {excluded.length > 0 && (
+            <div className="field">
+              <span className="label">{t('gear.excluded')}</span>
+              <div className="row wrap">
+                {excluded.map((id) => (
+                  <button key={id} type="button" className="chip on" title={t('form.allowAgain')} onClick={() => allowAgain(id)}>
+                    {itemById.get(id)?.name ?? `#${id}`} ✕
+                  </button>
+                ))}
+              </div>
+              <small className="muted">{t('gear.excludedHint')}</small>
+            </div>
+          )}
 
           <div className="tgear-head">
             <h3>{t('gear.recipeTitle')}</h3>

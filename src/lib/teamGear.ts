@@ -16,13 +16,16 @@ export function defaultChoice(classId: string, role: Role): GearChoice {
 }
 
 /** Petición al optimizador para un personaje, con los mismos valores por defecto que la sección Builds. */
-export function gearRequest(classId: string, choice: GearChoice, s: TeamGearSettings): BuildRequest {
+export function gearRequest(
+  classId: string, choice: GearChoice, s: TeamGearSettings,
+  excluded: Iterable<number> = [], locked: BuildSlots = {},
+): BuildRequest {
   const c = CLASSES.find((x) => x.id === classId)!;
   return {
     level: s.level, classId, role: choice.role, elements: choice.elements,
     targets: ROLE_DEFAULT_TARGETS(choice.role, s.level), allowedRarities: [0, 1, 2, 3, 4, 5, 6, 7],
     minLevel: 0, craftOnly: s.craftOnly, berserk: !!c.berserk, crit: !!c.focus?.includes('crit'),
-    back: !!c.focus?.includes('back'), excluded: new Set(), locked: {},
+    back: !!c.focus?.includes('back'), excluded: new Set(excluded), locked,
   };
 }
 
@@ -71,6 +74,18 @@ export function teamShopping(
     drops: rest.filter((p) => dropOf(p).length > 0).map((p) => ({ ...p, drops: dropOf(p) })),
     others: rest.filter((p) => dropOf(p).length === 0),
   };
+}
+
+/** Piezas que se conservan al descartar `id` de una build: todas menos esa y las que la exigen
+ * (p. ej. la espada de nación si se descarta su anillo), para que solo cambie lo imprescindible. */
+export function keepWithout(slots: BuildSlots, id: number): BuildSlots {
+  const keep: BuildSlots = {};
+  for (const s of BUILD_SLOTS) {
+    const item = slots[s.id];
+    if (!item || item.id === id || item.cond?.some((c) => 'needs' in c && c.needs === id)) continue;
+    keep[s.id] = item;
+  }
+  return keep;
 }
 
 /** Unidades que aún faltan de una pieza, descontando las que ya se tienen (nunca menos de 0). */

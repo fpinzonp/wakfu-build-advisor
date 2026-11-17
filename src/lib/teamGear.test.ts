@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { DropData, Item, RecipeData } from './game';
-import { defaultChoice, dropsToFarm, expectedFights, gearRequest, stillNeeded, teamShopping } from './teamGear';
+import { defaultChoice, dropsToFarm, expectedFights, gearRequest, keepWithout, stillNeeded, teamShopping } from './teamGear';
 
 const item = (id: number, src: Item['src'], slot: Item['slot'] = 'head', lvl = 50): Item =>
   ({ id, name: `I${id}`, lvl, type: 0, slot, rarity: 3, gfx: 0, stats: {}, src });
@@ -26,6 +26,18 @@ describe('sets del equipo', () => {
   it('todas las peticiones comparten nivel y filtros', () => {
     const r = gearRequest('sram', { role: 'melee', elements: ['air'] }, { level: 140, craftOnly: true });
     expect(r).toMatchObject({ level: 140, classId: 'sram', role: 'melee', elements: ['air'], craftOnly: true, crit: true, back: true });
+  });
+
+  it('las piezas descartadas se excluyen y el resto se puede fijar', () => {
+    const r = gearRequest('sram', { role: 'melee', elements: ['air'] }, { level: 140, craftOnly: false }, [7, 8], { head: item(1, 'craft') });
+    expect([...r.excluded]).toEqual([7, 8]);
+    expect(r.locked.head?.id).toBe(1);
+  });
+
+  it('al descartar una pieza se conserva el resto salvo lo que la exige', () => {
+    const sword = { ...item(10, 'other', 'weapon1'), cond: [{ needs: 3 }] } as Item;
+    const keep = keepWithout({ head: item(1, 'craft'), back: item(3, 'other', 'back'), weapon: sword, neck: item(2, 'craft', 'neck') }, 3);
+    expect(Object.keys(keep).sort()).toEqual(['head', 'neck']);
   });
 
   it('suma piezas repetidas y desglosa la receta completa', () => {

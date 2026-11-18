@@ -87,25 +87,26 @@ interface RoleWeights {
   misc: Partial<Record<(typeof K)[number], number>>;
 }
 
-// Daños: casi todo el peso en daño y los PA siempre por delante de los PM.
+// Daños y curas: orden de los recursos = PA hasta el objetivo > PM hasta el objetivo > PA extra.
+// Así se buscan PA de más (p. ej. moviendo la reliquia/el épico a otra ranura) sin bajar del objetivo de PM.
 // Curas: dominio de cura + distancia. Tanque: anticipación, resistencias y vida, con PM por delante de PA.
 const ROLE_WEIGHTS: Record<Role, RoleWeights> = {
   dist: {
     output: 1, survival: 0.25,
     mastery: (t) => t[IDX.mastEff] + t[IDX.mastDist],
-    ap: [0.14, 0.05], mp: [0.05, 0.008],
+    ap: [0.14, 0.1], mp: [0.12, 0.008],
     misc: { dodge: 0.00005, init: 0.00003, will: 0.0002, armorReceived: 0.001 },
   },
   melee: {
     output: 1, survival: 0.25,
     mastery: (t) => t[IDX.mastEff] + t[IDX.mastMelee] + 0.5 * t[IDX.mastBack],
-    ap: [0.14, 0.05], mp: [0.06, 0.01],
+    ap: [0.14, 0.1], mp: [0.12, 0.01],
     misc: { tackle: 0.00005, dodge: 0.00005, init: 0.00003, will: 0.0002, armorReceived: 0.001 },
   },
   heal: {
     output: 1, survival: 0.4,
     mastery: (t) => t[IDX.mastEff] + t[IDX.mastHeal] + t[IDX.mastDist],
-    ap: [0.13, 0.04], mp: [0.05, 0.008],
+    ap: [0.13, 0.09], mp: [0.11, 0.008],
     // Bono extra al dominio cura: a igualdad gana la pieza de cura; si en una ranura
     // no hay piezas de cura, el dominio distancia (ya incluido en `mastery`) decide.
     misc: { mastHeal: 0.00005, dodge: 0.00005, init: 0.00003, armorGiven: 0.004, resCrit: 0.0002, armorReceived: 0.002 },
@@ -165,7 +166,9 @@ function score(t: Float64Array, req: BuildRequest): number {
   // Recursos: muy valiosos hasta el objetivo, poco valiosos por encima.
   const res = (val: number, target: number, below: number, above: number) =>
     val <= target ? val * below : target * below + (val - target) * above;
-  s += res(t[IDX.ap], req.targets.ap, ...w.ap);
+  // Los PA de más solo valen su peso completo con el objetivo de PM cubierto: no se cambian PM por PA extra.
+  const apAbove = t[IDX.mp] >= req.targets.mp ? w.ap[1] : Math.min(w.ap[1], w.mp[1]);
+  s += res(t[IDX.ap], req.targets.ap, w.ap[0], apAbove);
   s += res(t[IDX.mp], req.targets.mp, ...w.mp);
   if (req.targets.range > 0) s += res(t[IDX.range], req.targets.range, 0.05, 0.004);
   s += 0.004 * t[IDX.wp];

@@ -2,11 +2,11 @@
 // y la lista conjunta de recursos: receta completa de las piezas crafteables y % de drop del resto.
 import { useEffect, useMemo, useState } from 'react';
 import {
-  BUILD_SLOTS, CLASSES, ELEMENTS, LEVEL_BANDS, RARITIES, ROLES, bandOf, itemImage,
+  BUILD_SLOTS, CLASSES, ELEMENTS, LEVEL_BANDS, RARITIES, ROLES, STAT_LABELS, bandOf, itemImage,
   type DropData, type Element, type Item, type RecipeData, type Role,
 } from './lib/game';
 import { recommend, type BuildSlots } from './lib/optimizer';
-import { defaultChoice, dropsToFarm, expectedFights, gearRequest, keepWithout, stillNeeded, teamShopping, type GearChoice } from './lib/teamGear';
+import { defaultChoice, dropsToFarm, expectedFights, gearRequest, keepWithout, stillNeeded, targetsOf, teamShopping, type GearChoice } from './lib/teamGear';
 import type { Member } from './lib/teams';
 import { jobName, locale, mobName, t, type LangData } from './lib/i18n';
 import { localizeRecipes } from './lib/localize';
@@ -223,7 +223,7 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
               <b className="tgear-name">{classLabel(m.classId)}</b>
               <div className="field">
                 <label htmlFor={id} className="label">{t('gear.setType')}</label>
-                <select id={id} className="input" value={c.role} onChange={(e) => setChoice(m, { role: e.target.value as Role })}>
+                <select id={id} className="input" value={c.role} onChange={(e) => setChoice(m, { role: e.target.value as Role, targets: undefined })}>
                   {ROLES.map((r) => <option key={r.id} value={r.id}>{r.label}{cls.roles.includes(r.id) ? '' : ' *'}</option>)}
                 </select>
               </div>
@@ -237,6 +237,27 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
                       {e.label}{cls.elements.includes(e.id) ? '' : ' *'}
                     </button>
                   ))}
+                </div>
+              </div>
+              <div className="field">
+                <span className="label">{t('gear.targets')}</span>
+                <div className="row tgear-targets">
+                  {(['ap', 'mp', 'range'] as const).map((k) => {
+                    const tid = `gear-${k}-${m.classId}`;
+                    const cur = targetsOf(c, level);
+                    return (
+                      <label key={k} htmlFor={tid} className="tgear-target">
+                        <span className="small muted">{STAT_LABELS[k]}</span>
+                        <input id={tid} className="input" type="number" min={0} max={20} value={cur[k]}
+                          onChange={(e) => setChoice(m, { targets: { ...cur, [k]: Math.min(20, Math.max(0, +e.target.value || 0)) } })} />
+                      </label>
+                    );
+                  })}
+                  {c.targets && (
+                    <button type="button" className="btn ghost" onClick={() => setChoice(m, { targets: undefined })}>
+                      {t('gear.targetsDefault')}
+                    </button>
+                  )}
                 </div>
               </div>
             </li>

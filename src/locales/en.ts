@@ -457,6 +457,8 @@ const en: Dict = {
   "gear.craftOnly": "Craftable pieces only",
   "gear.setType": "Set type",
   "gear.elements": "Elements",
+  "gear.targets": "Targets",
+  "gear.targetsDefault": "Default",
   "gear.usualHint": "* Role or element unusual for that class.",
   "gear.generate": "Generate the {n} sets",
   "gear.working": "Calculating {n}/{total}…",

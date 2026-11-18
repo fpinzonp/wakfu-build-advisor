@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { DropData, Item, RecipeData } from './game';
+import { ROLE_DEFAULT_TARGETS, type DropData, type Item, type RecipeData } from './game';
 import { defaultChoice, dropsToFarm, expectedFights, gearRequest, keepWithout, stillNeeded, teamShopping } from './teamGear';
 
 const item = (id: number, src: Item['src'], slot: Item['slot'] = 'head', lvl = 50): Item =>
@@ -26,6 +26,13 @@ describe('sets del equipo', () => {
   it('todas las peticiones comparten nivel y filtros', () => {
     const r = gearRequest('sram', { role: 'melee', elements: ['air'] }, { level: 140, craftOnly: true });
     expect(r).toMatchObject({ level: 140, classId: 'sram', role: 'melee', elements: ['air'], craftOnly: true, crit: true, back: true });
+  });
+
+  it('los PA/PM/alcance de cada personaje sustituyen a los del rol', () => {
+    const own = gearRequest('ocra', { role: 'dist', elements: ['fire'], targets: { ap: 13, mp: 5, range: 4 } }, { level: 200, craftOnly: false });
+    expect(own.targets).toEqual({ ap: 13, mp: 5, range: 4 });
+    const def = gearRequest('ocra', { role: 'dist', elements: ['fire'] }, { level: 200, craftOnly: false });
+    expect(def.targets).toEqual(ROLE_DEFAULT_TARGETS('dist', 200));
   });
 
   it('las piezas descartadas se excluyen y el resto se puede fijar', () => {

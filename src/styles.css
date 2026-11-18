@@ -498,7 +498,7 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .tgear h2, .tgear h3, .tgear p { margin: 0; }
 .tgear-members { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .tgear-members li {
-  display: grid; grid-template-columns: 120px minmax(160px, 220px) minmax(0, 1fr); gap: 12px; align-items: end;
+  display: grid; grid-template-columns: 120px minmax(160px, 220px) minmax(0, 1fr) auto; gap: 12px; align-items: end;
   background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px;
 }
 .tgear-members .field { min-width: 0; margin: 0; }
@@ -514,6 +514,9 @@ input[type=range] { accent-color: var(--accent); width: 100%; }
 .tgear-crafts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
 .tgear-crafts li { display: flex; flex-direction: column; gap: 4px; background: var(--panel-2); border-radius: var(--radius-sm); padding: 8px 12px; min-width: 0; }
 .tgear-owned { width: 64px; }
+.tgear-targets { gap: 8px; align-items: end; }
+.tgear-target { display: flex; flex-direction: column; gap: 2px; }
+.tgear-target .input { width: 56px; }
 .tgear-piece { display: inline-flex; align-items: center; gap: 6px; }
 .tgear-swap { border: 0; background: none; color: var(--muted); cursor: pointer; padding: 0 2px; font: inherit; line-height: 1; }
 .tgear-swap:hover, .tgear-swap:focus-visible { color: var(--text); }

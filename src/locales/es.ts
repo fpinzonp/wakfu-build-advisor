@@ -455,6 +455,8 @@ const es = {
   "gear.craftOnly": "Solo piezas crafteables",
   "gear.setType": "Tipo de set",
   "gear.elements": "Elementos",
+  "gear.targets": "Objetivos",
+  "gear.targetsDefault": "Por defecto",
   "gear.usualHint": "* Rol o elemento poco habitual en esa clase.",
   "gear.generate": "Generar los {n} sets",
   "gear.working": "Calculando {n}/{total}…",

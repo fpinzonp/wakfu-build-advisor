@@ -4,8 +4,14 @@ import { BUILD_SLOTS, CLASSES, ROLE_DEFAULT_TARGETS, type Drop, type DropData, t
 import { materialsFor, type MaterialList } from './materials';
 import type { BuildRequest, BuildSlots } from './optimizer';
 
-/** Tipo de set elegido para un personaje. */
-export interface GearChoice { role: Role; elements: Element[] }
+export interface GearTargets { ap: number; mp: number; range: number }
+
+/** Tipo de set elegido para un personaje. Sin `targets`, los PA/PM/alcance por defecto de su rol y nivel. */
+export interface GearChoice { role: Role; elements: Element[]; targets?: GearTargets }
+
+/** PA/PM/alcance objetivo de un personaje: los suyos o los del rol a ese nivel. */
+export const targetsOf = (choice: GearChoice, level: number): GearTargets =>
+  choice.targets ?? ROLE_DEFAULT_TARGETS(choice.role, level);
 
 /** Ajustes comunes a todo el equipo. */
 export interface TeamGearSettings { level: number; craftOnly: boolean }
@@ -23,7 +29,7 @@ export function gearRequest(
   const c = CLASSES.find((x) => x.id === classId)!;
   return {
     level: s.level, classId, role: choice.role, elements: choice.elements,
-    targets: ROLE_DEFAULT_TARGETS(choice.role, s.level), allowedRarities: [0, 1, 2, 3, 4, 5, 6, 7],
+    targets: targetsOf(choice, s.level), allowedRarities: [0, 1, 2, 3, 4, 5, 6, 7],
     minLevel: 0, craftOnly: s.craftOnly, berserk: !!c.berserk, crit: !!c.focus?.includes('crit'),
     back: !!c.focus?.includes('back'), excluded: new Set(excluded), locked,
   };

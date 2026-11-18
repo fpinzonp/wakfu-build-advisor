@@ -457,6 +457,8 @@ const fr: Dict = {
   "gear.craftOnly": "Pièces craftables uniquement",
   "gear.setType": "Type de stuff",
   "gear.elements": "Éléments",
+  "gear.targets": "Objectifs",
+  "gear.targetsDefault": "Par défaut",
   "gear.usualHint": "* Rôle ou élément peu courant pour cette classe.",
   "gear.generate": "Générer les {n} stuffs",
   "gear.working": "Calcul {n}/{total}…",

@@ -1,6 +1,6 @@
 // Sets de todo el equipo a la vez: una build por personaje (mismo nivel, tipo de set propio)
 // y la lista conjunta de lo que hace falta para armarlos todos.
-import { BUILD_SLOTS, CLASSES, ROLE_DEFAULT_TARGETS, type Drop, type DropData, type Element, type Item, type RecipeData, type Role } from './game';
+import { BUILD_SLOTS, CLASSES, EPIC, RELIC, ROLE_DEFAULT_TARGETS, type Drop, type DropData, type Element, type Item, type RecipeData, type Role } from './game';
 import { materialsFor, type MaterialList } from './materials';
 import type { BuildRequest, BuildSlots } from './optimizer';
 
@@ -92,6 +92,17 @@ export function keepWithout(slots: BuildSlots, id: number): BuildSlots {
     keep[s.id] = item;
   }
   return keep;
+}
+
+/** Piezas a fijar en cada intento de reemplazo de `id`. Si es un épico o una reliquia (solo cabe uno
+ * por set), además de su propia ranura se prueba liberar cada una de las demás, para que otro
+ * épico/reliquia pueda entrar en una ranura distinta. El primer intento es siempre el mínimo. */
+export function replaceOptions(slots: BuildSlots, id: number): BuildSlots[] {
+  const keep = keepWithout(slots, id);
+  const removed = Object.values(slots).find((i) => i?.id === id);
+  if (removed?.rarity !== EPIC && removed?.rarity !== RELIC) return [keep];
+  const others = BUILD_SLOTS.map((s) => keep[s.id]).filter((i): i is Item => !!i);
+  return [keep, ...others.map((i) => keepWithout(keep, i.id))];
 }
 
 /** Unidades que aún faltan de una pieza, descontando las que ya se tienen (nunca menos de 0). */

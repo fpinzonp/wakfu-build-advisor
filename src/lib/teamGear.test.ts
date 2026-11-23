@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { ROLE_DEFAULT_TARGETS, type DropData, type Item, type RecipeData } from './game';
-import { defaultChoice, dropsToFarm, expectedFights, gearRequest, keepWithout, stillNeeded, teamShopping } from './teamGear';
+import { EPIC, ROLE_DEFAULT_TARGETS, type DropData, type Item, type RecipeData } from './game';
+import { defaultChoice, dropsToFarm, expectedFights, gearRequest, keepWithout, replaceOptions, stillNeeded, teamShopping } from './teamGear';
 
 const item = (id: number, src: Item['src'], slot: Item['slot'] = 'head', lvl = 50): Item =>
   ({ id, name: `I${id}`, lvl, type: 0, slot, rarity: 3, gfx: 0, stats: {}, src });
@@ -45,6 +45,15 @@ describe('sets del equipo', () => {
     const sword = { ...item(10, 'other', 'weapon1'), cond: [{ needs: 3 }] } as Item;
     const keep = keepWithout({ head: item(1, 'craft'), back: item(3, 'other', 'back'), weapon: sword, neck: item(2, 'craft', 'neck') }, 3);
     expect(Object.keys(keep).sort()).toEqual(['head', 'neck']);
+  });
+
+  it('al descartar un épico también se prueba liberar cada otra ranura para otro épico', () => {
+    const epic = { ...item(3, 'other', 'back'), rarity: EPIC } as Item;
+    const slots = { head: item(1, 'craft'), back: epic, neck: item(2, 'craft', 'neck') };
+    const opts = replaceOptions(slots, 3).map((o) => Object.keys(o).sort());
+    expect(opts).toEqual([['head', 'neck'], ['neck'], ['head']]);
+    // Una pieza normal solo libera su propia ranura
+    expect(replaceOptions(slots, 1).map((o) => Object.keys(o).sort())).toEqual([['back', 'neck']]);
   });
 
   it('suma piezas repetidas y desglosa la receta completa', () => {

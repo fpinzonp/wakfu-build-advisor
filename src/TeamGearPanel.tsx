@@ -6,7 +6,7 @@ import {
   type DropData, type Element, type Item, type RecipeData, type Role,
 } from './lib/game';
 import { recommend, type BuildSlots } from './lib/optimizer';
-import { defaultChoice, dropsToFarm, expectedFights, gearRequest, keepWithout, stillNeeded, targetsOf, teamShopping, type GearChoice } from './lib/teamGear';
+import { defaultChoice, dropsToFarm, expectedFights, gearRequest, replaceOptions, stillNeeded, targetsOf, teamShopping, type GearChoice } from './lib/teamGear';
 import type { Member } from './lib/teams';
 import { jobName, locale, mobName, t, type LangData } from './lib/i18n';
 import { localizeRecipes } from './lib/localize';
@@ -128,7 +128,11 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
         if (!Object.values(b.slots).some((i) => i?.id === id)) return b;
         const m = team.find((x) => x.classId === b.classId);
         const choice = m ? choiceOf(m) : defaultChoice(b.classId, 'dist');
-        return { ...b, slots: recommend(items, gearRequest(b.classId, choice, settings, next, keepWithout(b.slots, id))).slots };
+        // Con un épico/reliquia se prueba también moverlo a otra ranura y se queda el mejor resultado.
+        const best = replaceOptions(b.slots, id)
+          .map((locked) => recommend(items, gearRequest(b.classId, choice, settings, next, locked)))
+          .reduce((a, r) => (r.score > a.score ? r : a));
+        return { ...b, slots: best.slots };
       });
       setGenerated({ ...generated, builds });
       setReplacing(null);

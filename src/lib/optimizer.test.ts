@@ -53,4 +53,14 @@ describe('prioridad de PA y PM', () => {
     expect(evaluateBuild({ weapon: item(3, 'weapon1', 4, { ap: 1 }) }, full).score)
       .toBeGreaterThan(evaluateBuild({ legs: item(2, 'legs', 4, { mp: 1 }) }, full).score);
   });
+
+  it('las armas a dos manos no dejan fuera de la búsqueda a una de una mano que rinde con segunda mano', () => {
+    // 45 martillos con más dominio que la varita por sí sola, pero varita + daga suma más que cualquiera.
+    const hammers = Array.from({ length: 45 }, (_, i) => item(100 + i, 'weapon2h', 4, { mastElem: 30 + i }));
+    const wand = item(2, 'weapon1', 4, { mastElem: 20 });
+    const dagger = item(3, 'offhand', 4, { mastElem: 60 });
+    const r = recommend([...hammers, wand, dagger], request(0));
+    expect(r.slots.weapon?.id).toBe(2);
+    expect(r.slots.offhand?.id).toBe(3);
+  });
 });

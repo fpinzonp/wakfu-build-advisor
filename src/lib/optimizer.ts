@@ -344,12 +344,18 @@ export function recommend(items: Item[], req: BuildRequest): BuildResult {
       for (let i = 0; i < N; i++) t[i] += c.vec[i];
       return score(t, req) - baseScore;
     };
-    const ranked = list.map((c) => ({ c, m: marginal(c) })).sort((a, b) => b.m - a.m);
-    const keep = new Set(ranked.slice(0, 40).map((r) => r.c));
-    for (const key of ['ap', 'mp', 'range'] as const) {
-      list.filter((c) => c.vec[IDX[key]] > 0)
-        .sort((a, b) => b.vec[IDX[key]] - a.vec[IDX[key]] || marginal(b) - marginal(a))
-        .slice(0, 6).forEach((c) => keep.add(c));
+    const keep = new Set<Cand>();
+    // En el arma, las de una y dos manos se preseleccionan por separado: si no, las de dos manos
+    // (que suman más por sí solas) dejan fuera a las de una mano que rinden junto a la segunda mano.
+    const groups = slot.id === 'weapon' ? [list.filter((c) => !c.twoHanded), list.filter((c) => c.twoHanded)] : [list];
+    for (const group of groups) {
+      const ranked = group.map((c) => ({ c, m: marginal(c) })).sort((a, b) => b.m - a.m);
+      ranked.slice(0, 40).forEach((r) => keep.add(r.c));
+      for (const key of ['ap', 'mp', 'range'] as const) {
+        group.filter((c) => c.vec[IDX[key]] > 0)
+          .sort((a, b) => b.vec[IDX[key]] - a.vec[IDX[key]] || marginal(b) - marginal(a))
+          .slice(0, 6).forEach((c) => keep.add(c));
+      }
     }
     cands[slot.id] = [...keep];
     const locked = req.locked[slot.id];

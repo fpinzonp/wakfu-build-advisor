@@ -562,6 +562,8 @@ const WIKI_CLASS = {
   Eniripsa: 'aniripsa', Iop: 'yopuka', Cra: 'ocra', Sadida: 'sadida', Sacrier: 'sacrogrito', Pandawa: 'pandawa',
   Rogue: 'tymador', Masqueraider: 'zobal', Foggernaut: 'steamer', Eliotrope: 'selotrop', Huppermage: 'hipermago',
   Ouginak: 'uginak',
+  // 1.94: nombre inglés supuesto; se ajusta cuando la wiki publique la clase.
+  Bellaphone: 'bellaphone',
 };
 const spellStats = JSON.parse(await readFile(new URL('../data/spell-stats.json', import.meta.url), 'utf8')).passives;
 

@@ -1,5 +1,5 @@
 // Ficha de características completa de una build (como la del juego).
-import { BUILD_SLOTS, ELEMENTS, type Element } from './game';
+import { BUILD_SLOTS, ELEMENTS, multiMastCount, type Element } from './game';
 import type { BuildResult } from './optimizer';
 
 export interface ElementLine { element: Element; mastery: number; res: number; resPct: number }
@@ -27,7 +27,7 @@ export function buildSheet(result: BuildResult, elements: Element[]): Sheet {
 
   for (const { id } of BUILD_SLOTS) {
     const item = result.slots[id];
-    if (item?.multiMast) for (const e of order.slice(0, item.multiMast.n)) mastery[e] += item.multiMast.v;
+    if (item?.multiMast) for (const e of order.slice(0, multiMastCount(item.multiMast.n))) mastery[e] += item.multiMast.v;
     if (item?.multiRes) {
       const lowest = [...order].sort((a, b) => res[a] - res[b]).slice(0, item.multiRes.n);
       for (const e of lowest) res[e] += item.multiRes.v;

@@ -15,7 +15,7 @@ export function actorFromBuild(id: ActorId, result: BuildResult, opts: ActorOpts
   const sheet = buildSheet(result, opts.elements);
   const mastery = Object.fromEntries(sheet.elements.map((e) => [e.element, e.mastery])) as Record<Element, number>;
   // Solo cuenta la baraja que cabe a este nivel y existe en la clase.
-  const fitted = fitDeck(opts.deck, opts.spells, opts.level);
+  const fitted = fitDeck(opts.deck, opts.spells, opts.level, opts.classId);
   const byId = new Map(opts.spells.map((s) => [s.id, s]));
   const pick = (ids: number[]) => ids.map((i) => byId.get(i)).filter((s): s is Spell => !!s);
   return {

@@ -4,6 +4,7 @@ import DungeonBoard from './DungeonBoard';
 import { DUNGEONS, byTier } from './lib/dungeons';
 import { boardAt } from './lib/dungeons/play';
 import { t, useLang } from './lib/i18n';
+import { onTabsKey, tabProps } from './lib/tabs';
 
 export const PLAY_MS = 1800;
 
@@ -79,9 +80,9 @@ export default function DungeonPanel({ active, focus }: { active: boolean; focus
           </select>
         </label>
         {dungeon.rooms.length > 1 && (
-          <div className="tabs" role="tablist" aria-label={t('dun.room')}>
+          <div className="tabs" role="tablist" aria-label={t('dun.room')} onKeyDown={onTabsKey}>
             {dungeon.rooms.map(r => (
-              <button key={r.id} role="tab" aria-selected={r.id === room.id} className={r.id === room.id ? 'on' : ''} onClick={() => pickRoom(r.id)}>
+              <button key={r.id} {...tabProps(r.id === room.id)} className={r.id === room.id ? 'on' : ''} onClick={() => pickRoom(r.id)}>
                 {r.name[lang]}
               </button>
             ))}

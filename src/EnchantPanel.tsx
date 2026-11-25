@@ -8,6 +8,7 @@ import { runeValue, type RuneGroup, type RunePlan } from './lib/runes';
 import type { EnchantState } from './lib/share';
 import { sublimationAffinity, sublimationBase } from './lib/sublimations';
 import { pct, t } from './lib/i18n';
+import { onTabsKey, tabProps } from './lib/tabs';
 
 /** Texto del efecto en el idioma de la interfaz (si no hay traducción, el español). */
 const subText = (s: Sublimation) => s.text ?? s.effect;
@@ -182,9 +183,9 @@ export default function EnchantPanel({ data, result, request, enchant, onChange,
           ))}
         </div>
 
-        <div className="seg" role="tablist">
+        <div className="seg" role="tablist" aria-label={t('enchant.subs')} onKeyDown={onTabsKey}>
           {([['normal', t('enchant.tab.normal')], ['epic', t('enchant.tab.epic')], ['relic', t('enchant.relic')]] as [Tab, string][]).map(([id, label]) => (
-            <button key={id} role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''}
+            <button key={id} {...tabProps(tab === id)} className={tab === id ? 'on' : ''}
               onClick={() => { setTab(id); setLimit(15); }}>{label}</button>
           ))}
         </div>

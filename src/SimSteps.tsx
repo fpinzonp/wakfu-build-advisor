@@ -9,6 +9,7 @@ function stepLabel(r: StepResult, spellName: (id: number, actor: ActorId) => str
   if (s.type === 'cast') return spellName(s.spell, s.actor) ?? t('sim.step.unknown');
   if (s.type === 'move') return t('sim.step.move', { cell: cellText(s.to) });
   if (s.type === 'endTurn') return t('sim.step.endTurn');
+  if (s.type === 'aura') return t('sim.tag.bellaura');
   const parts: string[] = [];
   if (s.hpPct !== undefined) parts.push(t('sim.step.hp', { pct: Math.round(s.hpPct) }));
   if (s.armor !== undefined) parts.push(t('sim.step.armor', { n: fmt(s.armor) }));

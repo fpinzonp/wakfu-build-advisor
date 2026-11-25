@@ -12,7 +12,7 @@ export function bonusFor(data: SpellData | null, classId: string, deck: Deck, le
   if (!data) return NO_DECK_BONUS;
   const spells = classSpells(data, classId);
   const byId = new Map(spells.map((s) => [s.id, s]));
-  return deckBonus(fitDeck(deck, spells, level).passives.map((id) => byId.get(id)!), level);
+  return deckBonus(fitDeck(deck, spells, level, classId).passives.map((id) => byId.get(id)!), level);
 }
 
 /** Petición de evaluación para unos ajustes. Las piezas fijadas por encima del nivel dejan de aplicarse. */

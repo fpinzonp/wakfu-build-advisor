@@ -26,6 +26,7 @@ import { bonusFor, requestFor as requestForSaved, resolveSaved } from './lib/sav
 import {
   LANGS, LangContext, fmt, initialLang, jobName, locale, pct, setLang as applyLang, setNames, t, tk, type Lang, type LangData,
 } from './lib/i18n';
+import { onTabsKey, tabProps } from './lib/tabs';
 import { localizeEnchant, localizeItems, localizeRecipes, localizeSpells } from './lib/localize';
 import EnchantPanel, { Socket } from './EnchantPanel';
 import MaterialsPanel from './MaterialsPanel';
@@ -286,24 +287,25 @@ export default function App() {
         </div>
       </header>
 
-      <nav className="tabs section-tabs" role="tablist" aria-label={t('section.aria')}>
+      <nav className="tabs section-tabs" role="tablist" aria-label={t('section.aria')} onKeyDown={onTabsKey}>
         {(['builds', 'teams', 'dungeons'] as const).map((id) => (
-          <button key={id} role="tab" aria-selected={section === id} className={section === id ? 'on' : ''} onClick={() => setSection(id)}>
+          <button key={id} id={`section-tab-${id}`} {...tabProps(section === id, `section-${id}`)} className={section === id ? 'on' : ''}
+            onClick={() => setSection(id)}>
             {t(`section.${id}`)}
           </button>
         ))}
       </nav>
 
-      <div hidden={section !== 'teams'}>
+      <div id="section-teams" role="tabpanel" aria-labelledby="section-tab-teams" hidden={section !== 'teams'}>
         <TeamsPanel spellData={spellData} initialClass={classId} onBuild={buildFromTeam} onOpenDungeon={openDungeon}
           items={data?.items ?? null} names={names} />
       </div>
 
-      <div hidden={section !== 'dungeons'}>
+      <div id="section-dungeons" role="tabpanel" aria-labelledby="section-tab-dungeons" hidden={section !== 'dungeons'}>
         <DungeonPanel active={section === 'dungeons'} focus={dungeonFocus} />
       </div>
 
-      <main className="layout" hidden={section !== 'builds'}>
+      <main id="section-builds" aria-labelledby="section-tab-builds" className="layout" hidden={section !== 'builds'}>
         <aside className="panel form" aria-label={t('form.aria')}>
           <div className="form-scroll">
             <FormStep n={1} title={t('form.character')}>
@@ -509,7 +511,20 @@ function Modal({ title, onClose, children, wide }: { title: string; onClose: () 
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
     ref.current?.querySelector<HTMLElement>('input, button:not(.x), select')?.focus();
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') return onClose();
+      if (e.key !== 'Tab' || !ref.current) return;
+      // Tab y Mayús+Tab dan la vuelta dentro de la ventana: el foco no se escapa al fondo.
+      const focusable = [...ref.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )];
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const inside = ref.current.contains(document.activeElement);
+      if (e.shiftKey && (document.activeElement === first || !inside)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && (document.activeElement === last || !inside)) { e.preventDefault(); first.focus(); }
+    };
     window.addEventListener('keydown', onKey);
     return () => { window.removeEventListener('keydown', onKey); prev?.focus(); };
   }, [onClose]);
@@ -747,16 +762,16 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
         </div>
       </div>
 
-      <nav className="tabs" role="tablist" aria-label={t('tabs.aria')}>
+      <nav className="tabs" role="tablist" aria-label={t('tabs.aria')} onKeyDown={onTabsKey}>
         {VIEW_TABS.map((id) => (
-          <button key={id} role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}>
+          <button key={id} id={`view-tab-${id}`} {...tabProps(tab === id, `view-${id}`)} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}>
             {t(`tab.${id}`)}
           </button>
         ))}
       </nav>
 
       {/* Las pestañas ocultas siguen montadas para conservar su estado. */}
-      <div hidden={tab !== 'equip'} className="tab-body">
+      <div id="view-equip" role="tabpanel" aria-labelledby="view-tab-equip" hidden={tab !== 'equip'} className="tab-body">
         <div className="equip">
           {BUILD_SLOTS.map((s) => {
             const item = result.slots[s.id];
@@ -838,31 +853,31 @@ function BuildView({ result, level, role, cls, elements, items, request, locked,
         <p className="muted small">{t('equip.note')}</p>
       </div>
 
-      <div hidden={tab !== 'stats'} className="tab-body">
+      <div id="view-stats" role="tabpanel" aria-labelledby="view-tab-stats" hidden={tab !== 'stats'} className="tab-body">
         <StatSheet result={sheetResult} elements={elements} withRunes={withRunes}
           runesAvailable={!!bonus} onToggleRunes={setWithRunes} runeBonus={bonus} />
         <StatValuePanel slots={result.slots} request={request} extra={withRunes && bonus ? bonus : NO_EXTRA} />
       </div>
 
-      <div hidden={tab !== 'deck'} className="tab-body">
-        <DeckPanel spells={spells} deck={deck} level={level} bonus={deckEffect} onChange={onDeck} onShare={onShare} />
+      <div id="view-deck" role="tabpanel" aria-labelledby="view-tab-deck" hidden={tab !== 'deck'} className="tab-body">
+        <DeckPanel spells={spells} deck={deck} level={level} classId={request.classId} bonus={deckEffect} onChange={onDeck} onShare={onShare} />
       </div>
 
-      <div hidden={tab !== 'sim'} className="tab-body">
+      <div id="view-sim" role="tabpanel" aria-labelledby="view-tab-sim" hidden={tab !== 'sim'} className="tab-body">
         <SimPanel result={sheetResult} classId={request.classId} level={level} elements={elements} deck={deck}
           spells={spells} items={items} spellData={spellData} active={tab === 'sim'} onGoToDeck={() => setTab('deck')} />
       </div>
 
-      <div hidden={tab !== 'enchant'} className="tab-body">
+      <div id="view-enchant" role="tabpanel" aria-labelledby="view-tab-enchant" hidden={tab !== 'enchant'} className="tab-body">
         <EnchantPanel data={enchantData} result={result} request={request} enchant={enchant} onChange={onEnchant}
           suggested={suggested} groups={groups} withMine={withMine} />
       </div>
 
-      <div hidden={tab !== 'craft'} className="tab-body">
+      <div id="view-craft" role="tabpanel" aria-labelledby="view-tab-craft" hidden={tab !== 'craft'} className="tab-body">
         <MaterialsPanel slots={result.slots} recipes={recipes} />
       </div>
 
-      <div hidden={tab !== 'apt'} className="tab-body">
+      <div id="view-apt" role="tabpanel" aria-labelledby="view-tab-apt" hidden={tab !== 'apt'} className="tab-body">
         <div className="panel">
           <h2>{t('apt.title')}</h2>
           <div className="apt">

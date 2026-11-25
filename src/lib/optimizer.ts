@@ -1,6 +1,6 @@
 // Recomendador de builds: puntúa una combinación de objetos según el rol y busca la mejor
 // combinación con ascenso por coordenadas, reinicios aleatorios y respeto de las reglas del juego.
-import { ALWAYS_EQUIPPED_SLOTS, BUILD_SLOTS, CLASSES, EPIC, RELIC, isDamageRole, type BuildSlot, type Element, type Item, type Role } from './game';
+import { ALWAYS_EQUIPPED_SLOTS, BUILD_SLOTS, CLASSES, EPIC, RELIC, isDamageRole, multiMastCount, type BuildSlot, type Element, type Item, type Role } from './game';
 import { planAptitudes, type AptitudePlan } from './aptitudes';
 import type { DeckBonus } from './spells';
 import { t } from './i18n';
@@ -68,7 +68,7 @@ export function toVector(stats: Record<string, number>, multiMast: Item['multiMa
   // Dominio efectivo: elemental + media de los elementos elegidos + dominio en N elementos aleatorios
   // (el jugador elige los elementos, así que cubre min(n, k) de los k elementos de la build).
   let mast = s('mastElem') + elements.reduce((a, e) => a + s(ELEMENT_KEYS[e].mast), 0) / k;
-  if (multiMast) mast += (multiMast.v * Math.min(multiMast.n, k)) / k;
+  if (multiMast) mast += (multiMast.v * Math.min(multiMastCount(multiMast.n), k)) / k;
   v[IDX.mastEff] = mast;
   // Resistencia media frente a los 4 elementos
   let res = s('resElem') + (s('resFire') + s('resWater') + s('resEarth') + s('resAir')) / 4;

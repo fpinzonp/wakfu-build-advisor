@@ -13,6 +13,7 @@ import { allyFromStored } from './lib/sim/ally';
 import { simulate, type ActorId, type CastTarget, type SimActor, type SimState, type SimStep, type Triple } from './lib/sim/engine';
 import { castTarget } from './lib/sim/castTarget';
 import { actorFromBuild } from './lib/sim/fromBuild';
+import { BELLAPHONE, DEFAULT_LINEAGE, LINEAGES, type Lineage } from './lib/sim/rules/bellaphone';
 import { addArmor, casterZone, distance, inZone, isCasterCentred, type Cell, type Facing } from './lib/sim/formulas';
 import type { MobData } from './lib/sim/mobs';
 import { CONC_KEY, PREPARATION } from './lib/sim/rules/iop';
@@ -108,6 +109,8 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
   const [comboExtraPct, setComboExtraPct] = useState(0);
   // PW que cada personaje recupera por turno: depende de su clase y pasivas, así que se fija a mano.
   const [wpPerTurn, setWpPerTurn] = useState<Record<ActorId, number>>({ main: 0, ally: 0 });
+  // Linaje de cada Bellaphone: se elige antes del combate y queda fijo mientras haya pasos.
+  const [lineage, setLineage] = useState<Record<ActorId, Lineage>>({ main: DEFAULT_LINEAGE, ally: DEFAULT_LINEAGE });
   const [preview, setPreview] = useState<Spell | null>(null);
   // `view` es el paso mostrado; null sigue el último (en vivo) y -1 es antes del primer paso.
   const [view, setView] = useState<number | null>(null);
@@ -123,8 +126,9 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
     classId, level, elements, deck, spells: spells ?? [], start: START, name: t('sim.me'),
   }), [result, classId, level, elements, deck, spells, lang]);
   const actors: SimActor[] = useMemo(
-    () => (ally ? [mainActor, ally] : [mainActor]).map((a) => ({ ...a, wpPerTurn: wpPerTurn[a.id] })),
-    [mainActor, ally, wpPerTurn],
+    () => (ally ? [mainActor, ally] : [mainActor])
+      .map((a) => ({ ...a, wpPerTurn: wpPerTurn[a.id], ...(a.classId === BELLAPHONE ? { lineage: lineage[a.id] } : {}) })),
+    [mainActor, ally, wpPerTurn, lineage],
   );
   const actor = actors.find((a) => a.id === acting) ?? mainActor;
   const targetName = targetLabel(target);
@@ -297,6 +301,17 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
                   {yopuka && prep > 0 && <span>{t('sim.res.prep', { n: prep })}</span>}
                 </div>
                 <small className="muted" id={`sim-wp-hint-${a.id}`}>{t('sim.wpPerTurn.hint')}</small>
+                {a.classId === BELLAPHONE && (
+                  <label className="field sim-lineage">
+                    <span className="label">{t('sim.aura.lineage')}</span>
+                    <select className="input" value={lineage[a.id]} disabled={steps.length > 0}
+                      aria-describedby={`sim-lineage-hint-${a.id}`}
+                      onChange={(e) => setLineage({ ...lineage, [a.id]: e.target.value as Lineage })}>
+                      {LINEAGES.map((l) => <option key={l} value={l}>{t(`lineage.${l}`)}</option>)}
+                    </select>
+                    <small className="muted" id={`sim-lineage-hint-${a.id}`}>{t('sim.aura.hint')}</small>
+                  </label>
+                )}
                 <div className="sim-bars">
                   <Bar kind="hp" value={hp} max={a.maxHp} label={`${t('sim.res.hp', { pct: hpPct })} · ${fmt(hp)}/${fmt(a.maxHp)}`} />
                   <Bar kind="armor" value={st?.armor ?? 0} max={armorMax}
@@ -321,6 +336,9 @@ export default function SimPanel({ result, classId, level, elements, deck, spell
                 onClick={() => { setPlaying(false); setView(null); }}>{t('sim.play.live')}</button>
             </div>
             <div className="actions">
+              {actor.classId === BELLAPHONE && (
+                <button type="button" className="btn" onClick={() => add({ type: 'aura', actor: acting })}>{t('sim.aura.activate')}</button>
+              )}
               <button type="button" className="btn" onClick={() => add({ type: 'endTurn' })}>{t('sim.endTurn')}</button>
               <button type="button" className="btn ghost" disabled={steps.length === 0} onClick={() => { setSteps([]); setView(null); setPlaying(false); }}>
                 {t('sim.clear')}

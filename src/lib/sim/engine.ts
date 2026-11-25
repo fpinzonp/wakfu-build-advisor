@@ -10,6 +10,7 @@ import {
   SPELL_MAX_LEVEL, addArmor, addHealRes, armorValue, baseAtLevel, casterZone, damageValue, distance, healValue,
   inZone, isBerserk, isCasterCentred, isMelee, positionOf, type Cell, type Facing, type Position,
 } from './formulas';
+import { AURA_RADIUS, AURA_STATE, BELLAPHONE, DEFAULT_LINEAGE, auraFor, type Lineage } from './rules/bellaphone';
 import { iopRules } from './rules/iop';
 import { rogueRules } from './rules/rogue';
 import { sacrierRules } from './rules/sacrier';
@@ -22,6 +23,7 @@ export interface SimActor {
   ap: number; mp: number; wp: number; spells: Spell[]; start: Cell;
   wpPerTurn?: number;   // PW que recupera al terminar el turno (depende de la clase y las pasivas); 0 por defecto
   passives?: string[];  // pasivas equipadas, por su nombre inglés de la wiki (`spells` solo trae los activos)
+  lineage?: Lineage;    // solo Bellaphone: linaje elegido antes del combate (queda fijo durante el combate)
 }
 
 export interface SimTarget {
@@ -33,6 +35,7 @@ export type SimStep =
   | { type: 'cast'; actor: ActorId; spell: number; target: 'mob' | 'ally' | 'self' }
   | { type: 'move'; actor: ActorId; to: Cell }
   | { type: 'endTurn' }
+  | { type: 'aura'; actor: ActorId }  // el Bellaphone activa su Bellaura (una vez por turno)
   | { type: 'adjust'; actor?: ActorId; hpPct?: number; armor?: number; facing?: Facing; state?: { id: string; levels: number }; wp?: number };
 
 export interface Triple { normal: number; crit: number; avg: number }
@@ -63,6 +66,7 @@ export interface AfterCastResult { extraHits?: ExtraHit[] }
 
 export interface SimState {
   actors: Partial<Record<ActorId, ActorState>>; mobHp: number; facing: Facing; turn: number;
+  mobRes?: number;  // resistencia elemental que el objetivo pierde (o gana) hasta el fin del turno, p. ej. Bellaura de Ébano
 }
 
 export interface StepResult { step: SimStep; ok: boolean; reason?: TKey; rows: StepRow[]; state: SimState }
@@ -177,7 +181,7 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
         if (!inZone(casterZone(cast), me.cell, to)) return fail('sim.err.zone');
       } else {
         const d = distance(me.cell, to);
-        const max = Math.max(cast.rangeMin, cast.rangeMax + (cast.rangeMod ? stat(actor.stats, 'range') : 0));
+        const max = Math.max(cast.rangeMin, cast.rangeMax + (cast.rangeMod ? stat(actor.stats, 'range') + (me.states[AURA_STATE.range] ?? 0) : 0));
         if (d < cast.rangeMin || d > max) return fail('sim.err.range');
       }
     }
@@ -234,7 +238,7 @@ function castStep(step: Extract<SimStep, { type: 'cast' }>, st: SimState, input:
     rows = warn.length ? [uncalculatedRow(unique(warn), mods)] : [];
   } else {
     const level = clamp(floor(actor.level) || 1, 1, SPELL_MAX_LEVEL);
-    const critPct = clamp(stat(actor.stats, 'crit'), 0, 100);
+    const critPct = clamp(stat(actor.stats, 'crit') + (me.states[AURA_STATE.crit] ?? 0), 0, 100);
     const el = elementOf(spell, actor);
     rows = [];
     for (const l of lines) {
@@ -278,7 +282,7 @@ function extraRows(after: AfterCastResult | void, actor: SimActor, me: ActorStat
     const noCrit = !!l.noCrit;
     rows.push(damageRow({
       nBase, cBase: noCrit ? nBase : baseAtLevel(l.critMin, l.critMax, level), noCrit,
-      critPct: clamp(stat(actor.stats, 'crit'), 0, 100), el: elementOf(spell, actor), actor: caster, me, st, input, berserk,
+      critPct: clamp(stat(actor.stats, 'crit') + (me.states[AURA_STATE.crit] ?? 0), 0, 100), el: elementOf(spell, actor), actor: caster, me, st, input, berserk,
       mods: { tags: h.tags }, warn: noCrit ? ['sim.warn.noCrit'] : [],
     }));
   }
@@ -307,8 +311,8 @@ function damageRow(c: RowCtx & { st: SimState; input: SimInput }): StepRow {
     + (position === 'back' ? stat(actor.stats, 'mastBack') : 0)
     + (actor.mastery[c.el] ?? 0);
   // El daño extra de combo lo aporta la regla de clase en `mods.dmgPct`, solo en el último hechizo del combo.
-  const dmgPct = Math.max(-100, stat(actor.stats, 'dmgPct') + (mods.dmgPct ?? 0));
-  const res = (mob.res[c.el] ?? 0) + (position === 'back' ? mob.resBack : 0);
+  const dmgPct = Math.max(-100, stat(actor.stats, 'dmgPct') + (mods.dmgPct ?? 0) + (me.states[AURA_STATE.dmgPct] ?? 0));
+  const res = (mob.res[c.el] ?? 0) + (st.mobRes ?? 0) + (position === 'back' ? mob.resBack : 0);
   const hit = (base: number, mastery: number, extraRes: number) => Math.max(0, damageValue({
     base, mastery: Math.max(-100, mastery), position, dmgPct, resPct: Math.min(100, resistancePct(res + extraRes)),
   }));
@@ -320,7 +324,10 @@ function damageRow(c: RowCtx & { st: SimState; input: SimInput }): StepRow {
   if (position === 'back') tags.push('sim.tag.back');
   if (c.berserk) tags.push('sim.tag.berserk');
   tags.push(...(mods.tags ?? []));
-  return { kind: 'damage', value, position, tags: unique(tags), ...withTagVars(mods), warnings: c.warn };
+  // La Bellaura sale del devblog y su duración (hasta el fin del turno) es una suposición: se avisa en cada golpe que toca.
+  const aura = (me.states[AURA_STATE.on] ?? 0) > 0 || (st.mobRes ?? 0) !== 0;
+  if (aura) tags.push('sim.tag.bellaura');
+  return { kind: 'damage', value, position, tags: unique(tags), ...withTagVars(mods), warnings: aura ? unique([...c.warn, 'sim.warn.bellaura']) : c.warn };
 }
 
 function supportRow(c: RowCtx & {
@@ -406,6 +413,35 @@ function adjustStep(step: Extract<SimStep, { type: 'adjust' }>, st: SimState, in
   return done();
 }
 
+/**
+ * Bellaura: aplica el efecto del linaje a todos los combatientes a `AURA_RADIUS` casillas o menos del Bellaphone.
+ * Una vez por turno. PA, PM y PW se suman al momento; daño, crítico, alcance y la resistencia del objetivo duran
+ * hasta el fin del turno (suposición: el devblog no da la duración).
+ */
+function auraStep(step: Extract<SimStep, { type: 'aura' }>, st: SimState, input: SimInput): Outcome {
+  const actor = input.actors.find((a) => a.id === step.actor);
+  const me = st.actors[step.actor];
+  if (!actor || !me) return fail('sim.err.actor');
+  if (actor.classId !== BELLAPHONE) return fail('sim.err.notBellaphone');
+  if ((me.states[AURA_STATE.used] ?? 0) > 0) return fail('sim.err.auraUsed');
+  me.states[AURA_STATE.used] = 1;
+  const lineage = actor.lineage ?? DEFAULT_LINEAGE;
+  for (const a of input.actors) {
+    const s = st.actors[a.id];
+    if (!s || distance(me.cell, s.cell) > AURA_RADIUS) continue;
+    const fx = auraFor(lineage, a.id === step.actor);
+    s.ap = Math.max(0, s.ap + (fx.ap ?? 0));
+    s.mp = Math.max(0, s.mp + (fx.mp ?? 0));
+    s.wp = Math.max(0, s.wp + (fx.wp ?? 0));
+    const add = (key: string, v?: number) => { if (v) s.states[key] = (s.states[key] ?? 0) + v; };
+    add(AURA_STATE.dmgPct, fx.dmgPct); add(AURA_STATE.crit, fx.crit); add(AURA_STATE.range, fx.range);
+    s.states[AURA_STATE.on] = 1;
+  }
+  const mobFx = auraFor(lineage, false);
+  if (mobFx.res && distance(me.cell, input.target.cell) <= AURA_RADIUS) st.mobRes = (st.mobRes ?? 0) + mobFx.res;
+  return done();
+}
+
 function endTurn(st: SimState, input: SimInput): Outcome {
   for (const actor of input.actors) {
     const s = st.actors[actor.id];
@@ -414,7 +450,9 @@ function endTurn(st: SimState, input: SimInput): Outcome {
     // Los PW no se rellenan: solo se recupera lo que cada personaje gana por turno, hasta su máximo.
     s.wp = Math.min(actor.wp, s.wp + (actor.wpPerTurn ?? 0));
     CLASS_RULES[actor.classId]?.onEndTurn?.(s);
+    for (const key of Object.values(AURA_STATE)) delete s.states[key];
   }
+  delete st.mobRes;
   st.turn += 1;
   return done();
 }
@@ -437,7 +475,8 @@ export function simulate(input: SimInput): SimResult {
       step.type === 'cast' ? castStep(step, next, input)
         : step.type === 'move' ? moveStep(step, next, input)
           : step.type === 'adjust' ? adjustStep(step, next, input)
-            : endTurn(next, input);
+            : step.type === 'aura' ? auraStep(step, next, input)
+              : endTurn(next, input);
     // Un paso rechazado no cambia nada: se conserva el estado anterior.
     if (out.ok) state = next;
     if (out.ok && step.type === 'cast') {

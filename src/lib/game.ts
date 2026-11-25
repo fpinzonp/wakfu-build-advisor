@@ -146,7 +146,15 @@ export const CLASSES: {
   L('class.selotrop', { id: 'selotrop', elements: ['water', 'earth', 'air'], roles: ['dist', 'melee'] }),
   L('class.hipermago', { id: 'hipermago', elements: ['fire', 'water', 'earth', 'air'], roles: ['dist'] }),
   L('class.uginak', { id: 'uginak', elements: ['water', 'earth', 'air'], roles: ['melee', 'tank'] }),
+  // 1.94 (26/11/2026): 18 hechizos en los 4 elementos y dos ramas neutras; polivalente, de colocación y movilidad.
+  L('class.bellaphone', { id: 'bellaphone', elements: ['fire', 'water', 'earth', 'air'], roles: ['dist', 'melee'] }),
 ];
+
+/**
+ * Elementos que cubre un "dominio en N elementos". Desde la 1.94 el de 3 elementos da dominio en los 4, sin pérdida
+ * (devblog del Bellaphone), lo que importa a las clases de 4 elementos (Hipermago y Bellaphone).
+ */
+export const multiMastCount = (n: number) => (n >= 3 ? 4 : n);
 
 export const RARITIES: Record<number, { label: string; color: string }> = {
   0: L('rarity.0', { color: '#9a9a9a' }),

@@ -54,6 +54,8 @@ export interface Deck { actives: number[]; passives: number[] }
 export const EMPTY_DECK: Deck = { actives: [], passives: [] };
 
 export const ACTIVE_SLOTS = 12;
+/** Casillas de hechizos activos: el Bellaphone tiene 18 desde su creación. */
+export const activeSlots = (classId?: string) => (classId === 'bellaphone' ? 18 : ACTIVE_SLOTS);
 /** Ranuras de pasivas desbloqueadas por nivel (10, 30, 50, 100, 150 y 200). */
 export const passiveSlots = (level: number) => [10, 30, 50, 100, 150, 200].filter((l) => level >= l).length;
 
@@ -98,14 +100,14 @@ export function deckBonus(passives: Spell[], level: number): DeckBonus {
 }
 
 /** Quita de la baraja lo que no existe en la clase, supera el nivel o no cabe. */
-export function fitDeck(deck: Deck, spells: Spell[], level: number): Deck {
+export function fitDeck(deck: Deck, spells: Spell[], level: number, classId?: string): Deck {
   const byId = new Map(spells.map((s) => [s.id, s]));
   const ok = (id: number, passive: boolean) => {
     const s = byId.get(id);
     return !!s && s.lvl <= level && (s.el === 'passive') === passive;
   };
   return {
-    actives: deck.actives.filter((id) => ok(id, false)).slice(0, ACTIVE_SLOTS),
+    actives: deck.actives.filter((id) => ok(id, false)).slice(0, activeSlots(classId)),
     passives: deck.passives.filter((id) => ok(id, true)).slice(0, passiveSlots(level)),
   };
 }

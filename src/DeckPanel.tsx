@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { STAT_LABELS } from './lib/game';
 import { fmt, t } from './lib/i18n';
 import {
-  ACTIVE_SLOTS, SPELL_GROUPS, groupLabel, passiveSlots, spellImage, spellStats,
+  SPELL_GROUPS, activeSlots, groupLabel, passiveSlots, spellImage, spellStats,
   type Deck, type DeckBonus, type Spell,
 } from './lib/spells';
 
@@ -15,8 +15,8 @@ const statLine = (k: string, v: number) => {
 };
 const zeroLine = (k: string) => t('deck.zero', { stat: (STAT_LABELS[k] ?? k).replace(/^% /, '') });
 
-export default function DeckPanel({ spells, deck, level, bonus, onChange, onShare }: {
-  spells: Spell[] | null; deck: Deck; level: number; bonus: DeckBonus;
+export default function DeckPanel({ spells, deck, level, classId, bonus, onChange, onShare }: {
+  spells: Spell[] | null; deck: Deck; level: number; classId: string; bonus: DeckBonus;
   onChange: (d: Deck) => void; onShare: () => void;
 }) {
   const [focus, setFocus] = useState<Spell | null>(null);
@@ -26,6 +26,7 @@ export default function DeckPanel({ spells, deck, level, bonus, onChange, onShar
   if (!spells.length) return <div className="panel muted">{t('deck.noData')}</div>;
 
   const maxPassives = passiveSlots(level);
+  const maxActives = activeSlots(classId);
   const inDeck = new Set([...deck.actives, ...deck.passives]);
   const passives = spells.filter((s) => s.el === 'passive');
   const groups = SPELL_GROUPS
@@ -37,12 +38,12 @@ export default function DeckPanel({ spells, deck, level, bonus, onChange, onShar
     const key = s.el === 'passive' ? 'passives' : 'actives';
     const list = deck[key];
     if (list.includes(s.id)) return onChange({ ...deck, [key]: list.filter((id) => id !== s.id) });
-    const cap = key === 'passives' ? maxPassives : ACTIVE_SLOTS;
+    const cap = key === 'passives' ? maxPassives : maxActives;
     if (s.lvl > level || list.length >= cap) return;
     onChange({ ...deck, [key]: [...list, s.id] });
   };
 
-  const full = (s: Spell) => (s.el === 'passive' ? deck.passives.length >= maxPassives : deck.actives.length >= ACTIVE_SLOTS);
+  const full = (s: Spell) => (s.el === 'passive' ? deck.passives.length >= maxPassives : deck.actives.length >= maxActives);
 
   const icon = (s: Spell) => {
     const selected = inDeck.has(s.id);
@@ -111,9 +112,9 @@ export default function DeckPanel({ spells, deck, level, bonus, onChange, onShar
               <button className="btn" onClick={onShare}>{t('share.title')}</button>
             </div>
           </div>
-          <span className="eyebrow">{t('deck.actives')} {deck.actives.length}/{ACTIVE_SLOTS}</span>
+          <span className="eyebrow">{t('deck.actives')} {deck.actives.length}/{maxActives}</span>
           <div className="deck-grid">
-            {Array.from({ length: ACTIVE_SLOTS }, (_, i) => slot(deck.actives[i], `a${i}`))}
+            {Array.from({ length: maxActives }, (_, i) => slot(deck.actives[i], `a${i}`))}
           </div>
           <span className="eyebrow">{t('deck.passives')} {deck.passives.length}/{maxPassives}</span>
           <div className="deck-grid">

@@ -70,7 +70,7 @@ export default function MaterialsPanel({ slots, recipes }: { slots: BuildSlots; 
             <input type="checkbox" checked={fullChain} onChange={(e) => setFullChain(e.target.checked)} />
             <span>{t('mat.fullChain')}</span>
           </label>
-          <button className="small-btn" disabled={!list} onClick={copy}>{copied ? t('mat.copied') : t('mat.copy')}</button>
+          <button className="btn ghost" disabled={!list} onClick={copy}>{copied ? t('mat.copied') : t('mat.copy')}</button>
         </div>
       </div>
 

@@ -318,7 +318,7 @@ export default function TeamGearPanel({ team, items, names }: { team: Member[]; 
 
           <div className="tgear-head">
             <h3>{t('gear.recipeTitle')}</h3>
-            <button className="small-btn" onClick={copy}>{copied ? t('mat.copied') : t('mat.copy')}</button>
+            <button className="btn ghost" onClick={copy}>{copied ? t('mat.copied') : t('mat.copy')}</button>
           </div>
           <p className="muted small">{t('gear.recipeHint')}</p>
           {shopping.craft.length > 0 && (

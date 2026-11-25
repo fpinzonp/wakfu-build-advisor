@@ -164,7 +164,7 @@ export const RARITIES: Record<number, { label: string; color: string }> = {
   4: L('rarity.4', { color: '#f5d33b' }),
   5: L('rarity.5', { color: '#c85ce0' }),
   6: L('rarity.6', { color: '#5ec8e6' }),
-  7: L('rarity.7', { color: '#e0458f' }),
+  7: L('rarity.7', { color: '#e85a9a' }),  // ≥4,5:1 sobre los paneles oscuros
 };
 export const RELIC = 5;
 export const EPIC = 7;

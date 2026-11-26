@@ -1,7 +1,7 @@
 {
  "source": "https://wakfu.wiki.gg",
  "license": "CC BY-SA",
- "fetchedAt": "2026-11-06T17:14:14.155Z",
+ "fetchedAt": "2026-11-26T22:46:43.383Z",
  "states": {
   "751": {
    "name": "Flaming",
@@ -2191,6 +2191,33 @@
     "At the start of combat, if Critical Mastery is less than or equal to O:",
     "{{gui|arrow}} {{gui|crit}} 30% Critical Hit"
    ]
+  },
+  "9370": {
+   "name": "Crimson Fury",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At start of turn, if the state bearer suffered direct damage from an enemy at range on the previous turn:",
+    "{{gui|arrow}} '''{{se|base=4|scale=4}}% damage inflicted''' in melee (1 turn)"
+   ]
+  },
+  "9372": {
+   "name": "Crimson Influence",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "At start of combat, if Critical Hits are <= 20:",
+    "{{gui|arrow}} '''{{se|base=5|scale=5}}% Critical Hit'''"
+   ]
+  },
+  "9373": {
+   "name": "Crimson Force",
+   "cumulative": true,
+   "max_level": 6,
+   "effects": [
+    "While the bearer has Armor:",
+    "{{gui|arrow}} {{gui|di}} {{se|base=2|scale=2}}% damage inflicted"
+   ]
   }
  },
  "sources": {
@@ -2347,6 +2374,162 @@
   "wall": "[[Category:Lists]]"
  },
  "spells": [
+  {
+   "class": "Bellaphone",
+   "spell": "Aerafal's Breath",
+   "type": "Passive",
+   "element": "Neutral",
+   "level": "10",
+   "icon": "Spell 8662.png",
+   "effects": "After activating the Bellaura:\n[[File:Icon Arrow.png|link=|]] +2 Range on the next [[File:Element Air.png|link=|]] spell\n\n[[File:Elemental Mastery.png|link=|]] -25% [[File:Element Air.png|link=|]] damage inflicted",
+   "ap": "",
+   "mp": "",
+   "wp": ""
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Anima",
+   "type": "Spell",
+   "element": "Air",
+   "level": "19",
+   "icon": "Spell 8654.png",
+   "effects": "If the target is in the <span class=\"wakfu-tooltip\" data-id=\"9417\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Bellaura</span>:\n[[File:Icon Arrow.png|link=|]] Teleports symmetrically in relation to the caster\n\n[[File:Icon_Enemy.png|link=|Enemy]] [[File:Element Air.png|link=|]] Damage: 3-91\n[[File:Icon_Ally.png|link=|Ally]] [[File:Element Air.png|link=|]] Healing: 6-50\n\n'''Improved Emerald Lineage'''\nThe spell gains [[File:Range.png|link=|]] 1 Range\n[[File:Icon_Caster.png|link=|Caster]] [[File:MP.png|link=|MP]] 1 MP (1 turn)",
+   "ap": "3",
+   "mp": "",
+   "wp": ""
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Candela",
+   "type": "Spell",
+   "element": "Fire",
+   "level": "1",
+   "icon": "Spell 8644.png",
+   "effects": "If the targeted cells is in the <span class=\"wakfu-tooltip\" data-id=\"9417\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Bellaura</span>:\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Caster.png|link=|Caster]] Teleports to the cell\n\n[[File:Icon_Enemy.png|link=|Enemy]] [[File:Element Fire.png|link=|]] Damage: 3-98 [[File:area Cross.png|link=|Size: ¿? x ¿?]]\n\n'''<span  style=\"color:red\">Intermediate Crimson Lineage</span>'''\nThe effect applies in a 2-cell cross [[File:area Cross.png|link=|Size: ¿? x ¿?]]\n[[File:Icon_Ally.png|link=|Ally]] <span class=\"wakfu-tooltip\" data-id=\"9456\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">!content.8.9456!</span>[[Category:Pages with no tooltip key]] (+10 lvls.) (1 turn)\n[[File:Icon Arrow.png|link=|]][[File:Damage Inflicted.png|link=|]] +10% damage inflicted (max 20)",
+   "ap": "3",
+   "mp": "",
+   "wp": ""
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Chillgust",
+   "type": "Spell",
+   "element": "Air",
+   "level": "1",
+   "icon": "Spell 8653.png",
+   "effects": "[[File:Icon_Caster.png|link=|Caster]] teleports to the targeted cell\nOn the cells crossed through:\n[[File:Icon Arrow.png|link=|]] Attracts toward the destination cell\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Enemy.png|link=|Enemy]] [[File:Element Air.png|link=|]] Damage: 3-76\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Ally.png|link=|Ally]] [[File:Element Air.png|link=|]] Heal: 6-42\n\n'''Intermediate Emerald Lineage'''\nThe spell costs [[File:AP.png|link=|AP]] 1 AP less\nThe spell can be used 2 times per turn",
+   "ap": "2",
+   "mp": "",
+   "wp": "1"
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Drizzle",
+   "type": "Spell",
+   "element": "Water",
+   "level": "1",
+   "icon": "Spell 8647.png",
+   "effects": "If the targeted cells is in the <span class=\"wakfu-tooltip\" data-id=\"9417\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Bellaura</span>:\n[[File:Icon Arrow.png|link=|]] Pushes back 1 cell\nOtherwise:\n[[File:Icon Arrow.png|link=|]] Attracts to 2 cells away from the [[File:Icon_Caster.png|link=|Caster]]\n\n[[File:Icon_Enemy.png|link=|Enemy]] [[File:Element Water.png|link=|]] Damage: ¿?-¿?\n[[File:Icon_Ally.png|link=|Ally]] [[File:Element Water.png|link=|]] Healing: ¿?-¿?\n\n'''Intermediate Turquoise Lineage'''\nThe spell gains [[File:Range.png|link=|]] 3 in range\nThe spell cost [[File:AP.png|link=|AP]] 1 AP less",
+   "ap": "2",
+   "mp": "",
+   "wp": ""
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Hydrolysis",
+   "type": "Spell",
+   "element": "Water",
+   "level": "35",
+   "icon": "Spell 8649.png",
+   "effects": "On targets located in the <span class=\"wakfu-tooltip\" data-id=\"9417\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Bellaura</span>:\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Enemy.png|link=|Enemy]] [[File:Element Water.png|link=|]] Damage: 6-197\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Ally.png|link=|Ally]] [[File:Element Water.png|link=|]] Healing: 12-107\n\n'''Perfect Turquoise Lineage'''\nPlaces a '''Hydrolysis''' glyph on the Bellaura\nWhen starting turn on it:\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Enemy.png|link=|Enemy]] [[File:Element Water.png|link=|]] Damage: 6-197\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Ally.png|link=|Ally]] [[File:Element Water.png|link=|]] Healing: 12-107",
+   "ap": "5",
+   "mp": "",
+   "wp": "1"
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Ironstone",
+   "type": "Spell",
+   "element": "Earth",
+   "level": "16",
+   "icon": "Spell 8651.png",
+   "effects": "[[File:Element Earth.png|link=|]] Damage: 4-131\n50% of the damage is redistributed as healing to allies in the <span class=\"wakfu-tooltip\" data-id=\"9417\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Bellaura</span>\n\n'''Improved Ochre Lineage'''\n[[File:Icon_Enemy.png|link=|Enemy]] [[File:MP.png|link=|MP]] -2 MP\nThe spell no longer requires straight-line casting",
+   "ap": "4",
+   "mp": "",
+   "wp": ""
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Isthmus",
+   "type": "Spell",
+   "element": "Earth",
+   "level": "1",
+   "icon": "Spell 8650.png",
+   "effects": "[[File:Element Earth.png|link=|]] Damage 2-65\n[[File:Icon_Caster.png|link=|Caster]] [[File:Armor.png|link=|]] 6-29 [[File:Element Earth.png|link=|]] Armor\n\nIf the target is in the <span class=\"wakfu-tooltip\" data-id=\"9417\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Bellaura</span>:\n[[File:Icon Arrow.png|link=|]] Isthmus (Lvl. 1)\n\n'''Intermediate Ochre Lineage'''\nThe spell costs [[File:AP.png|link=|AP]] 1 AP less\nThe Isthmus state reduces damage inflicted on the Bellaphone by 25%",
+   "ap": "2",
+   "mp": "",
+   "wp": "1"
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Lagoon",
+   "type": "Spell",
+   "element": "Water",
+   "level": "13",
+   "icon": "Spell 8648.png",
+   "effects": "[[File:Icon_Enemy.png|link=|Enemy]] [[File:Element Water.png|link=|]] Damage: 4-141\n[[File:Icon_Ally.png|link=|Ally]] [[File:Element Water.png|link=|]] Healing: 8-76\n[[File:Icon_Caster.png|link=|Caster]] [[File:Armor.png|link=|]] 8-42 [[File:Element Water.png|link=|]] Armor\n\nLagoon (Lvl. 1): The next use of '''Lagoon''' on the target consumes the state to increase the effect by 50%\n\n'''Improved Turquoise Lineage'''\nEffects now apply in a 1-cell cross [[File:area Cross.png|link=|]]\nThe '''Lagoon''' state applies additional effects:\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Ally.png|link=|Ally]] [[File:Elemental_Resistance.png|link=|]] 50 Elemental Resistance\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Enemy.png|link=|Enemy]] -10% damage inflicted\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Enemy.png|link=|Enemy]] [[File:Critical Hit.png|link=|]] -10% Critical Hit",
+   "ap": "4",
+   "mp": "",
+   "wp": ""
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Pyrolysis",
+   "type": "Spell",
+   "element": "Fire",
+   "level": "30",
+   "icon": "Spell 8646.png",
+   "effects": "[[File:Element Fire.png|link=|]] Damage: ¿?-¿? [[File:area Circlering.png|link=|]]\n[[File:Icon_Enemy.png|link=|Enemy]] <span class=\"wakfu-tooltip\" data-id=\"756\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Incurable</span> (Lvl. 4) [[File:area Circlering.png|link=|]]\n\n'''Perfect Crimson Lineage'''\nThe spell no longer requires line of sight\nThe spell no longer requires straight-line casting",
+   "ap": "4",
+   "mp": "",
+   "wp": "1"
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Spooklight",
+   "type": "Spell",
+   "element": "Fire",
+   "level": "10",
+   "icon": "Spell 8645.png",
+   "effects": "If the targeted cells is in the <span class=\"wakfu-tooltip\" data-id=\"9417\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Bellaura</span>:\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Caster.png|link=|Caster]] Switches places\n[[File:Icon_Enemy.png|link=|Enemy]] [[File:Element Fire.png|link=|]] Damage: ¿?-¿?\n[[File:Icon_Ally.png|link=|Ally]] [[File:Element Fire.png|link=|]] Healing: ¿?-¿?\n\n[[File:Icon_Caster.png|link=|Caster]] The caster gains <span class=\"wakfu-tooltip\" data-id=\"3462\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Preparation</span> (+30 Lvl.)\n\n'''Improved Crimson Lineage'''\nThe spell costs [[File:AP.png|link=|AP]] 1 AP less\n[[File:Icon_Ally.png|link=|Ally]] <span class=\"wakfu-tooltip\" data-id=\"9456\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">!content.8.9456!</span>[[Category:Pages with no tooltip key]] (+10 lvls.) (1 turn)\n[[File:Icon Arrow.png|link=|]][[File:Damage Inflicted.png|link=|]] +10% damage inflicted (max 20)",
+   "ap": "3",
+   "mp": "",
+   "wp": ""
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Xylem",
+   "type": "Spell",
+   "element": "Earth",
+   "level": "40",
+   "icon": "Spell 8652.png",
+   "effects": "On entities around the targeted cell cross [[File:area Cross.png|link=|]]:\n[[File:Icon Arrow.png|link=|]] Teleports around the <span class=\"wakfu-tooltip\" data-id=\"9417\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Bellaura</span> bearer\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Enemy.png|link=|Enemy]] [[File:Element Earth.png|link=|]] Damage: 5-164\n\nThe targeted cell must be no more than 5 cells from the <span class=\"wakfu-tooltip\" data-id=\"9417\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Bellaura</span>\n\n'''Perfect Ochre Lineage'''\nThe spell costs [[File:AP.png|link=|AP]] 1 AP less\nThe effect applies in a 2-cell cross [[File:area Cross.png|link=|]]",
+   "ap": "4",
+   "mp": "",
+   "wp": "1"
+  },
+  {
+   "class": "Bellaphone",
+   "spell": "Zephyr",
+   "type": "Spell",
+   "element": "Air",
+   "level": "45",
+   "icon": "Spell 8655.png",
+   "effects": "If the targeted cell is not in the <span class=\"wakfu-tooltip\" data-id=\"9417\" data-level=\"1\" data-type=\"state\" style=\"font-weight:500;cursor:pointer;border-bottom:1px solid\">Bellaura</span>:\n[[File:Icon Arrow.png|link=|]] [[File:Icon_Caster.png|link=|Caster]] Teleports to the cell\n\n[[File:Element Air.png|link=|]] Damage: 5-188 [[File:area Cross.png|link=|]] (2-3)\n\n'''Perfect Emerald Lineage'''\nThe spell gains [[File:Range.png|link=|]] 1 Range\nPushes back 1 cell around the targeted cell before inflicting damage",
+   "ap": "4",
+   "mp": "",
+   "wp": "1"
+  },
   {
    "class": "Common",
    "spell": "Carnage",
@@ -14602,17 +14785,6 @@
   }
  ],
  "spellPages": {
-  "Heads or Tails": {
-   "class": "Ecaflip",
-   "AP": "3",
-   "target": "st",
-   "range": "1-3",
-   "los": "y",
-   "mod": "y",
-   "effects": "Cast on an enemy {{gui|enemy}}:\n{{gui|arrow}} {{gui|earth}} Damage: 3-91\n{{gui|arrow}} 50% health stolen\n\nCast on an ally {{gui|ally}}:\n{{gui|arrow}} {{gui|ally}} and {{gui|caster}}: {{gui|earth}} Healing: 6-50",
-   "criteffects": "Cast on an enemy {{gui|enemy}}:\n{{gui|arrow}} {{gui|earth}} Damage: 4-114\n{{gui|arrow}} 50% health stolen\n\nCast on an ally {{gui|ally}}:\n{{gui|arrow}} {{gui|ally}} and {{gui|caster}}: {{gui|earth}} Healing: 7-62",
-   "conditions": "3 uses per turn"
-  },
   "Plaguing Arrow": {
    "class": "Cra",
    "AP": "4",
@@ -14641,24 +14813,6 @@
    "los": "y",
    "effects": "{{gui|enemy}} {{gui|resistance}} -120 Elemental Resistance",
    "conditions": "1 use per target\n3 uses per turn"
-  },
-  "Hairy Moon": {
-   "class": "Ecaflip",
-   "range": "1-4",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{st|3716}}\n20% damage inflicted\n35% Critical Hit\n{{gui|arrow}} {{gui|caster}} -15% damage inflicted\n\nValue: 04\nColor: white\n{{gui|di}} -15% damage inflicted",
-   "conditions": "1 use per turn"
-  },
-  "Fleahopper": {
-   "class": "Ecaflip",
-   "AP": "4",
-   "target": "st",
-   "range": "0-4",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{gui|water}} Damage: 4-111\n\n2 rebounds in 3-cell {{gui|area circle}}:\n{{gui|arrow}} 1st: {{gui|enemy}} {{gui|water}} damage: 5-139\n{{gui|arrow}} 2nd: {{gui|enemy}} {{gui|water}} damage: 6-167\n\n{{gui|ally}} {{gui|water}} healing: 8-61",
-   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 5-139\n\n2 rebounds in 3-cell {{gui|area circle}}:\n{{gui|arrow}} 1st: {{gui|enemy}} {{gui|water}} damage: 6-174\n{{gui|arrow}} 2nd: {{gui|enemy}} {{gui|water}} damage: 8-209\n\n{{gui|ally}} {{gui|water}} healing: 10-77",
-   "conditions": "2 uses per target\n3 uses per turn"
   },
   "Retreat Arrow": {
    "class": "Cra",
@@ -14723,14 +14877,6 @@
    "effects": "{{gui|earth}} Damage: 3-76\n{{gui|mp}} -3 MP\n\n{{st|7757}}: {{gui|mp}} -5 MP\n{{gui|arrow}} Consumes 45 {{st|7792}}",
    "criteffects": "{{gui|earth}} Damage: 4-95\n{{gui|mp}} -3 MP\n\n{{st|7757}}: {{gui|mp}} -5 MP\n{{gui|arrow}} Consumes 45 {{st|7792}}",
    "conditions": "1 use per target\n2 uses per turn"
-  },
-  "Feline Leap": {
-   "class": "Ecaflip",
-   "AP": "1",
-   "range": "1",
-   "los": "y",
-   "effects": "Teleports to the cell\n\nCan be cast on {{st|3738}}",
-   "conditions": "Is not being carried\n3 uses per turn"
   },
   "Explosive Arrow": {
    "class": "Cra",
@@ -14882,14 +15028,6 @@
    "criteffects": "{{gui|earth}} damage: 6-174\n\n2 rebounds in 3-cell {{gui|area circle}}:\n{{gui|arrow}} 1st: {{gui|earth}} damage: 8-209\n{{gui|arrow}} 2nd: {{gui|earth}} damage: 9-244\n\n{{st|7757}}: Adds 2 rebounds: {{gui|earth}} damage: 2-270\n{{gui|arrow}} Consumes 75 {{st|7792}}",
    "conditions": "1 use per target\n2 uses per turn"
   },
-  "Double or Quits": {
-   "class": "Ecaflip",
-   "AP": "2",
-   "range": "0",
-   "los": "y",
-   "effects": "The Ecaflip plays the next three cards in their draw pile on themself",
-   "conditions": "2-turn cooldown"
-  },
   "Mastery of Weapons": {
    "class": "Common",
    "AP": "2",
@@ -14907,33 +15045,6 @@
    "effects": "{{gui|target}} {{gui|lock}} 150 Lock\nAttracts by 2 cells {{gui|area cross|text=Size: 3}} towards the {{gui|target}}",
    "conditions": "3-turn cooldown"
   },
-  "Fleeflee": {
-   "class": "Ecaflip",
-   "AP": "4",
-   "target": "st",
-   "range": "0-3",
-   "los": "y",
-   "effects": "Cast on an ally {{gui|ally}}:\n{{gui|arrow}} {{gui|mp}} 1 MP (1 turn)\n{{gui|arrow}} {{gui|wp}} 1 WP\n{{gui|arrow}} {{gui|water}} Healing: 6-50\n\nCast on an enemy: {{gui|enemy}}:\n{{gui|arrow}} {{gui|wp}} -1 WP\n{{gui|arrow}} {{gui|water}} Damage: 4-141",
-   "criteffects": "Cast on an ally {{gui|ally}}:\n{{gui|arrow}} {{gui|mp}} 1 MP (1 turn)\n{{gui|arrow}} {{gui|wp}} 1 WP\n{{gui|arrow}} {{gui|water}} Healing: 7-62\n\nCast on an enemy: {{gui|enemy}}:\n{{gui|arrow}} {{gui|wp}} -1 WP\n{{gui|arrow}} {{gui|water}} Damage: 5-176",
-   "conditions": "1 use per target\n2 uses per turn"
-  },
-  "Felintuition": {
-   "class": "Ecaflip",
-   "AP": "2",
-   "range": "1-4",
-   "los": "n",
-   "effects": "Places a {{gui|area cross}} {{ar|1798}} glyph\nAt start of turn:\n{{gui|arrow}} {{gui|ally}} {{gui|light}} healing: 1-38\n{{gui|arrow}} {{gui|ally}} {{se|base=2|scale=2}} Dodge (1 turn)\n{{gui|arrow}} {{gui|enemy}} {{gui|light}} Damage: 1-74\n{{gui|arrow}} {{gui|enemy}} {{se|base=-2|scale=-2}} Dodge (1 turn)\n\nAt the start of the Ecaflip's next turn:\n{{gui|arrow}} Jumps to the center of the glyph if the cell is open",
-   "conditions": "1 use per turn"
-  },
-  "Life Token": {
-   "class": "Ecaflip",
-   "AP": "2",
-   "range": "1-4",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|ally}} Applies {{st|7956}} (1 turn)\n\nIf a lethal attack:\n{{gui|arrow}} The life token carrier survives with 1 HP\n{{gui|arrow}} The life token is removed\n\nIf the carrier still has a life token when the Ecaflip's turn starts:\n{{gui|arrow}} The Ecaflip's HP is set to the carrier's HP",
-   "conditions": "2-turn cooldown"
-  },
   "Clubs": {
    "class": "Ecaflip",
    "AP": "3",
@@ -14941,35 +15052,6 @@
    "los": "y",
    "mod": "y",
    "effects": "Pushes adjacent targets by 2 cells\nCast on {{gui|ally}}:\n{{gui|arrow}} {{st|7952}} (2 turns, 1 target max)\n\nCast on {{gui|enemy}}:\n{{gui|arrow}} {{st|7953}} (2 turns, 1 target max)",
-   "conditions": "1 use per turn"
-  },
-  "God Ouginak": {
-   "class": "Ecaflip",
-   "range": "0",
-   "los": "y",
-   "effects": "{{gui|caster}} {{st|3711}}\n{{gui|hp%}} 50% heals performed\nReduces the cost of neutral spells by 1 AP\nSets the max range of neutral spells to 1\n\nValue: 1\nColor: Black",
-   "conditions": "1 use per turn"
-  },
-  "Ecaflip's Crawlies": {
-   "class": "Ecaflip",
-   "range": "0",
-   "los": "n",
-   "effects": "{{gui|caster}} {{st|3710}}\nWhen a fighter is adjacent to the Ecaflip:\n{{gui|arrow}} The fighter is pushed 1 cell\n{{gui|arrow}} The Ecaflip turns to face the fighter\n{{gui|arrow}} The Ecaflip gains 20 Elemental Resistance\n{{gui|arrow}} 1 time per turn\n\nValue: 2\nColor: white",
-   "conditions": "1 use per turn"
-  },
-  "Fickle Dice": {
-   "class": "Ecaflip",
-   "range": "0",
-   "los": "n",
-   "effects": "{{gui|caster}} {{st|3709}}\nCovers the 6 spells cast after the card is applied\n\n1st, 3rd, 5th:\n{{gui|arrow}} -50% damage inflicted\n{{gui|arrow}} 50% heals performed\n\n2nd, 4th, 6th:\n{{gui|arrow}} 50% damage inflicted\n{{gui|arrow}} -50% heals performed\n\nValue: 5\nColor: white",
-   "conditions": "1 use per turn"
-  },
-  "Ecaflip's Fate": {
-   "class": "Ecaflip",
-   "range": "0-3",
-   "los": "n",
-   "effects": "{{st|7987}}\n{{gui|light}} Damage: 0-122\nAt the start of the Ecaflip's next turn, if the target is still alive:\n{{gui|arrow}} {{gui|caster}} {{gui|light}} Damage: 0-122\n\nValue: 12\nColor: white",
-   "criteffects": "{{st|7987}}\n{{gui|light}} Damage: 0-153\nAt the start of the Ecaflip's next turn, if the target is still alive:\n{{gui|arrow}} {{gui|caster}} {{gui|light}} Damage: 0-153\n\nValue: 12\nColor: white",
    "conditions": "1 use per turn"
   },
   "Fulminating Arrow": {
@@ -15068,6 +15150,138 @@
    "criteffects": "{{gui|enemy}}: {{gui|light}} Damage: 2-82\n\n{{gui|target}}: Applies {{st|3436}} for the Cra's entire turn\n\nIf the spell kills the target:\n{{gui|arrow}} {{gui|caster}} {{st|7792}} (30 lvl.)\n{{gui|arrow}} {{gui|caster}} {{st|3430}} (30 lvl.)",
    "conditions": "3 uses per turn"
   },
+  "Candela": {
+   "class": "Bellaphone",
+   "AP": "3",
+   "target": "aoe",
+   "range": "0-9",
+   "los": "y",
+   "mod": "y",
+   "effects": "If the targeted cells is in the {{st|9417}}:\n{{gui|arrow}} {{gui|caster}} Teleports to the cell\n\n{{gui|enemy}} {{gui|fire}} Damage: 3-98 {{gui|area cross|text=Size: ¿? x ¿?}}\n\n'''{{color|red|Intermediate Crimson Lineage}}'''\nThe effect applies in a 2-cell cross {{gui|area cross|text=Size: ¿? x ¿?}}\n{{gui|ally}} {{st|9456}} (+10 lvls.) (1 turn)\n{{gui|arrow}}{{gui|di}} +10% damage inflicted (max 20)",
+   "criteffects": "If the targeted cells is in the {{st|9417}}:\n{{gui|arrow}} {{gui|caster}} Teleports to the cell\n\n{{gui|enemy}} {{gui|fire}} Damage: 4-123 {{gui|area cross|text=Size: ¿? x ¿?}}\n\n'''Intermediate Crimson Lineage'''\nThe effect applies in a 2-cell cross {{gui|area cross|text=Size: ¿? x ¿?}}\n{{gui|ally}} {{st|9456}} (+10 lvls.) (1 turn)\n{{gui|arrow}}{{gui|di}} +10% damage inflicted (max 20)",
+   "conditions": "3 uses per turn"
+  },
+  "Drizzle": {
+   "class": "Bellaphone",
+   "AP": "2",
+   "target": "st",
+   "range": "1-5",
+   "los": "y",
+   "mod": "n",
+   "effects": "If the targeted cells is in the {{st|9417}}:\n{{gui|arrow}} Pushes back 1 cell\nOtherwise:\n{{gui|arrow}} Attracts to 2 cells away from the {{gui|caster}}\n\n{{gui|enemy}} {{gui|water}} Damage: ¿?-¿?\n{{gui|ally}} {{gui|water}} Healing: ¿?-¿?\n\n'''Intermediate Turquoise Lineage'''\nThe spell gains {{gui|range}} 3 in range\nThe spell cost {{gui|AP}} 1 AP less",
+   "criteffects": "If the targeted cells is in the {{st|9417}}:\n{{gui|arrow}} Pushes back 1 cell\nOtherwise:\n{{gui|arrow}} Attracts to 2 cells away from the {{gui|caster}}\n\n{{gui|enemy}} {{gui|water}} Damage: ¿?-¿?\n{{gui|ally}} {{gui|water}} Healing: ¿?-¿?\n\n'''Intermediate Turquoise Lineage'''\nThe spell gains {{gui|range}} 3 in range\nThe spell cost {{gui|AP}} 1 AP less",
+   "conditions": "2 uses per target\n3 uses per turn"
+  },
+  "Spooklight": {
+   "class": "Bellaphone",
+   "AP": "3",
+   "target": "single",
+   "range": "1-5",
+   "los": "y",
+   "mod": "y",
+   "effects": "If the targeted cells is in the {{st|9417}}:\n{{gui|arrow}} {{gui|caster}} Switches places\n{{gui|enemy}} {{gui|fire}} Damage: ¿?-¿?\n{{gui|ally}} {{gui|fire}} Healing: ¿?-¿?\n\n{{gui|caster}} The caster gains {{st|3462}} (+30 Lvl.)\n\n'''Improved Crimson Lineage'''\nThe spell costs {{gui|AP}} 1 AP less\n{{gui|ally}} {{st|9456}} (+10 lvls.) (1 turn)\n{{gui|arrow}}{{gui|di}} +10% damage inflicted (max 20)",
+   "criteffects": "If the targeted cells is in the {{st|9417}}:\n{{gui|arrow}} {{gui|caster}} Switches places\n{{gui|enemy}} {{gui|fire}} Damage: ¿?-¿?\n{{gui|ally}} {{gui|fire}} Healing: ¿?-¿?\n\n{{gui|caster}} The caster gains {{st|3462}} (+30 Lvl.)\n\n'''Improved Crimson Lineage'''\nThe spell costs {{gui|AP}} 1 AP less\n{{gui|ally}} {{st|9456}} (+10 lvls.) (1 turn)\n{{gui|arrow}}{{gui|di}} +10% damage inflicted (max 20)",
+   "conditions": "2 uses per turn"
+  },
+  "Pyrolysis": {
+   "class": "Bellaphone",
+   "AP": "4",
+   "target": "aoe",
+   "range": "0-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|fire}} Damage: ¿?-¿? {{gui|area circlering}}\n{{gui|enemy}} {{st|756}} (Lvl. 4) {{gui|area circlering}}\n\n'''Perfect Crimson Lineage'''\nThe spell no longer requires line of sight\nThe spell no longer requires straight-line casting",
+   "criteffects": "{{gui|fire}} Damage: ¿?-¿? {{gui|area circlering}}\n{{gui|enemy}} {{st|756}} (Lvl. 4) {{gui|area circlering}}\n\n'''Perfect Crimson Lineage'''\nThe spell no longer requires line of sight\nThe spell no longer requires straight-line casting",
+   "conditions": "2 uses per turn"
+  },
+  "Lagoon": {
+   "class": "Bellaphone",
+   "AP": "4",
+   "target": "single",
+   "range": "2-4",
+   "los": "no",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|water}} Damage: 4-141\n{{gui|ally}} {{gui|water}} Healing: 8-76\n{{gui|caster}} {{gui|armor}} 8-42 {{gui|water}} Armor\n\nLagoon (Lvl. 1): The next use of '''Lagoon''' on the target consumes the state to increase the effect by 50%\n\n'''Improved Turquoise Lineage'''\nEffects now apply in a 1-cell cross {{gui|area cross}}\nThe '''Lagoon''' state applies additional effects:\n{{gui|arrow}} {{gui|ally}} {{gui|resistance}} 50 Elemental Resistance\n{{gui|arrow}} {{gui|enemy}} -10% damage inflicted\n{{gui|arrow}} {{gui|enemy}} {{gui|crit}} -10% Critical Hit",
+   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 5-176\n{{gui|ally}} {{gui|water}} Healing: 10-98\n{{gui|caster}} {{gui|armor}} 10-52 {{gui|water}} Armor\n\nLagoon (Lvl. 1): The next use of '''Lagoon''' on the target consumes the state to increase the effect by 50%\n\n'''Improved Turquoise Lineage'''\nEffects now apply in a 1-cell cross {{gui|area cross}}\nThe '''Lagoon''' state applies additional effects:\n{{gui|arrow}} {{gui|ally}} {{gui|resistance}} 50 Elemental Resistance\n{{gui|arrow}} {{gui|enemy}} -10% damage inflicted\n{{gui|arrow}} {{gui|enemy}} {{gui|crit}} -10% Critical Hit",
+   "conditions": "2 uses per turn"
+  },
+  "Hydrolysis": {
+   "class": "Bellaphone",
+   "AP": "5",
+   "target": "aoe",
+   "range": "0",
+   "los": "y",
+   "mod": "no",
+   "effects": "On targets located in the {{st|9417}}:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 6-197\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 12-107\n\n'''Perfect Turquoise Lineage'''\nPlaces a '''Hydrolysis''' glyph on the Bellaura\nWhen starting turn on it:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 6-197\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 12-107",
+   "criteffects": "On targets located in the {{st|9417}}:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 8-246\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 15-134\n\n'''Perfect Turquoise Lineage'''\nPlaces a '''Hydrolysis''' glyph on the Bellaura\nWhen starting turn on it:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 8-246\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 15-134",
+   "conditions": "1 use per turn"
+  },
+  "Isthmus": {
+   "class": "Bellaphone",
+   "AP": "2",
+   "target": "single",
+   "range": "1-4",
+   "los": "y",
+   "mod": "no",
+   "effects": "{{gui|earth}} Damage 2-65\n{{gui|caster}} {{gui|armor}} 6-29 {{gui|earth}} Armor\n\nIf the target is in the {{st|9417}}:\n{{gui|arrow}} Isthmus (Lvl. 1)\n\n'''Intermediate Ochre Lineage'''\nThe spell costs {{gui|AP}} 1 AP less\nThe Isthmus state reduces damage inflicted on the Bellaphone by 25%",
+   "criteffects": "{{gui|earth}} Damage 2-82\n{{gui|caster}} {{gui|armor}} 7-37 {{gui|earth}} Armor\n\nIf the target is in the {{st|9417}}:\n{{gui|arrow}} Isthmus (Lvl. 1)\n\n'''Intermediate Ochre Lineage'''\nThe spell costs {{gui|AP}} 1 AP less\nThe Isthmus state reduces damage inflicted on the Bellaphone by 25%",
+   "conditions": "3 uses per turn\n2 uses per target"
+  },
+  "Ironstone": {
+   "class": "Bellaphone",
+   "AP": "4",
+   "target": "single",
+   "range": "1-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|earth}} Damage: 4-131\n50% of the damage is redistributed as healing to allies in the {{st|9417}}\n\n'''Improved Ochre Lineage'''\n{{gui|enemy}} {{gui|mp}} -2 MP\nThe spell no longer requires straight-line casting",
+   "criteffects": "{{gui|earth}} Damage: 5-164\n50% of the damage is redistributed as healing to allies in the {{st|9417}}\n\n'''Improved Ochre Lineage'''\n{{gui|enemy}} {{gui|mp}} -2 MP\nThe spell no longer requires straight-line casting",
+   "conditions": "2 uses per turn"
+  },
+  "Xylem": {
+   "class": "Bellaphone",
+   "AP": "4",
+   "target": "aoe",
+   "range": "1-5",
+   "los": "n",
+   "mod": "n",
+   "effects": "On entities around the targeted cell cross {{gui|area cross}}:\n{{gui|arrow}} Teleports around the {{st|9417}} bearer\n{{gui|arrow}} {{gui|enemy}} {{gui|earth}} Damage: 5-164\n\nThe targeted cell must be no more than 5 cells from the {{st|9417}}\n\n'''Perfect Ochre Lineage'''\nThe spell costs {{gui|AP}} 1 AP less\nThe effect applies in a 2-cell cross {{gui|area cross}}",
+   "criteffects": "On entities around the targeted cell cross {{gui|area cross}}:\n{{gui|arrow}} Teleports around the {{st|9417}} bearer\n{{gui|arrow}} {{gui|enemy}} {{gui|earth}} Damage: 7-205\n\nThe targeted cell must be no more than 5 cells from the {{st|9417}}\n\n'''Perfect Ochre Lineage'''\nThe spell costs {{gui|AP}} 1 AP less\nThe effect applies in a 2-cell cross {{gui|area cross}}",
+   "conditions": "1 use per turn"
+  },
+  "Chillgust": {
+   "class": "Bellaphone",
+   "AP": "2",
+   "target": "aoe",
+   "range": "3-5",
+   "los": "no",
+   "mod": "n",
+   "effects": "{{gui|caster}} teleports to the targeted cell\nOn the cells crossed through:\n{{gui|arrow}} Attracts toward the destination cell\n{{gui|arrow}} {{gui|enemy}} {{gui|air}} Damage: 3-76\n{{gui|arrow}} {{gui|ally}} {{gui|air}} Heal: 6-42\n\n'''Intermediate Emerald Lineage'''\nThe spell costs {{gui|AP}} 1 AP less\nThe spell can be used 2 times per turn",
+   "criteffects": "{{gui|caster}} teleports to the targeted cell\nOn the cells crossed through:\n{{gui|arrow}} Attracts toward the destination cell\n{{gui|arrow}} {{gui|enemy}} {{gui|air}} Damage: 4-95\n{{gui|arrow}} {{gui|ally}} {{gui|air}} Heal: 7-53\n\n'''Intermediate Emerald Lineage'''\nThe spell costs {{gui|AP}} 1 AP less\nThe spell can be used 2 times per turn",
+   "conditions": "1 use per turn"
+  },
+  "Anima": {
+   "class": "Bellaphone",
+   "AP": "3",
+   "target": "single",
+   "range": "1-3",
+   "los": "n",
+   "mod": "n",
+   "effects": "If the target is in the {{st|9417}}:\n{{gui|arrow}} Teleports symmetrically in relation to the caster\n\n{{gui|enemy}} {{gui|air}} Damage: 3-91\n{{gui|ally}} {{gui|air}} Healing: 6-50\n\n'''Improved Emerald Lineage'''\nThe spell gains {{gui|range}} 1 Range\n{{gui|caster}} {{gui|mp}} 1 MP (1 turn)",
+   "criteffects": "If the target is in the {{st|9417}}:\n{{gui|arrow}} Teleports symmetrically in relation to the caster\n\n{{gui|enemy}} {{gui|air}} Damage: 4-114\n{{gui|ally}} {{gui|air}} Healing: 7-62\n\n'''Improved Emerald Lineage'''\nThe spell gains {{gui|range}} 1 Range\n{{gui|caster}} {{gui|mp}} 1 MP (1 turn)",
+   "conditions": "3 uses per turn\n2 uses per target"
+  },
+  "Zephyr": {
+   "class": "Bellaphone",
+   "AP": "4",
+   "target": "aoe",
+   "range": "0-3",
+   "los": "n",
+   "mod": "n",
+   "effects": "If the targeted cell is not in the {{st|9417}}:\n{{gui|arrow}} {{gui|caster}} Teleports to the cell\n\n{{gui|air}} Damage: 5-188 {{gui|area cross}} (2-3)\n\n'''Perfect Emerald Lineage'''\nThe spell gains {{gui|range}} 1 Range\nPushes back 1 cell around the targeted cell before inflicting damage",
+   "criteffects": "If the targeted cell is not in the {{st|9417}}:\n{{gui|arrow}} {{gui|caster}} Teleports to the cell\n\n{{gui|air}} Damage: 7-235 {{gui|area cross}} (2-3)\n\n'''Perfect Emerald Lineage'''\nThe spell gains {{gui|range}} 1 Range\nPushes back 1 cell around the targeted cell before inflicting damage",
+   "conditions": "2 uses per turn"
+  },
   "Rough Tongue": {
    "class": "Ecaflip",
    "AP": "3",
@@ -15087,6 +15301,17 @@
    "effects": "{{gui|earth}} Damage: 3-98\n\nIf the target is on a {{st|3396}}:\n{{gui|arrow}} {{gui|calm}} {{st|3386}}: Steals 100% of damage inflicted\n{{gui|arrow}} {{gui|exalted}} {{st|3303}}: {{gui|earth}} Damage: 4-131 instead",
    "criteffects": "{{gui|earth}} Damage: 4-123\n\nIf the target is on a {{st|3396}}:\n{{gui|arrow}} {{gui|calm}} {{st|3386}}: Steals 100% of damage inflicted\n{{gui|arrow}} {{gui|exalted}} {{st|3303}}: {{gui|earth}} Damage: 5-164 instead",
    "conditions": "2 uses per target\n4 uses per turn"
+  },
+  "Heads or Tails": {
+   "class": "Ecaflip",
+   "AP": "3",
+   "target": "st",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "Cast on an enemy {{gui|enemy}}:\n{{gui|arrow}} {{gui|earth}} Damage: 3-91\n{{gui|arrow}} 50% health stolen\n\nCast on an ally {{gui|ally}}:\n{{gui|arrow}} {{gui|ally}} and {{gui|caster}}: {{gui|earth}} Healing: 6-50",
+   "criteffects": "Cast on an enemy {{gui|enemy}}:\n{{gui|arrow}} {{gui|earth}} Damage: 4-114\n{{gui|arrow}} 50% health stolen\n\nCast on an ally {{gui|ally}}:\n{{gui|arrow}} {{gui|ally}} and {{gui|caster}}: {{gui|earth}} Healing: 7-62",
+   "conditions": "3 uses per turn"
   },
   "Pulsation": {
    "class": "Eliotrope",
@@ -15108,6 +15333,14 @@
    "criteffects": "{{gui|air}} Damage: 7-220\n\nIf the target is on a {{st|3396}}:\n{{gui|arrow}} {{gui|air}} Damage: 9-308 instead",
    "conditions": "1 use per target"
   },
+  "Hairy Moon": {
+   "class": "Ecaflip",
+   "range": "1-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{st|3716}}\n20% damage inflicted\n35% Critical Hit\n{{gui|arrow}} {{gui|caster}} -15% damage inflicted\n\nValue: 04\nColor: white\n{{gui|di}} -15% damage inflicted",
+   "conditions": "1 use per turn"
+  },
   "Loaded Dice": {
    "class": "Ecaflip",
    "AP": "3",
@@ -15119,6 +15352,16 @@
    "criteffects": "{{gui|fire}} Damage: 2-82\n\n{{gui|caster}} 50% to inflict a 2nd damage line:\n{{gui|arrow}} +1% per level of {{st|3683}}\n\nIf this spell kills a fighter, {{gui|caster}} regains {{gui|ap}} 2 AP",
    "conditions": "1 use per target\n2 uses per turn"
   },
+  "Fleahopper": {
+   "class": "Ecaflip",
+   "AP": "4",
+   "target": "st",
+   "range": "0-4",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|water}} Damage: 4-111\n\n2 rebounds in 3-cell {{gui|area circle}}:\n{{gui|arrow}} 1st: {{gui|enemy}} {{gui|water}} damage: 5-139\n{{gui|arrow}} 2nd: {{gui|enemy}} {{gui|water}} damage: 6-167\n\n{{gui|ally}} {{gui|water}} healing: 8-61",
+   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 5-139\n\n2 rebounds in 3-cell {{gui|area circle}}:\n{{gui|arrow}} 1st: {{gui|enemy}} {{gui|water}} damage: 6-174\n{{gui|arrow}} 2nd: {{gui|enemy}} {{gui|water}} damage: 8-209\n\n{{gui|ally}} {{gui|water}} healing: 10-77",
+   "conditions": "2 uses per target\n3 uses per turn"
+  },
   "Time Breach": {
    "class": "Eliotrope",
    "AP": "2",
@@ -15126,16 +15369,6 @@
    "los": "n",
    "effects": "{{gui|calm}} {{st|3386}}: Teleports to the cell\n\n{{gui|exalted}} {{st|3303}}:\n{{gui|arrow}} Teleports to the nearest {{st|3396}} (6 cells max)\n{{gui|arrow}} Destroys the {{st|3396}}\n\nThis spell cannot pass through a portal {{gui|calm}} It can target any {{gui|ally}} portal on the field",
    "conditions": "1 use per turn"
-  },
-  "Whirlwind": {
-   "class": "Eliotrope",
-   "AP": "2",
-   "target": "aoe",
-   "range": "1-4",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-60 {{gui|area cross|text=Size: 2}}\n{{gui|ally}} {{gui|water}} Healing: 4-33 {{gui|area cross|text=Size: 2}}\n\n{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} Pushes back 2 cells {{gui|area cross|text=Size: 2}}\n\n{{gui|exalted}} {{st|3303}}:\n{{gui|arrow}} Attracts by 2 cells\n\nCan target any portal on the field starting from an entrance portal\nCan only be cast on {{st|3396}}",
-   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-76 {{gui|area cross|text=Size: 2}}\n{{gui|ally}} {{gui|water}} Healing: 5-41 {{gui|area cross|text=Size: 2}}\n\n{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} Pushes back 2 cells {{gui|area cross|text=Size: 2}}\n\n{{gui|exalted}} {{st|3303}}:\n{{gui|arrow}} Attracts by 2 cells\n\nCan target any portal on the field starting from an entrance portal\nCan only be cast on {{st|3396}}",
-   "conditions": "2 uses per turn"
   },
   "Earthquake": {
    "class": "Sadida",
@@ -15166,6 +15399,14 @@
    "effects": "{{gui|enemy}} {{gui|air}} Damage: 2-75\n{{gui|ally}} {{gui|air}} Healing: 4-40\n\n{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} Pushes back 1 cell\n\n{{gui|exalted}} {{st|3303}}\n{{gui|arrow}} Attracts by 1 cell",
    "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-94\n{{gui|ally}} {{gui|air}} Healing: 5-50\n\n{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} Pushes back 1 cell\n\n{{gui|exalted}} {{st|3303}}\n{{gui|arrow}} Attracts by 1 cell",
    "conditions": "2 uses per target\n3 uses per turn"
+  },
+  "Feline Leap": {
+   "class": "Ecaflip",
+   "AP": "1",
+   "range": "1",
+   "los": "y",
+   "effects": "Teleports to the cell\n\nCan be cast on {{st|3738}}",
+   "conditions": "Is not being carried\n3 uses per turn"
   },
   "Tempest": {
    "class": "Eliotrope",
@@ -15217,13 +15458,6 @@
    "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 8-209 {{gui|area vline|text=Size: 3 x 0}}\n{{gui|ally}} {{gui|earth}} Healing: 15-116 {{gui|area vline|text=Size: 3 x 0}}\nPer card in hand:\n{{gui|arrow}} {{gui|enemy}} damage: 1-34 extra\n{{gui|arrow}} {{gui|ally}} healing: 2-19 extra\n\nDiscards all cards in hand",
    "conditions": "2 uses per turn"
   },
-  "Coney": {
-   "AP": "3",
-   "range": "1-3",
-   "los": "y",
-   "effects": "{{gui|light}} Healing: 6-50",
-   "conditions": "1 use per target"
-  },
   "Ethereal Burst": {
    "class": "Eliotrope",
    "AP": "3",
@@ -15269,16 +15503,6 @@
    "criteffects": "{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} Switches places\n\n{{gui|exalted}} {{st|3303}}:\n{{gui|arrow}} {{gui|caster}} Teleports symmetrically to the target\n{{gui|arrow}} The spell has 2 Range less\n\n{{gui|enemy}} {{gui|water}} Damage: 4-132",
    "conditions": "2 uses per target\n3 uses per turn"
   },
-  "Wakmeha": {
-   "class": "Eliotrope",
-   "AP": "4",
-   "target": "st",
-   "range": "1-5",
-   "los": "y",
-   "effects": "{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} {{gui|water}} Damage: 4-131\nIf the spell goes through a {{st|3396}}:\n{{gui|arrow}} {{gui|water}} Damage: 1-32 extra\n\n{{gui|exalted}} {{st|3303}}:\n{{gui|arrow}} {{gui|water}} Damage: 4-111, penetrates Armor\n{{gui|arrow}} Target loses the same amount of Armor",
-   "criteffects": "{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} {{gui|water}} Damage: 5-164\nIf the spell goes through a {{st|3396}}:\n{{gui|arrow}} {{gui|water}} Damage: 1-41 extra\n\n{{gui|exalted}} {{st|3303}}:\n{{gui|arrow}} {{gui|water}} Damage: 5-139, penetrates Armor\n{{gui|arrow}} Target loses the same amount of Armor",
-   "conditions": "2 uses per target"
-  },
   "Ardent Aegis": {
    "class": "Eliotrope",
    "AP": "3",
@@ -15289,16 +15513,6 @@
    "criteffects": "{{gui|calm}} {{st|3386}}: {{gui|enemy}} {{gui|earth}} Damage: 5-139 {{gui|area cross|text=Size: 1}}\n{{gui|arrow}} Places the most distant {{st|3396}} on the cell\n{{gui|arrow}} Can only target a free cell\n\n{{gui|exalted}} {{st|3303}}: {{gui|enemy}} {{gui|earth}} Damage: 5-139\n\n{{gui|arrow}} Places the most distant {{st|3396}} on the target\n{{gui|arrow}} Must target an occupied cell\n\n{{gui|caster}} Regains 1 WP if the Eliotrope has {{st|3671}}",
    "conditions": "1 use per target\n2 uses per turn"
   },
-  "Eniraser": {
-   "class": "Eniripsa",
-   "AP": "2",
-   "target": "",
-   "range": "1-4",
-   "los": "n",
-   "mod": "y",
-   "effects": "Cast on KO'd {{gui|ally}}:\n{{gui|arrow}} Revives the {{gui|ally}} with 30% max HP\n{{gui|arrow}} {{gui|ally}} {{st|1144}} (Lvl 1)",
-   "conditions": "The target must not be an enemy.\n1 use per turn"
-  },
   "Up to Scratch": {
    "class": "Ecaflip",
    "AP": "3",
@@ -15308,6 +15522,14 @@
    "effects": "Along the path (3 -cell line):\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 3-98 (melee)\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 5-50\n\nTeleports to the cell",
    "criteffects": "Along the path (3 -cell line):\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 4-123 (melee)\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 7-62\n\nTeleports to the cell",
    "conditions": "Is not being carried\n2 uses per turn"
+  },
+  "Double or Quits": {
+   "class": "Ecaflip",
+   "AP": "2",
+   "range": "0",
+   "los": "y",
+   "effects": "The Ecaflip plays the next three cards in their draw pile on themself",
+   "conditions": "2-turn cooldown"
   },
   "Yowling": {
    "class": "Ecaflip",
@@ -15320,6 +15542,16 @@
    "criteffects": "{{gui|enemy}} {{gui|fire}} Damage: 8-246 {{gui|area cross}}\n\nPer target hit:\n{{gui|arrow}} 5% of max HP as health steal\n{{gui|arrow}} 5% of max HP as Armor",
    "conditions": "1 use per turn"
   },
+  "Fleeflee": {
+   "class": "Ecaflip",
+   "AP": "4",
+   "target": "st",
+   "range": "0-3",
+   "los": "y",
+   "effects": "Cast on an ally {{gui|ally}}:\n{{gui|arrow}} {{gui|mp}} 1 MP (1 turn)\n{{gui|arrow}} {{gui|wp}} 1 WP\n{{gui|arrow}} {{gui|water}} Healing: 6-50\n\nCast on an enemy: {{gui|enemy}}:\n{{gui|arrow}} {{gui|wp}} -1 WP\n{{gui|arrow}} {{gui|water}} Damage: 4-141",
+   "criteffects": "Cast on an ally {{gui|ally}}:\n{{gui|arrow}} {{gui|mp}} 1 MP (1 turn)\n{{gui|arrow}} {{gui|wp}} 1 WP\n{{gui|arrow}} {{gui|water}} Healing: 7-62\n\nCast on an enemy: {{gui|enemy}}:\n{{gui|arrow}} {{gui|wp}} -1 WP\n{{gui|arrow}} {{gui|water}} Damage: 5-176",
+   "conditions": "1 use per target\n2 uses per turn"
+  },
   "Topkaj": {
    "class": "Ecaflip",
    "AP": "3",
@@ -15328,6 +15560,23 @@
    "mod": "y",
    "effects": "Cast on a KO'ed ally:\n{{gui|arrow}} Revives the {{gui|ally}} with 25% max HP\n{{gui|arrow}} {{gui|ally}} {{st|1144}} and {{gui|mp}} 2 MP (2 turns)\n\nCast on the Ecaflip:\n{{gui|arrow}} {{gui|ally}} {{st|7951}} (Lvl 1) {{gui|area circle}} (2 turns)\n{{gui|arrow}} {{gui|ally}} {{gui|mp}} 1 MP {{gui|area circle}} (1 turn)",
    "conditions": "The target must not be an enemy.\n2-turn cooldown"
+  },
+  "Felintuition": {
+   "class": "Ecaflip",
+   "AP": "2",
+   "range": "1-4",
+   "los": "n",
+   "effects": "Places a {{gui|area cross}} {{ar|1798}} glyph\nAt start of turn:\n{{gui|arrow}} {{gui|ally}} {{gui|light}} healing: 1-38\n{{gui|arrow}} {{gui|ally}} {{se|base=2|scale=2}} Dodge (1 turn)\n{{gui|arrow}} {{gui|enemy}} {{gui|light}} Damage: 1-74\n{{gui|arrow}} {{gui|enemy}} {{se|base=-2|scale=-2}} Dodge (1 turn)\n\nAt the start of the Ecaflip's next turn:\n{{gui|arrow}} Jumps to the center of the glyph if the cell is open",
+   "conditions": "1 use per turn"
+  },
+  "Life Token": {
+   "class": "Ecaflip",
+   "AP": "2",
+   "range": "1-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|ally}} Applies {{st|7956}} (1 turn)\n\nIf a lethal attack:\n{{gui|arrow}} The life token carrier survives with 1 HP\n{{gui|arrow}} The life token is removed\n\nIf the carrier still has a life token when the Ecaflip's turn starts:\n{{gui|arrow}} The Ecaflip's HP is set to the carrier's HP",
+   "conditions": "2-turn cooldown"
   },
   "Spell Strike": {
    "class": "Ecaflip",
@@ -15345,12 +15594,33 @@
    "effects": "{{gui|caster}} {{st|3717}}\n{{gui|hp%}} 50% heals performed\nWhen the Ecaflip heals a target, the healing\nis done at the end of the target's turn\n\nValue: 0\nColor: White",
    "conditions": "1 use per turn"
   },
+  "God Ouginak": {
+   "class": "Ecaflip",
+   "range": "0",
+   "los": "y",
+   "effects": "{{gui|caster}} {{st|3711}}\n{{gui|hp%}} 50% heals performed\nReduces the cost of neutral spells by 1 AP\nSets the max range of neutral spells to 1\n\nValue: 1\nColor: Black",
+   "conditions": "1 use per turn"
+  },
   "The Hairy Hermit": {
    "class": "Ecaflip",
    "range": "1-4",
    "los": "y",
    "mod": "y",
    "effects": "{{st|3718}}\n{{gui|mp}} -4 MP\n\nSummons a {{st|3738}}\nIf the target is the Ecaflip, the Ecaflip climbs onto it\n\nValue: 3\nColor: black",
+   "conditions": "1 use per turn"
+  },
+  "Ecaflip's Crawlies": {
+   "class": "Ecaflip",
+   "range": "0",
+   "los": "n",
+   "effects": "{{gui|caster}} {{st|3710}}\nWhen a fighter is adjacent to the Ecaflip:\n{{gui|arrow}} The fighter is pushed 1 cell\n{{gui|arrow}} The Ecaflip turns to face the fighter\n{{gui|arrow}} The Ecaflip gains 20 Elemental Resistance\n{{gui|arrow}} 1 time per turn\n\nValue: 2\nColor: white",
+   "conditions": "1 use per turn"
+  },
+  "Fickle Dice": {
+   "class": "Ecaflip",
+   "range": "0",
+   "los": "n",
+   "effects": "{{gui|caster}} {{st|3709}}\nCovers the 6 spells cast after the card is applied\n\n1st, 3rd, 5th:\n{{gui|arrow}} -50% damage inflicted\n{{gui|arrow}} 50% heals performed\n\n2nd, 4th, 6th:\n{{gui|arrow}} 50% damage inflicted\n{{gui|arrow}} -50% heals performed\n\nValue: 5\nColor: white",
    "conditions": "1 use per turn"
   },
   "Wheel of Fortune": {
@@ -15389,71 +15659,20 @@
    "effects": "{{st|7975}}\nConverts the target's % Critical Hit into % Block\n\nValue: 11\nColor: black",
    "conditions": "1 use per turn"
   },
+  "Ecaflip's Fate": {
+   "class": "Ecaflip",
+   "range": "0-3",
+   "los": "n",
+   "effects": "{{st|7987}}\n{{gui|light}} Damage: 0-122\nAt the start of the Ecaflip's next turn, if the target is still alive:\n{{gui|arrow}} {{gui|caster}} {{gui|light}} Damage: 0-122\n\nValue: 12\nColor: white",
+   "criteffects": "{{st|7987}}\n{{gui|light}} Damage: 0-153\nAt the start of the Ecaflip's next turn, if the target is still alive:\n{{gui|arrow}} {{gui|caster}} {{gui|light}} Damage: 0-153\n\nValue: 12\nColor: white",
+   "conditions": "1 use per turn"
+  },
   "Universe": {
    "class": "Ecaflip",
    "range": "3-6",
    "los": "y",
    "mod": "y",
    "effects": "{{st|8043}}\nSteals these characteristics from the target:\n{{gui|arrow}} 4 Range\n{{gui|arrow}} 3 MP\n{{gui|arrow}} 2 AP\n{{gui|arrow}} 1 WP\n\nNon-tarot special card",
-   "conditions": "1 use per turn"
-  },
-  "Alternative Cure": {
-   "class": "Eniripsa",
-   "AP": "2",
-   "target": "st",
-   "range": "1-3",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|ally}} {{gui|fire}} Healing: 4-33\n{{gui|ally}} {{st|3919}} (Lvl 2-490)",
-   "criteffects": "{{gui|ally}} {{gui|fire}} Healing: 5-41\n{{gui|ally}} {{st|3919}} (Lvl 2-490)",
-   "conditions": "3 uses per turn"
-  },
-  "Corrosive Heal": {
-   "class": "Eniripsa",
-   "AP": "5",
-   "target": "st",
-   "range": "2-3",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|enemy}} {{gui|fire}} Damage: 5-164\n{{gui|enemy}} {{st|3885}} (+1 Lvl.)",
-   "criteffects": "{{gui|enemy}} {{gui|fire}} Damage: 7-205\n{{gui|enemy}} {{st|3885}} (+1 Lvl.)",
-   "conditions": "1 use per target\n2 uses per turn"
-  },
-  "Cross-Airs": {
-   "class": "Eniripsa",
-   "AP": "2",
-   "target": "st",
-   "range": "1-4",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|air}} Damage: 2-60\n\n{{st|8019}} (Lvl 1-30)\nWhen suffering a collision:\n{{gui|arrow}} {{gui|air}} Damage: 1-30",
-   "criteffects": "{{gui|air}} Damage: 2-78\n\n{{st|8019}} (Lvl 1-38)\nWhen suffering a collision:\n{{gui|arrow}} {{gui|air}} Damage: 1-38",
-   "conditions": "2 uses per turn"
-  },
-  "Bond of Friendship": {
-   "class": "Eniripsa",
-   "AP": "2",
-   "target": "",
-   "range": "1-4",
-   "los": "yes",
-   "mod": "y",
-   "effects": "{{st|3864}}\nWhen the state bearer suffers damage (>= 3% of their max HP):\n{{gui|arrow}} {{st|3890}} (+3 Lvl.)\n{{gui|arrow}} The Eniripsa gains {{st|8023}} (+3 Lvl.)\"",
-   "conditions": "The target must not be an enemy.\nDoes not have the \"Bond of Friendship\" state(target)\n1 use per turn"
-  },
-  "Ban": {
-   "class": "Eniripsa",
-   "AP": "2",
-   "range": "1-3",
-   "los": "y",
-   "mod": "y",
-   "effects": "Removes 10% of {{gui|caster}} max HP as Armor from the target and converts it to healing on the Eniripsa\n\nWith {{st|3867}}:\n{{gui|arrow}} {{st|756|level=5}} (Lvl 5)\n\nOtherwise:\n{{gui|arrow}} {{st|6624|level=5}} (Lvl 5)",
-   "conditions": "2 uses per turn"
-  },
-  "Against Nature": {
-   "class": "Eniripsa",
-   "range": "0",
-   "los": "y",
-   "effects": "Activates or deactivates {{st|3867}}\n\nConverts characteristics:\n{{gui|arrow}} % heals performed into % damage inflicted\n{{gui|arrow}} Healing Mastery into Elemental Mastery\n{{gui|arrow}} Loses 10 {{st|3912}} instead of gaining it at end of turn\n\n-50% extra heals performed",
    "conditions": "1 use per turn"
   },
   "Deafening Targe": {
@@ -15473,13 +15692,6 @@
    "los": "n",
    "effects": "Removes all allied {{st|3396}} from the field\nPlaces a new {{st|3396}} on the targeted cell\n\n{{gui|caster}} Recovers '''1 AP''' per {{st|3396}} removed",
    "conditions": "2-turn cooldown"
-  },
-  "Wakfu Imprint": {
-   "class": "Eliotrope",
-   "range": "1-4",
-   "los": "n",
-   "effects": "{{gui|ally}} 5% of the {{gui|caster}}'s max HP as Armor\n{{gui|enemy}} 10% of the {{gui|caster}}'s max HP as Armor removal\n\nIf the spell is cast through a {{st|3396}}:\n{{gui|arrow}} The effects are doubled",
-   "conditions": "The target must be an enemy.\n(target) > 0\nor The target must not be an enemy,\n1 use per target\n2 uses per turn"
   },
   "Exodus": {
    "class": "Eliotrope",
@@ -15519,16 +15731,6 @@
    "criteffects": "{{gui|water}} Damage: 2-69\nSteals 1 MP\nIf the target has more MP than the Enutrof\n{{gui|arrow}} Steals 2 MP instead",
    "conditions": "2 uses per target\n3 uses per turn"
   },
-  "Avalanche": {
-   "class": "Feca",
-   "AP": "3",
-   "target": "st",
-   "range": "1-5",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{gui|water}} Damage: 3-76\n\n{{gui|target}} is teleported to the center cell of the nearest glyph (5 cells maximum)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-45)",
-   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 3-95\n\n{{gui|target}} is teleported to the center cell of the nearest glyph (5 cells maximum)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-57)",
-   "conditions": "1 use per target\n2 uses per turn"
-  },
   "Killer Spade": {
    "class": "Enutrof",
    "AP": "3",
@@ -15538,6 +15740,16 @@
    "mod": "y",
    "effects": "'''Enutrof''' form:\n{{gui|arrow}} Pushes back 1 cell\n{{st|702}} form:\n{{gui|arrow}} Switches places\n\n{{gui|earth}} Damage: 3-91",
    "criteffects": "'''Enutrof''' form:\n{{gui|arrow}} Pushes back 1 cell\n{{st|702}} form:\n{{gui|arrow}} Switches places\n\n{{gui|earth}} Damage: 4-114",
+   "conditions": "2 uses per turn"
+  },
+  "Whirlwind": {
+   "class": "Eliotrope",
+   "AP": "2",
+   "target": "aoe",
+   "range": "1-4",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-60 {{gui|area cross|text=Size: 2}}\n{{gui|ally}} {{gui|water}} Healing: 4-33 {{gui|area cross|text=Size: 2}}\n\n{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} Pushes back 2 cells {{gui|area cross|text=Size: 2}}\n\n{{gui|exalted}} {{st|3303}}:\n{{gui|arrow}} Attracts by 2 cells\n\nCan target any portal on the field starting from an entrance portal\nCan only be cast on {{st|3396}}",
+   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-76 {{gui|area cross|text=Size: 2}}\n{{gui|ally}} {{gui|water}} Healing: 5-41 {{gui|area cross|text=Size: 2}}\n\n{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} Pushes back 2 cells {{gui|area cross|text=Size: 2}}\n\n{{gui|exalted}} {{st|3303}}:\n{{gui|arrow}} Attracts by 2 cells\n\nCan target any portal on the field starting from an entrance portal\nCan only be cast on {{st|3396}}",
    "conditions": "2 uses per turn"
   },
   "Phone a Frhend": {
@@ -15558,17 +15770,6 @@
    "effects": "{{gui|water}} Damage: 7-212\n\nIf the Enutrof has the {{st|8552}} state:\n{{gui|arrow}} {{gui|water}} Damage: 9-266 instead\n{{gui|arrow}} Consumes 1 {{st|8552}}",
    "criteffects": "{{gui|water}} Damage: 9-266\n\nIf the Enutrof has the {{st|8552}} state:\n{{gui|arrow}} {{gui|water}} Damage: 11-331 instead\n{{gui|arrow}} Consumes 1 {{st|8552}}",
    "conditions": "1 use per target\n2 uses per turn"
-  },
-  "Drip": {
-   "class": "Feca",
-   "AP": "2",
-   "target": "st",
-   "range": "1-3",
-   "los": "n",
-   "mod": "y",
-   "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-55\n\n{{gui|ally}} {{gui|shield}} {{st|6343}}\nWhen affected by a spell taking away AP or MP:\n{{gui|arrow}} The amount removed is '''reduced by 3'''\n{{gui|arrow}} The Feca gains 2 AP (1 turn)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-33)",
-   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-69\n\n{{gui|ally}} {{gui|shield}} {{st|6343}}\nWhen affected by a spell taking away AP or MP:\n{{gui|arrow}} The amount removed is '''reduced by 3'''\n{{gui|arrow}} The Feca gains 2 AP (1 turn)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-41)",
-   "conditions": "3 uses per turn"
   },
   "Healing Word": {
    "class": "Eniripsa",
@@ -15643,16 +15844,12 @@
    "criteffects": "{{gui|fire}} Damage: 5-139 {{gui|area cross}}\n\nMust target a {{gui|mine}}",
    "conditions": "2 uses per turn"
   },
-  "Crashing Wave": {
-   "class": "Feca",
-   "AP": "2",
-   "target": "st",
+  "Coney": {
+   "AP": "3",
    "range": "1-3",
    "los": "y",
-   "mod": "y",
-   "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-60\n\n{{gui|ally}} {{gui|shield}} {{st|6343}}\nIf affected by a damage spell:\n{{gui|arrow}} '''80 Resistance''' in the spell's element (1 turn)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-36)",
-   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-76\n\n{{gui|ally}} {{gui|shield}} {{st|6343}}\nIf affected by a damage spell:\n{{gui|arrow}} '''80 Resistance''' in the spell's element (1 turn)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-45)",
-   "conditions": "1 use per turn"
+   "effects": "{{gui|light}} Healing: 6-50",
+   "conditions": "1 use per target"
   },
   "Purge": {
    "class": "Enutrof",
@@ -15664,15 +15861,6 @@
    "effects": "{{gui|water}} Damage: 4-83\nSteals 1 Range (1 turn)\n\nIf a {{gui|mine}} is on the targeted cell:\n{{gui|arrow}} Effects now apply in {{gui|area cross}} AoE",
    "criteffects": "{{gui|water}} Damage: 4-104\nSteals 1 Range (1 turn)\n\nIf a {{gui|mine}} is on the targeted cell:\n{{gui|arrow}} Effects now apply in {{gui|area cross}} AoE",
    "conditions": "2 uses per turn"
-  },
-  "Fecastopheles": {
-   "class": "Feca",
-   "AP": "5",
-   "target": "st",
-   "range": "2-3",
-   "los": "n",
-   "effects": "{{gui|fire}} Damage: 5-176\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl. 5-176)",
-   "criteffects": "{{gui|fire}} Damage: 7-220\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl. 7-220)"
   },
   "Drhellzerker": {
    "class": "Enutrof",
@@ -15693,15 +15881,25 @@
    "criteffects": "{{gui|air}} Damage: 5-127\n{{gui|arrow}} 100% health stolen\n\n{{st|3876}} (Lvl 5-127)\nAt end of turn:\n{{gui|arrow}} {{gui|air}} Damage: 5-127\n{{gui|arrow}} 100% health stolen",
    "conditions": "1 use per turn"
   },
-  "Defensive Orb": {
-   "class": "Feca",
-   "AP": "3",
+  "Wakmeha": {
+   "class": "Eliotrope",
+   "AP": "4",
    "target": "st",
-   "range": "1-3",
+   "range": "1-5",
    "los": "y",
+   "effects": "{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} {{gui|water}} Damage: 4-131\nIf the spell goes through a {{st|3396}}:\n{{gui|arrow}} {{gui|water}} Damage: 1-32 extra\n\n{{gui|exalted}} {{st|3303}}:\n{{gui|arrow}} {{gui|water}} Damage: 4-111, penetrates Armor\n{{gui|arrow}} Target loses the same amount of Armor",
+   "criteffects": "{{gui|calm}} {{st|3386}}:\n{{gui|arrow}} {{gui|water}} Damage: 5-164\nIf the spell goes through a {{st|3396}}:\n{{gui|arrow}} {{gui|water}} Damage: 1-41 extra\n\n{{gui|exalted}} {{st|3303}}:\n{{gui|arrow}} {{gui|water}} Damage: 5-139, penetrates Armor\n{{gui|arrow}} Target loses the same amount of Armor",
+   "conditions": "2 uses per target"
+  },
+  "Eniraser": {
+   "class": "Eniripsa",
+   "AP": "2",
+   "target": "",
+   "range": "1-4",
+   "los": "n",
    "mod": "y",
-   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 3-83\n\n{{gui|ally}} {{gui|shield}} {{st|6344}}\nAt the start of the Feca's next turn, if the bearer has not taken any damage:\n{{gui|arrow}} {{gui|WP}} '''1 WP, 4-2248 Armor'''\n\nEmpty cell: {{gui|glyph}} {{ar|1476}} (Level 1-50)",
-   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 4-104\n\n{{gui|ally}} {{gui|shield}} {{st|6344}}\nAt the start of the Feca's next turn, if the bearer has not taken any damage:\n{{gui|arrow}} {{gui|WP}} '''1 WP, 4-2810 Armor'''\n\nEmpty cell: {{gui|glyph}} {{ar|1476}} (Level 2-62)"
+   "effects": "Cast on KO'd {{gui|ally}}:\n{{gui|arrow}} Revives the {{gui|ally}} with 30% max HP\n{{gui|arrow}} {{gui|ally}} {{st|1144}} (Lvl 1)",
+   "conditions": "The target must not be an enemy.\n1 use per turn"
   },
   "Meteor": {
    "class": "Enutrof",
@@ -15723,17 +15921,6 @@
    "mod": "y",
    "effects": "If the Enutrof is on a {{gui|mine}}:\n{{gui|arrow}} Moves the {{gui|mine}} under the target\nIf the enutrof has the {{st|8552}} state and the {{gui|mine}} is consumed:\n{{gui|arrow}} A new {{gui|mine}} is summoned under the Enutrof\n{{gui|arrow}} consumes 1 {{st|8552}} instead of generating one\n\n{{gui|enemy}}{{gui|fire}} Damage: 4-111",
    "criteffects": "If the Enutrof is on a {{gui|mine}}:\n{{gui|arrow}} Moves the {{gui|mine}} under the target\nIf the enutrof has the {{st|8552}} state and the {{gui|mine}} is consumed:\n{{gui|arrow}} A new {{gui|mine}} is summoned under the Enutrof\n{{gui|arrow}} consumes 1 {{st|8552}} instead of generating one\n\n{{gui|enemy}}{{gui|fire}} Damage: 5-139",
-   "conditions": "2 uses per turn"
-  },
-  "Shovel Shaker": {
-   "class": "Enutrof",
-   "AP": "5",
-   "target": "aoe",
-   "range": "1",
-   "los": "y",
-   "mod": "n",
-   "effects": "{{gui|earth}} Damage: 6-167 {{gui|area vline}}\nIf the Drheller is at the edge of the area:\n{{gui|arrow}} {{gui|earth}} Damage: 2-55 extra",
-   "criteffects": "{{gui|earth}} Damage: 8-209 {{gui|area vline}}\nIf the Drheller is at the edge of the area:\n{{gui|arrow}} {{gui|earth}} Damage: 2-69 extra",
    "conditions": "2 uses per turn"
   },
   "Shady Shovel": {
@@ -15833,6 +16020,17 @@
    "criteffects": "{{gui|enemy}} {{st|3882}} (Lvl 5-139) {{gui|area vline}}\n{{gui|enemy}} {{gui|fire}} Damage: 4-104 {{gui|area vline}}",
    "conditions": "2 uses per turn"
   },
+  "Alternative Cure": {
+   "class": "Eniripsa",
+   "AP": "2",
+   "target": "st",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|ally}} {{gui|fire}} Healing: 4-33\n{{gui|ally}} {{st|3919}} (Lvl 2-490)",
+   "criteffects": "{{gui|ally}} {{gui|fire}} Healing: 5-41\n{{gui|ally}} {{st|3919}} (Lvl 2-490)",
+   "conditions": "3 uses per turn"
+  },
   "Guardian Fire": {
    "class": "Eniripsa",
    "AP": "4",
@@ -15843,6 +16041,17 @@
    "effects": "{{gui|ally}} {{gui|fire}} Healing: 8-61\n{{gui|ally}} {{st|3884}} (Lvl 1-245)",
    "criteffects": "{{gui|ally}} {{gui|fire}} Healing: 10-77\n{{gui|ally}} {{st|3884}} (Lvl 1-245)",
    "conditions": "2 uses per turn"
+  },
+  "Corrosive Heal": {
+   "class": "Eniripsa",
+   "AP": "5",
+   "target": "st",
+   "range": "2-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|fire}} Damage: 5-164\n{{gui|enemy}} {{st|3885}} (+1 Lvl.)",
+   "criteffects": "{{gui|enemy}} {{gui|fire}} Damage: 7-205\n{{gui|enemy}} {{st|3885}} (+1 Lvl.)",
+   "conditions": "1 use per target\n2 uses per turn"
   },
   "Purifying Flame": {
    "class": "Eniripsa",
@@ -15899,6 +16108,17 @@
    "criteffects": "{{gui|air}} Damage: 4-104 {{gui|area cross}}\n{{gui|di}} -20% damage inflicted {{gui|area cross}}\n{{gui|crit}} -20% Critical Hit {{gui|area cross}}",
    "conditions": "2-turn cooldown"
   },
+  "Cross-Airs": {
+   "class": "Eniripsa",
+   "AP": "2",
+   "target": "st",
+   "range": "1-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|air}} Damage: 2-60\n\n{{st|8019}} (Lvl 1-30)\nWhen suffering a collision:\n{{gui|arrow}} {{gui|air}} Damage: 1-30",
+   "criteffects": "{{gui|air}} Damage: 2-78\n\n{{st|8019}} (Lvl 1-38)\nWhen suffering a collision:\n{{gui|arrow}} {{gui|air}} Damage: 1-38",
+   "conditions": "2 uses per turn"
+  },
   "Lethargy": {
    "class": "Eniripsa",
    "AP": "5",
@@ -15917,6 +16137,25 @@
    "effects": "{{st|3870}}\n-20% Health Points\n{{gui|mp}} 2 MP\n{{gui|hp%}} 15% heals performed\n{{gui|dodge}} {{se|base=3|scale=3}} Dodge",
    "conditions": "3-turn cooldown"
   },
+  "Bond of Friendship": {
+   "class": "Eniripsa",
+   "AP": "2",
+   "target": "",
+   "range": "1-4",
+   "los": "yes",
+   "mod": "y",
+   "effects": "{{st|3864}}\nWhen the state bearer suffers damage (>= 3% of their max HP):\n{{gui|arrow}} {{st|3890}} (+3 Lvl.)\n{{gui|arrow}} The Eniripsa gains {{st|8023}} (+3 Lvl.)\"",
+   "conditions": "The target must not be an enemy.\nDoes not have the \"Bond of Friendship\" state(target)\n1 use per turn"
+  },
+  "Ban": {
+   "class": "Eniripsa",
+   "AP": "2",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "Removes 10% of {{gui|caster}} max HP as Armor from the target and converts it to healing on the Eniripsa\n\nWith {{st|3867}}:\n{{gui|arrow}} {{st|756|level=5}} (Lvl 5)\n\nOtherwise:\n{{gui|arrow}} {{st|6624|level=5}} (Lvl 5)",
+   "conditions": "2 uses per turn"
+  },
   "Life-Saving Fountain": {
    "class": "Eniripsa",
    "AP": "",
@@ -15927,6 +16166,13 @@
    "effects": "Place a {{ar|1812}} glyph in a {{gui|area circle}}:\n{{gui|arrow}} {{gui|target}} {{gui|light}} heals: 1-25",
    "conditions": "3-turn cooldown"
   },
+  "Against Nature": {
+   "class": "Eniripsa",
+   "range": "0",
+   "los": "y",
+   "effects": "Activates or deactivates {{st|3867}}\n\nConverts characteristics:\n{{gui|arrow}} % heals performed into % damage inflicted\n{{gui|arrow}} Healing Mastery into Elemental Mastery\n{{gui|arrow}} Loses 10 {{st|3912}} instead of gaining it at end of turn\n\n-50% extra heals performed",
+   "conditions": "1 use per turn"
+  },
   "Repulsion": {
    "class": "Eniripsa",
    "range": "1-3",
@@ -15935,40 +16181,12 @@
    "effects": "With {{st|3867}}:\n{{gui|arrow}} +1 to the spell's min and max Range\n{{gui|arrow}} Pushes 1 cell around the target\n\nOtherwise:\n{{gui|arrow}} Pushes back 2 cells",
    "conditions": "3 uses per turn"
   },
-  "Magma": {
-   "class": "Feca",
-   "AP": "2",
-   "target": "st",
+  "Wakfu Imprint": {
+   "class": "Eliotrope",
    "range": "1-4",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{gui|fire}} Damage: 2-60\n\n{{gui|ally}} {{gui|shield}} {{st|6342}}\nAt end of turn:\n{{gui|arrow}} Pulls enemies into close combat {{gui|area cross|text=Size: 3}}\n{{gui|arrow}} '''The Feca''' infclits {{gui|fire}} Damage: 2-60 on them (melee)\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl.2-60)",
-   "criteffects": "{{gui|enemy}} {{gui|fire}} Damage: 2-76\n\n{{gui|ally}} {{gui|shield}} {{st|6342}}\nAt end of turn:\n{{gui|arrow}} Pulls enemies into close combat {{gui|area cross|text=Size: 3}}\n{{gui|arrow}} '''The Feca''' infclits {{gui|fire}} Damage: 2-76 on them (melee)\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl.2-76)",
-   "conditions": "3 uses per target"
-  },
-  "Immunity": {
-   "class": "Feca",
-   "AP": "2",
-   "range": "1-6",
-   "los": "y",
-   "effects": "{{st|6361}} (1 turn)\n{{st|6362}} (4 turns)",
-   "conditions": "The target must not be an enemy.\nIs not being carried\nDoes not have the \"Painless\" state(target)\n4-turn cooldown"
-  },
-  "Aegis": {
-   "class": "Feca",
-   "AP": "2",
-   "range": "1-3",
-   "los": "y",
-   "mod": "y",
-   "effects": "'''100 Elemental Resistance''' (1 turn)\n'''{{se|base=1|scale=1}} Lock and Dodge'''\n\nThis spell costs +1 WP per casting\n\nIf the Feca has [[Peace Armor]]:\n{{gui|arrow}} Aegis can only be cast on the Feca",
-   "conditions": "Does not have the \"Aegis\" state(target)\n1 use per target"
-  },
-  "Magnetism": {
-   "class": "Feca",
-   "AP": "2",
-   "range": "1-5",
-   "los": "y",
-   "effects": "Cast {{gui|ally}} {{gui|caster}} with a '''Shield:'''\n{{gui|arrow}} Pushes adjacent entities back 2 cells\n\nCast on {{st|6440}}:\n{{gui|arrow}} Attracts by 2 cells {{gui|area cross}} (5 Range)",
-   "conditions": "2 uses per turn"
+   "los": "n",
+   "effects": "{{gui|ally}} 5% of the {{gui|caster}}'s max HP as Armor\n{{gui|enemy}} 10% of the {{gui|caster}}'s max HP as Armor removal\n\nIf the spell is cast through a {{st|3396}}:\n{{gui|arrow}} The effects are doubled",
+   "conditions": "The target must be an enemy.\n(target) > 0\nor The target must not be an enemy,\n1 use per target\n2 uses per turn"
   },
   "Pacification": {
    "class": "Feca",
@@ -15986,6 +16204,16 @@
    "effects": "{{gui|enemy}} {{gui|fire}} Damage: 3-83 and {{gui|dodge}} -{{se|base=1|scale=1}} Dodge\n{{gui|arrow}} The Feca accumulates the removed Dodge\n\n{{gui|ally}} gives the accumulated Dodge\n{{gui|arrow}} The Feca regains 3 AP\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl. 3-83)",
    "criteffects": "{{gui|enemy}} {{gui|fire}} Damage: 4-104and {{gui|dodge}} -{{se|base=1|scale=1}} Dodge\n{{gui|arrow}} The Feca accumulates the removed Dodge\n\n{{gui|ally}} gives the accumulated Dodge\n{{gui|arrow}} The Feca regains 3 AP\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl. 4-104)"
   },
+  "Avalanche": {
+   "class": "Feca",
+   "AP": "3",
+   "target": "st",
+   "range": "1-5",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|water}} Damage: 3-76\n\n{{gui|target}} is teleported to the center cell of the nearest glyph (5 cells maximum)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-45)",
+   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 3-95\n\n{{gui|target}} is teleported to the center cell of the nearest glyph (5 cells maximum)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-57)",
+   "conditions": "1 use per target\n2 uses per turn"
+  },
   "Bombardment": {
    "class": "Foggernaut",
    "AP": "2",
@@ -15996,6 +16224,17 @@
    "effects": "This spell must be cast on an entity\n\n{{gui|enemy}} {{gui|earth}} Damage: 2-55 {{gui|area cross}}\nAdditional {{gui|enemy}} {{gui|earth}} Damage: 1-27 {{gui|area cross}} each time this spell is cast during the current turn",
    "criteffects": "This spell must be cast on an entity\n\n{{gui|enemy}} {{gui|earth}} Damage: 2-69 {{gui|area cross}}\nAdditional {{gui|enemy}} {{gui|earth}} Damage: 1-34 {{gui|area cross}} each time this spell is cast during the current turn",
    "conditions": "Is an obstacle(target)\n1 use per target\n3 uses per turn"
+  },
+  "Drip": {
+   "class": "Feca",
+   "AP": "2",
+   "target": "st",
+   "range": "1-3",
+   "los": "n",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-55\n\n{{gui|ally}} {{gui|shield}} {{st|6343}}\nWhen affected by a spell taking away AP or MP:\n{{gui|arrow}} The amount removed is '''reduced by 3'''\n{{gui|arrow}} The Feca gains 2 AP (1 turn)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-33)",
+   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-69\n\n{{gui|ally}} {{gui|shield}} {{st|6343}}\nWhen affected by a spell taking away AP or MP:\n{{gui|arrow}} The amount removed is '''reduced by 3'''\n{{gui|arrow}} The Feca gains 2 AP (1 turn)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-41)",
+   "conditions": "3 uses per turn"
   },
   "Peace Armor": {
    "class": "Feca",
@@ -16062,6 +16301,26 @@
    "criteffects": "{{gui|earth}} damage: 8-264\n{{gui|arrow}} 5% extra damage per caster's current SP (50% max)",
    "conditions": "1 use per target\n2 uses per turn"
   },
+  "Crashing Wave": {
+   "class": "Feca",
+   "AP": "2",
+   "target": "st",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-60\n\n{{gui|ally}} {{gui|shield}} {{st|6343}}\nIf affected by a damage spell:\n{{gui|arrow}} '''80 Resistance''' in the spell's element (1 turn)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-36)",
+   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-76\n\n{{gui|ally}} {{gui|shield}} {{st|6343}}\nIf affected by a damage spell:\n{{gui|arrow}} '''80 Resistance''' in the spell's element (1 turn)\n\nEmpty cell: {{gui|glyph}} {{ar|1475}} (Level 1-45)",
+   "conditions": "1 use per turn"
+  },
+  "Fecastopheles": {
+   "class": "Feca",
+   "AP": "5",
+   "target": "st",
+   "range": "2-3",
+   "los": "n",
+   "effects": "{{gui|fire}} Damage: 5-176\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl. 5-176)",
+   "criteffects": "{{gui|fire}} Damage: 7-220\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl. 7-220)"
+  },
   "Stasis Flux": {
    "class": "Foggernaut",
    "AP": "2",
@@ -16069,6 +16328,16 @@
    "los": "y",
    "effects": "Cast on an ally {{gui|ally}}:\n{{gui|arrow}} 2 Range (2 turns)\n{{gui|arrow}} 30% ranged damage inflicted (2 turns)\n\nCast on an enemy {{gui|enemy}}:\n{{gui|arrow}}  -150 Elemental Resistance (2 turns)",
    "conditions": "1 use per turn"
+  },
+  "Defensive Orb": {
+   "class": "Feca",
+   "AP": "3",
+   "target": "st",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 3-83\n\n{{gui|ally}} {{gui|shield}} {{st|6344}}\nAt the start of the Feca's next turn, if the bearer has not taken any damage:\n{{gui|arrow}} {{gui|WP}} '''1 WP, 4-2248 Armor'''\n\nEmpty cell: {{gui|glyph}} {{ar|1476}} (Level 1-50)",
+   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 4-104\n\n{{gui|ally}} {{gui|shield}} {{st|6344}}\nAt the start of the Feca's next turn, if the bearer has not taken any damage:\n{{gui|arrow}} {{gui|WP}} '''1 WP, 4-2810 Armor'''\n\nEmpty cell: {{gui|glyph}} {{ar|1476}} (Level 2-62)"
   },
   "Blazing Fire": {
    "class": "Foggernaut",
@@ -16092,69 +16361,16 @@
    "criteffects": "{{gui|fire}} Damage: 4-114\n\nCast on a turret:\n{{gui|arrow}} Places a {{ar|1473}} glyph {{gui|area circlering}} (2-3)\n{{gui|arrow}} At start and end of turn:\n{{gui|arrow}} {{gui|fire}} damage: 5-127",
    "conditions": "3 uses per turn"
   },
-  "Energy Flux": {
-   "class": "Huppermage",
-   "AP": "2",
+  "Shovel Shaker": {
+   "class": "Enutrof",
+   "AP": "5",
    "target": "aoe",
-   "range": "1-4",
+   "range": "1",
    "los": "y",
-   "effects": "{{gui|enemy}} {{gui|fire}} Damage: 2-65\n{{gui|earthrune}}: {{gui|enemy}} {{st|7826}} (Lvl 1): {{gui|block}} -20% Block (1 turn, not stackable)\n{{gui|waterrune}}: {{gui|ally}} {{st|7825}} (Lvl 1): {{gui|crit}} 20% Critical Hit (1 turn, not stackable)\n{{gui|airrune}}: The area of effect becomes {{gui|area vline|text=Size: 3}}",
-   "criteffects": "{{gui|enemy}} {{gui|fire}} Damage: 2-81\n{{gui|earthrune}}: {{gui|enemy}} {{st|7826}} (Lvl 1): {{gui|block}} -20% Block (1 turn, not stackable)\n{{gui|waterrune}}: {{gui|ally}} {{st|7825}} (Lvl 1): {{gui|crit}} 20% Critical Hit (1 turn, not stackable)\n{{gui|airrune}}: The area of effe",
-   "conditions": "3 uses per turn"
-  },
-  "Luminescent Disc": {
-   "class": "Huppermage",
-   "AP": "2",
-   "target": "st",
-   "range": "1-5",
-   "los": "y",
-   "effects": "{{gui|fire}} Damage: 2-60\n\nIf {{gui|caster}} has exactly 3 runes:\n{{gui|arrow}} {{gui|target}} {{st|9236}} (Lvl 1): The target suffers 20% extra damage (2 turns, not stackable)\n{{gui|arrow}} {{gui|caster}} consumes all runes",
-   "criteffects": "{{gui|fire}} Damage: 2-76\n\nIf {{gui|caster}} has exactly 3 runes:\n{{gui|arrow}} {{gui|target}} {{st|9236}} (Lvl 1): The target suffers 20% extra damage (2 turns, not stackable)\n{{gui|arrow}} {{gui|caster}} consumes all runes",
-   "conditions": "2 uses per target\n3 uses per turn"
-  },
-  "Light of Dawn": {
-   "class": "Huppermage",
-   "AP": "2",
-   "target": "st",
-   "range": "1-5",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|fire}} Damage: 2-65\n\nIf {{gui|caster}} has {{gui|firerune}}:\n{{gui|arrow}} Applies an '''elemental weakness''' in the element of the last rune generated\n{{gui|arrow}} The target suffers 20% extra damage in this element (2 turns, not stackable)\n{{gui|arrow}} {{gui|caster}} consumes {{gui|firerune}}",
-   "criteffects": "{{gui|fire}} Damage: 2-82\n\nIf {{gui|caster}} has {{gui|firerune}}:\n{{gui|arrow}} Applies an '''elemental weakness''' in the element of the last rune generated\n{{gui|arrow}} The target suffers 20% extra damage in this element (2 turns, not stackable)\n{{gui|arrow}} {{gui|caster}} consumes {{gui|firerune}}",
-   "conditions": "2 uses per target\n4 uses per turn"
-  },
-  "Downpour": {
-   "class": "Huppermage",
-   "AP": "2",
-   "target": "st",
-   "range": "1-5",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-55\n{{gui|ally}} {{gui|water}} Healing: 4-30\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats its effects on the previous targets",
-   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-69\n{{gui|ally}} {{gui|water}} Healing: 5-38\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats its effects on the previous targets",
-   "conditions": "2 uses per target\n4 uses per turn"
-  },
-  "Light Arrow": {
-   "class": "Huppermage",
-   "AP": "6",
-   "target": "st",
-   "range": "2-5",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|light}} Damage: 10-317\nAdditional effect based on the last rune generated:\n{{gui|firerune}}: The area of affect becomes {{gui|area vline}} (3)\n{{gui|waterrune}}: The spell costs 1 AP less\n{{gui|earthrune}}: {{gui|light}} Damage: 5-158 (on Armor) \n{{gui|airrune}}: The target is pushed back 2 cells if they collide: {{gui|light}} damage: 3-105 (indirect)",
-   "criteffects": "{{gui|light}} Damage: 12-394\nAdditional effect based on the last rune generated:\n{{gui|firerune}}: The area of affect becomes {{gui|area vline}} (3)\n{{gui|waterrune}}: The spell costs 1 AP less\n{{gui|earthrune}}: {{gui|light}} Damage: 6-196 (on Armor) \n{{gui|airrune}}: The target is pushed back 2 cells if they collide: {{gui|light}} damage: 4-131 (indirect)",
-   "conditions": "2-turn cooldown"
-  },
-  "Glistening Tears": {
-   "class": "Huppermage",
-   "AP": "3",
-   "target": "st",
-   "range": "1-4",
-   "los": "n",
-   "mod": "y",
-   "effects": "{{gui|enemy}} {{gui|light}} Damage: 3-98\n{{gui|ally}} {{gui|light}} Healing: 6-53\n\nIf {{gui|caster}} has {{gui|waterrune}}:\n{{gui|arrow}} {{gui|caster}} {{gui|light}} Healing: 6-53\n{{gui|arrow}} {{gui|caster}} consumes {{gui|waterrune}}",
-   "criteffects": "{{gui|enemy}} {{gui|light}} Damage: 4-123\n{{gui|ally}} {{gui|light}} Healing: 7-67\n\nIf {{gui|caster}} has {{gui|waterrune}}:\n{{gui|arrow}} {{gui|caster}} {{gui|light}} Healing: 7-67\n{{gui|arrow}} {{gui|caster}} consumes {{gui|waterrune}}",
-   "conditions": "2 uses per target\n3 uses per turn"
+   "mod": "n",
+   "effects": "{{gui|earth}} Damage: 6-167 {{gui|area vline}}\nIf the Drheller is at the edge of the area:\n{{gui|arrow}} {{gui|earth}} Damage: 2-55 extra",
+   "criteffects": "{{gui|earth}} Damage: 8-209 {{gui|area vline}}\nIf the Drheller is at the edge of the area:\n{{gui|arrow}} {{gui|earth}} Damage: 2-69 extra",
+   "conditions": "2 uses per turn"
   },
   "Backband": {
    "class": "Huppermage",
@@ -16166,26 +16382,6 @@
    "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 2-76\n{{gui|enemy}} {{gui|mp}} -2 MP\n\n{{gui|caster}} {{gui|fow}} +10 Force of Will per rune possess for the duration of the spell",
    "conditions": "2  uses per turn"
   },
-  "Light Sword": {
-   "class": "Huppermage",
-   "AP": "2",
-   "target": "aoe",
-   "range": "1",
-   "los": "y",
-   "effects": "Twice: {{gui|light}} Damage: 2-51 {{gui|area smalltreversed|text=Size: 2 x 1}}\n{{gui|arrow}} Per Rune: Steals 30% of the damage inflicted",
-   "criteffects": "Twice: {{gui|light}} Damage: 2-63 {{gui|area smalltreversed}}\n{{gui|arrow}} Per Rune: Steals 30% of the damage inflicted",
-   "conditions": "2 uses per turn"
-  },
-  "Diurnal Butterflies": {
-   "class": "Huppermage",
-   "AP": "2",
-   "target": "st",
-   "range": "1-4",
-   "los": "n",
-   "effects": "{{gui|enemy}} {{gui|air}} Damage: 2-65\n{{gui|firerune}}: Doubles the values of moves\n{{gui|waterrune}}: Attracts by 1 cell\n{{gui|earthrune}}: Pushes back 1 cell",
-   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-82\n{{gui|firerune}}: Doubles the values of moves\n{{gui|waterrune}}: Attracts by 1 cell\n{{gui|earthrune}}: Pushes back 1 cell",
-   "conditions": "3 uses per target\n4 uses per turn"
-  },
   "Dancing Shadows": {
    "class": "Huppermage",
    "AP": "2",
@@ -16196,42 +16392,6 @@
    "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-76\n\nTeleports the target 2 cells farther\n\nIf {{gui|caster}} has exactly 2 runes:\n{{gui|arrow}} Teleports the target 4 cells farther\n{{gui|arrow}} {{gui|caster}} consumes all runes",
    "conditions": "2 uses per target\n3 uses per turn"
   },
-  "Mirage": {
-   "class": "Huppermage",
-   "AP": "2",
-   "target": "st",
-   "range": "1-3",
-   "los": "n",
-   "effects": "Switches places\n{{gui|enemy}} {{gui|air}} Damage: 2-60\n\nIf {{gui|caster}} has {{gui|airrune}}:\n{{gui|arrow}} The spell's min and max range increases by 3\n{{gui|arrow}} {{gui|caster}} consumes {{gui|airrune}}",
-   "criteffects": "Switches places\n{{gui|enemy}} {{gui|air}} Damage: 2-76\n\nIf {{gui|caster}} has {{gui|airrune}}:\n{{gui|arrow}} The spell's min and max range increases by 3\n{{gui|arrow}} {{gui|caster}} consumes {{gui|airrune}}",
-   "conditions": "Is not being carried\n3 uses per turn"
-  },
-  "Glistening Halo": {
-   "class": "Huppermage",
-   "AP": "2",
-   "target": "aoe",
-   "range": "1-5",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{st|4120}} (Lvl 3-98)\nIf the target dies or is again targeted by Glistening Halo:\n{{gui|arrow}} {{gui|enemy}} {{gui|light}} Damage: 3-98 {{gui|area square|text=Size: 3}}\n{{gui|arrow}} Triggers all other Glistening Halos in the area of effect\n{{gui|arrow}} The mark is consumed\n\nIf {{gui|caster}} has {{gui|airrune}}:\n{{gui|arrow}} The mark is immediately triggered\n{{gui|arrow}} {{gui|caster}} consumes {{gui|airrune}}",
-   "criteffects": "{{st|4120}} (Lvl 4-123)\nIf the target dies or is again targeted by Glistening Halo:\n{{gui|arrow}} {{gui|enemy}} {{gui|light}} Damage: 4-123 {{gui|area square|text=Size: 3}}\n{{gui|arrow}} Triggers all other Glistening Halos in the area of effect\n{{gui|arrow}} The mark is consumed\n\nIf {{gui|caster}} has {{gui|airrune}}:\n{{gui|arrow}} The mark is immediately triggered\n{{gui|arrow}} {{gui|caster}} consumes {{gui|airrune}}",
-   "conditions": "(target)\nor Does not have the \"Glistening Halo\" state(target)\n1 use per target\n3 uses per turn"
-  },
-  "Heart of Light": {
-   "class": "Huppermage",
-   "range": "0",
-   "los": "y",
-   "effects": "Based on the last rune generated:\n{{gui|firerune}}: {{st|7768}} (1 turn)\n{{gui|waterrune}}: {{st|7769}} (1 turn)\n{{gui|earthrune}}: {{st|7770}} (1 turn)\n{{gui|airrune}}: {{st|7771}} (1 turn)\n\nThe Huppermage converts their best elemental mastery to the Heart element:\n{{gui|arrow}} It is increased by 20%\n{{gui|arrow}} Natural QB regeneration is stored",
-   "conditions": "In the state \"Last rune generated - Aer'rune'\"\nDoes not have the \"Aerial Heart\" state\nor In the state \"Last rune generated - Tellu'rune\"\nDoes not have the \"Earthy Heart\" state\nor In the state \"Last rune generated - Aqua'rune\"\nDoes not have the \"Aquatic Heart\" state\nor In the state \"Last rune generated - Incan'rune\"\nDoes not have the \"Fiery Heart\" state\n1 use per turn"
-  },
-  "Elemental Cycle": {
-   "class": "Huppermage",
-   "AP": "1",
-   "range": "0",
-   "los": "y",
-   "effects": "If {{gui|caster}} has the last rune generated:\n{{gui|arrow}} Transforms it into their {{st|7773}}\n\nOtherwise:\n{{gui|arrow}} Generates the rune\n\nThe spell costs 50 QB more for every use this turn",
-   "conditions": "5 uses per turn"
-  },
   "Meteorite": {
    "class": "Feca",
    "AP": "3",
@@ -16240,6 +16400,16 @@
    "los": "n",
    "effects": "{{gui|fire}} Damage: 3-91\n\n{{gui|ally}} {{gui|shield}} {{st|6342}}\nAt end of turn:\n{{gui|arrow}} {{st|3434}}, '''20% Critical Hit''' and '''Block''' (1 turn)\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl. 3-91)",
    "criteffects": "{{gui|fire}} Damage: 4-114\n\n{{gui|ally}} {{gui|shield}} {{st|6342}}\nAt end of turn:\n{{gui|arrow}} {{st|3434}}, '''20% Critical Hit''' and '''Block''' (1 turn)\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl. 4-114)"
+  },
+  "Magma": {
+   "class": "Feca",
+   "AP": "2",
+   "target": "st",
+   "range": "1-4",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|fire}} Damage: 2-60\n\n{{gui|ally}} {{gui|shield}} {{st|6342}}\nAt end of turn:\n{{gui|arrow}} Pulls enemies into close combat {{gui|area cross|text=Size: 3}}\n{{gui|arrow}} '''The Feca''' infclits {{gui|fire}} Damage: 2-60 on them (melee)\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl.2-60)",
+   "criteffects": "{{gui|enemy}} {{gui|fire}} Damage: 2-76\n\n{{gui|ally}} {{gui|shield}} {{st|6342}}\nAt end of turn:\n{{gui|arrow}} Pulls enemies into close combat {{gui|area cross|text=Size: 3}}\n{{gui|arrow}} '''The Feca''' infclits {{gui|fire}} Damage: 2-76 on them (melee)\n\nEmpty cell: {{gui|glyph}} {{ar|1474}} (Lvl.2-76)",
+   "conditions": "3 uses per target"
   },
   "Wave": {
    "class": "Feca",
@@ -16284,6 +16454,14 @@
    "effects": "{{gui|enemy}} {{gui|earth}} Damage: 3-91\n\n{{gui|ally}} {{gui|shield}} {{st|6344}}\nAt start of turn:\n{{gui|arrow}} Per adjacent enemy, {{gui|armor}} '''1-749 Armor''', {{st|751}} (12% of level)\n\nEmpty cell: {{gui|glyph}} {{ar|1476}} (Lvl. 2-54)",
    "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 3-114\n\n{{gui|ally}} {{gui|shield}} {{st|6344}}\nAt start of turn:\n{{gui|arrow}} Per adjacent enemy, {{gui|armor}} '''1-936 Armor''', {{st|751}} (12% of level)\n\nEmpty cell: {{gui|glyph}} {{ar|1476}} (Lvl. 2-68)"
   },
+  "Immunity": {
+   "class": "Feca",
+   "AP": "2",
+   "range": "1-6",
+   "los": "y",
+   "effects": "{{st|6361}} (1 turn)\n{{st|6362}} (4 turns)",
+   "conditions": "The target must not be an enemy.\nIs not being carried\nDoes not have the \"Painless\" state(target)\n4-turn cooldown"
+  },
   "Truce": {
    "class": "Feca",
    "range": "0",
@@ -16298,6 +16476,23 @@
    "los": "y",
    "effects": "{{gui|target}} {{gui|mp}} -2 max MP (1 turn)\n\n{{gui|caster}} {{gui|mp}} -20 max MP (current turn)\n\n{{gui|caster}} {{gui|target}} {{st|3434}} (Lvl 1) (1 turn)",
    "conditions": "3-turn cooldown"
+  },
+  "Aegis": {
+   "class": "Feca",
+   "AP": "2",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "'''100 Elemental Resistance''' (1 turn)\n'''{{se|base=1|scale=1}} Lock and Dodge'''\n\nThis spell costs +1 WP per casting\n\nIf the Feca has [[Peace Armor]]:\n{{gui|arrow}} Aegis can only be cast on the Feca",
+   "conditions": "Does not have the \"Aegis\" state(target)\n1 use per target"
+  },
+  "Magnetism": {
+   "class": "Feca",
+   "AP": "2",
+   "range": "1-5",
+   "los": "y",
+   "effects": "Cast {{gui|ally}} {{gui|caster}} with a '''Shield:'''\n{{gui|arrow}} Pushes adjacent entities back 2 cells\n\nCast on {{st|6440}}:\n{{gui|arrow}} Attracts by 2 cells {{gui|area cross}} (5 Range)",
+   "conditions": "2 uses per turn"
   },
   "Charring": {
    "class": "Foggernaut",
@@ -16547,6 +16742,26 @@
    "effects": "Cast on an empty cell:\n{{gui|arrow}} The spell costs {{gui|ap}} 1 extra AP\n{{gui|arrow}} Summons a Standard on the cell\n{{gui|arrow}} Places a Bravery Aura\n{{gui|arrow}} {{gui|ally}} {{gui|resistance}} 50 Elemental Resistance ({{gui|caster}} 50 extra)\n\nCast on Bravery Aura:\n{{gui|arrow}} {{gui|caster}} Teleports to the cell\n\nCast on the Standard\n{{gui|arrow}} Destroys the Standard\n{{gui|arrow}} {{gui|caster}} {{gui|wp}} 2 WP",
    "conditions": "Is not being carried\n3 uses per turn"
   },
+  "Energy Flux": {
+   "class": "Huppermage",
+   "AP": "2",
+   "target": "aoe",
+   "range": "1-4",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|fire}} Damage: 2-65\n{{gui|earthrune}}: {{gui|enemy}} {{st|7826}} (Lvl 1): {{gui|block}} -20% Block (1 turn, not stackable)\n{{gui|waterrune}}: {{gui|ally}} {{st|7825}} (Lvl 1): {{gui|crit}} 20% Critical Hit (1 turn, not stackable)\n{{gui|airrune}}: The area of effect becomes {{gui|area vline|text=Size: 3}}",
+   "criteffects": "{{gui|enemy}} {{gui|fire}} Damage: 2-81\n{{gui|earthrune}}: {{gui|enemy}} {{st|7826}} (Lvl 1): {{gui|block}} -20% Block (1 turn, not stackable)\n{{gui|waterrune}}: {{gui|ally}} {{st|7825}} (Lvl 1): {{gui|crit}} 20% Critical Hit (1 turn, not stackable)\n{{gui|airrune}}: The area of effe",
+   "conditions": "3 uses per turn"
+  },
+  "Luminescent Disc": {
+   "class": "Huppermage",
+   "AP": "2",
+   "target": "st",
+   "range": "1-5",
+   "los": "y",
+   "effects": "{{gui|fire}} Damage: 2-60\n\nIf {{gui|caster}} has exactly 3 runes:\n{{gui|arrow}} {{gui|target}} {{st|9236}} (Lvl 1): The target suffers 20% extra damage (2 turns, not stackable)\n{{gui|arrow}} {{gui|caster}} consumes all runes",
+   "criteffects": "{{gui|fire}} Damage: 2-76\n\nIf {{gui|caster}} has exactly 3 runes:\n{{gui|arrow}} {{gui|target}} {{st|9236}} (Lvl 1): The target suffers 20% extra damage (2 turns, not stackable)\n{{gui|arrow}} {{gui|caster}} consumes all runes",
+   "conditions": "2 uses per target\n3 uses per turn"
+  },
   "Resonance": {
    "class": "Huppermage",
    "AP": "4",
@@ -16557,6 +16772,17 @@
    "effects": "{{gui|light}} Damage: 4-121 {{gui|area smallt|text=Size: 1 x 1}}\n{{gui|firerune}}: The area of effect becomes {{gui|area cone}}\n{{gui|earthrune}}: Damage penetrates Armor\n{{gui|airrune}}: The spell no longer has a line of sight",
    "criteffects": "{{gui|light}} Damage: 5-152 {{gui|area smallt|text=Size: 1 x 1}}\n{{gui|firerune}}: The area of effect becomes {{gui|area cone}}\n{{gui|earthrune}}: Damage penetrates Armor\n{{gui|airrune}}: The spell no longer has a line of sight",
    "conditions": "3 uses per turn"
+  },
+  "Light of Dawn": {
+   "class": "Huppermage",
+   "AP": "2",
+   "target": "st",
+   "range": "1-5",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|fire}} Damage: 2-65\n\nIf {{gui|caster}} has {{gui|firerune}}:\n{{gui|arrow}} Applies an '''elemental weakness''' in the element of the last rune generated\n{{gui|arrow}} The target suffers 20% extra damage in this element (2 turns, not stackable)\n{{gui|arrow}} {{gui|caster}} consumes {{gui|firerune}}",
+   "criteffects": "{{gui|fire}} Damage: 2-82\n\nIf {{gui|caster}} has {{gui|firerune}}:\n{{gui|arrow}} Applies an '''elemental weakness''' in the element of the last rune generated\n{{gui|arrow}} The target suffers 20% extra damage in this element (2 turns, not stackable)\n{{gui|arrow}} {{gui|caster}} consumes {{gui|firerune}}",
+   "conditions": "2 uses per target\n4 uses per turn"
   },
   "Twilight Beam": {
    "class": "Huppermage",
@@ -16569,6 +16795,17 @@
    "criteffects": "{{gui|light}} Damage: 5-164\n\nIf {{gui|caster}} has {{gui|firerune}}:\n{{gui|arrow}} 0.5% extra damage per remaining QB%\n{{gui|arrow}} {{gui|caster}} consumes {{gui|firerune}}",
    "conditions": "2 uses per target"
   },
+  "Downpour": {
+   "class": "Huppermage",
+   "AP": "2",
+   "target": "st",
+   "range": "1-5",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-55\n{{gui|ally}} {{gui|water}} Healing: 4-30\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats its effects on the previous targets",
+   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-69\n{{gui|ally}} {{gui|water}} Healing: 5-38\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats its effects on the previous targets",
+   "conditions": "2 uses per target\n4 uses per turn"
+  },
   "Walloping": {
    "class": "Huppermage",
    "AP": "2",
@@ -16578,6 +16815,17 @@
    "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-70\n{{gui|ally}} {{gui|water}} Healing: 4-38\n\nIf {{gui|caster}} has a {{gui|waterrune}}:\n{{gui|arrow}} {{st|3587}} (Lvl 1)\n{{gui|arrow}} {{gui|caster}} consumes {{gui|waterrune}}",
    "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-88\n{{gui|ally}} {{gui|water}} Healing: 5-47\n\nIf {{gui|caster}} has a {{gui|waterrune}}:\n{{gui|arrow}} {{st|3587}} (Lvl 1)\n{{gui|arrow}} {{gui|caster}} consumes {{gui|waterrune}}",
    "conditions": "2 uses per turn"
+  },
+  "Light Arrow": {
+   "class": "Huppermage",
+   "AP": "6",
+   "target": "st",
+   "range": "2-5",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|light}} Damage: 10-317\nAdditional effect based on the last rune generated:\n{{gui|firerune}}: The area of affect becomes {{gui|area vline}} (3)\n{{gui|waterrune}}: The spell costs 1 AP less\n{{gui|earthrune}}: {{gui|light}} Damage: 5-158 (on Armor) \n{{gui|airrune}}: The target is pushed back 2 cells if they collide: {{gui|light}} damage: 3-105 (indirect)",
+   "criteffects": "{{gui|light}} Damage: 12-394\nAdditional effect based on the last rune generated:\n{{gui|firerune}}: The area of affect becomes {{gui|area vline}} (3)\n{{gui|waterrune}}: The spell costs 1 AP less\n{{gui|earthrune}}: {{gui|light}} Damage: 6-196 (on Armor) \n{{gui|airrune}}: The target is pushed back 2 cells if they collide: {{gui|light}} damage: 4-131 (indirect)",
+   "conditions": "2-turn cooldown"
   },
   "Vestige": {
    "class": "Huppermage",
@@ -16589,6 +16837,17 @@
    "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-70\n{{gui|ally}} {{gui|water}} Healing: 4-38\n{{gui|firerune}}: {{gui|ally}} {{st|9241}} (Lvl 1): {{gui|di}} 20% damage inflicted (1 turn, not stackable)\n{{gui|earthrune}}: {{gui|enemy}} {{st|9242}} (Lvl 1): {{gui|di}} -20% damage inflicted (1 turn, not stackable)\n{{gui|airrune}}: The area of effect switches to {{gui|area cross}} (1)\n\nMust target a fighter or a {{ar|1049}}",
    "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-88\n{{gui|ally}} {{gui|water}} Healing: 5-47\n{{gui|firerune}}: {{gui|ally}} {{st|9241}} (Lvl 1): {{gui|di}} 20% damage inflicted (1 turn, not stackable)\n{{gui|earthrune}}: {{gui|enemy}} {{st|9242}} (Lvl 1): {{gui|di}} -20% damage inflicted (1 turn, not stackable)\n{{gui|airrune}}: The area of effect switches to {{gui|area cross}} (1)\n\nMust target a fighter or a {{ar|1049}}",
    "conditions": "2 uses per turn"
+  },
+  "Glistening Tears": {
+   "class": "Huppermage",
+   "AP": "3",
+   "target": "st",
+   "range": "1-4",
+   "los": "n",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|light}} Damage: 3-98\n{{gui|ally}} {{gui|light}} Healing: 6-53\n\nIf {{gui|caster}} has {{gui|waterrune}}:\n{{gui|arrow}} {{gui|caster}} {{gui|light}} Healing: 6-53\n{{gui|arrow}} {{gui|caster}} consumes {{gui|waterrune}}",
+   "criteffects": "{{gui|enemy}} {{gui|light}} Damage: 4-123\n{{gui|ally}} {{gui|light}} Healing: 7-67\n\nIf {{gui|caster}} has {{gui|waterrune}}:\n{{gui|arrow}} {{gui|caster}} {{gui|light}} Healing: 7-67\n{{gui|arrow}} {{gui|caster}} consumes {{gui|waterrune}}",
+   "conditions": "2 uses per target\n3 uses per turn"
   },
   "Rock Slide": {
    "class": "Huppermage",
@@ -16611,6 +16870,26 @@
    "criteffects": "{{gui|light}} Damage: 5-164 {{gui|area vline}}\nIf a {{ar|1049}} is in the area of affect:\n{{gui|arrow}} Damage is spread over it in a {{gui|area hline}} (5)\n\nIf {{gui|caster}} has {{gui|earthrune}}:\n{{gui|arrow}} {{gui|caster}} 20% health stolen and converted to Armor\n{{gui|arrow}} {{gui|caster}} consumes {{gui|earthrune}}",
    "conditions": "2 uses per turn"
   },
+  "Light Sword": {
+   "class": "Huppermage",
+   "AP": "2",
+   "target": "aoe",
+   "range": "1",
+   "los": "y",
+   "effects": "Twice: {{gui|light}} Damage: 2-51 {{gui|area smalltreversed|text=Size: 2 x 1}}\n{{gui|arrow}} Per Rune: Steals 30% of the damage inflicted",
+   "criteffects": "Twice: {{gui|light}} Damage: 2-63 {{gui|area smalltreversed}}\n{{gui|arrow}} Per Rune: Steals 30% of the damage inflicted",
+   "conditions": "2 uses per turn"
+  },
+  "Diurnal Butterflies": {
+   "class": "Huppermage",
+   "AP": "2",
+   "target": "st",
+   "range": "1-4",
+   "los": "n",
+   "effects": "{{gui|enemy}} {{gui|air}} Damage: 2-65\n{{gui|firerune}}: Doubles the values of moves\n{{gui|waterrune}}: Attracts by 1 cell\n{{gui|earthrune}}: Pushes back 1 cell",
+   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-82\n{{gui|firerune}}: Doubles the values of moves\n{{gui|waterrune}}: Attracts by 1 cell\n{{gui|earthrune}}: Pushes back 1 cell",
+   "conditions": "3 uses per target\n4 uses per turn"
+  },
   "Shiny Orbs": {
    "class": "Huppermage",
    "AP": "3",
@@ -16621,6 +16900,27 @@
    "effects": "{{gui|enemy}} Twice: {{gui|light}} Damage: 2-63\n{{gui|ally}} Twice: {{gui|light}} Healing: 5-35\n\nIf cast on {{ar|1049}}, the area of effect becomes {{gui|area cross}} (1)\n\n{{gui|caster}} {{st|4126}} (+10 Lvl.) per rune possessed",
    "criteffects": "{{gui|enemy}} Twice: {{gui|light}} Damage: 3-79\n{{gui|ally}} Twice: {{gui|light}} Healing: 6-44\n\nIf cast on {{ar|1049}}, the area of effect becomes {{gui|area cross}} (1)\n\n{{gui|caster}} {{st|4126}} (+10 Lvl.) per rune possessed",
    "conditions": "2 uses per target\n3 uses per turn"
+  },
+  "Mirage": {
+   "class": "Huppermage",
+   "AP": "2",
+   "target": "st",
+   "range": "1-3",
+   "los": "n",
+   "effects": "Switches places\n{{gui|enemy}} {{gui|air}} Damage: 2-60\n\nIf {{gui|caster}} has {{gui|airrune}}:\n{{gui|arrow}} The spell's min and max range increases by 3\n{{gui|arrow}} {{gui|caster}} consumes {{gui|airrune}}",
+   "criteffects": "Switches places\n{{gui|enemy}} {{gui|air}} Damage: 2-76\n\nIf {{gui|caster}} has {{gui|airrune}}:\n{{gui|arrow}} The spell's min and max range increases by 3\n{{gui|arrow}} {{gui|caster}} consumes {{gui|airrune}}",
+   "conditions": "Is not being carried\n3 uses per turn"
+  },
+  "Glistening Halo": {
+   "class": "Huppermage",
+   "AP": "2",
+   "target": "aoe",
+   "range": "1-5",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{st|4120}} (Lvl 3-98)\nIf the target dies or is again targeted by Glistening Halo:\n{{gui|arrow}} {{gui|enemy}} {{gui|light}} Damage: 3-98 {{gui|area square|text=Size: 3}}\n{{gui|arrow}} Triggers all other Glistening Halos in the area of effect\n{{gui|arrow}} The mark is consumed\n\nIf {{gui|caster}} has {{gui|airrune}}:\n{{gui|arrow}} The mark is immediately triggered\n{{gui|arrow}} {{gui|caster}} consumes {{gui|airrune}}",
+   "criteffects": "{{st|4120}} (Lvl 4-123)\nIf the target dies or is again targeted by Glistening Halo:\n{{gui|arrow}} {{gui|enemy}} {{gui|light}} Damage: 4-123 {{gui|area square|text=Size: 3}}\n{{gui|arrow}} Triggers all other Glistening Halos in the area of effect\n{{gui|arrow}} The mark is consumed\n\nIf {{gui|caster}} has {{gui|airrune}}:\n{{gui|arrow}} The mark is immediately triggered\n{{gui|arrow}} {{gui|caster}} consumes {{gui|airrune}}",
+   "conditions": "(target)\nor Does not have the \"Glistening Halo\" state(target)\n1 use per target\n3 uses per turn"
   },
   "Solar Stronghold": {
    "class": "Huppermage",
@@ -16671,6 +16971,13 @@
    "effects": "{{gui|caster}} {{gui|di}} 10% damage inflicted per Rune (1 turn)\n{{gui|caster}} {{gui|hp%}} 10% heals performed per Rune (1 turn)\n\n{{gui|ally}} The bonus is halved\n\nThe spell costs '''50 QB''' per run possessed",
    "conditions": "1 use per turn"
   },
+  "Heart of Light": {
+   "class": "Huppermage",
+   "range": "0",
+   "los": "y",
+   "effects": "Based on the last rune generated:\n{{gui|firerune}}: {{st|7768}} (1 turn)\n{{gui|waterrune}}: {{st|7769}} (1 turn)\n{{gui|earthrune}}: {{st|7770}} (1 turn)\n{{gui|airrune}}: {{st|7771}} (1 turn)\n\nThe Huppermage converts their best elemental mastery to the Heart element:\n{{gui|arrow}} It is increased by 20%\n{{gui|arrow}} Natural QB regeneration is stored",
+   "conditions": "In the state \"Last rune generated - Aer'rune'\"\nDoes not have the \"Aerial Heart\" state\nor In the state \"Last rune generated - Tellu'rune\"\nDoes not have the \"Earthy Heart\" state\nor In the state \"Last rune generated - Aqua'rune\"\nDoes not have the \"Aquatic Heart\" state\nor In the state \"Last rune generated - Incan'rune\"\nDoes not have the \"Fiery Heart\" state\n1 use per turn"
+  },
   "Will-o'-the-Wisp": {
    "class": "Huppermage",
    "AP": "1",
@@ -16678,6 +16985,14 @@
    "los": "n",
    "effects": "On empty cell:\n{{gui|arrow}} Places a new {{ar|1049}}\n{{gui|arrow}} Saves the last rune generated\nOn {{ar|1049}}:\n{{gui|arrow}} {{gui|caster}} Recovers the saved rune\n{{gui|arrow}} {{gui|caster}} Recovers a spell in the rune's element\n{{gui|arrow}} {{gui|caster}} 2 AP\n{{gui|arrow}} Removes the {{ar|1049}}\n\n2 {{ar|1049}} max",
    "conditions": "In the state \"Aer'rune\"\nIn the state \"Last rune generated - Aer'rune\"\nor In the state \"Tellu'rune\"\nIn the state \"Last rune generated - Tellu'rune\"\nor In the state \"Aqua'rune\"\nIn the state \"Last rune generated - Aqua'rune\"\nor In the state \"Incan'rune\"\nIn the state \"Last rune generated - Incan'rune\"\n2 uses per turn"
+  },
+  "Elemental Cycle": {
+   "class": "Huppermage",
+   "AP": "1",
+   "range": "0",
+   "los": "y",
+   "effects": "If {{gui|caster}} has the last rune generated:\n{{gui|arrow}} Transforms it into their {{st|7773}}\n\nOtherwise:\n{{gui|arrow}} Generates the rune\n\nThe spell costs 50 QB more for every use this turn",
+   "conditions": "5 uses per turn"
   },
   "Cleaver": {
    "class": "Iop",
@@ -16688,16 +17003,6 @@
    "effects": "In a cross {{gui|area cross}} area of effect:\n{{gui|arrow}} {{gui|enemy}} {{gui|earth}} Damage: 2-55\n{{gui|arrow}} {{gui|ally}} {{gui|armor}} 1-20 {{gui|earth}}  Armor and {{gui|block}} 25% Block (1 turn)\n\nPer target hit:\n{{gui|arrow}} {{gui|caster}} {{gui|armor}} 1-20 {{gui|earth}} Armor\n\n{{gui|caster}} {{st|3442}} (+15 Lvl.)",
    "criteffects": "In a cross {{gui|area cross}} area of effect:\n{{gui|arrow}} {{gui|enemy}} {{gui|earth}} Damage: 2-69\n{{gui|arrow}} {{gui|ally}} {{gui|armor}} 1-25 {{gui|earth}}  Armor and {{gui|block}} 25% Block (1 turn)\n\nPer target hit:\n{{gui|arrow}} {{gui|caster}} {{gui|armor}} 1-25 {{gui|earth}} Armor\n\n{{gui|caster}} {{st|3442}} (+15 Lvl.)",
    "conditions": "2 uses per turn"
-  },
-  "Wallop": {
-   "class": "Iop",
-   "AP": "2",
-   "target": "st",
-   "range": "1-2",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{gui|air}} Damage: 2-70\n\n{{gui|caster}} {{st|3442}} (+15 Lvl.)",
-   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-88\n\n{{gui|caster}} {{st|3442}} (+15 Lvl.)",
-   "conditions": "3 uses per turn"
   },
   "Pounding": {
    "class": "Iop",
@@ -16748,104 +17053,6 @@
    "los": "y",
    "effects": "{{st|6117}}\nThe Iop's elemental spells have modifiable rnage\n+2 {{gui|range}} min and max range on elemental spells that can be cast at 1 or more Range\n{{gui|melee}} Melee Mastery is converted into {{gui|distance}} Distance Mastery",
    "conditions": "2-turn cooldown"
-  },
-  "Capering": {
-   "class": "Masqueraider",
-   "AP": "6",
-   "target": "aoe",
-   "range": "3-5",
-   "los": "n",
-   "effects": "Along the path:\n{{gui|arrow}} {{gui|enemy}} {{gui|fire}} Damage: 6-153 (melee)\n{{gui|arrow}} {{gui|ally}} {{gui|armor}} 5-2,398 armor\n\nTeleports to the cell",
-   "criteffects": "Along the path:\n{{gui|arrow}} {{gui|enemy}} {{gui|fire}} Damage: 8-191 (melee)\n{{gui|arrow}} {{gui|ally}} {{gui|armor}} 7-2,997 armor\n\nTeleports to the cell",
-   "conditions": "Is not being carried\n1 use per turn"
-  },
-  "Armature": {
-   "class": "Masqueraider",
-   "AP": "4",
-   "target": "st",
-   "range": "1-5",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|ally}} {{gui|lock}} {{se|base=1|scale=1}} Lock (1 turn)\n\n{{gui|ally}} {{gui|armor}} 4-2,038 Armor",
-   "criteffects": "{{gui|ally}} {{gui|lock}} {{se|base=1|scale=1.25}} Lock (1 turn)\n\n{{gui|ally}} {{gui|armor}} 6-2,548 Armor",
-   "conditions": "1 use per target\n2 uses per turn"
-  },
-  "Deliverance": {
-   "class": "Masqueraider",
-   "AP": "3",
-   "target": "aoe",
-   "range": "1-5",
-   "los": "y",
-   "mod": "y",
-   "effects": "In {{gui|area square|text=Size: 3}}:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 3-76\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 6-42\n{{gui|arrow}} {{gui|ally}} {{gui|dodge}} 15-88 Dodge",
-   "criteffects": "In {{gui|area square|text=Size: 3}}:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 4-95\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 7-53\n{{gui|arrow}} {{gui|ally}} {{gui|dodge}} 19-110 Dodge",
-   "conditions": "2 uses per turn"
-  },
-  "Cavalcade": {
-   "class": "Masqueraider",
-   "AP": "2",
-   "target": "st",
-   "range": "1",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{gui|air}} Damage: 2-51\n\n{{gui|target}} {{st|3770}}",
-   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-63\n\n{{gui|target}} {{st|3770}}",
-   "conditions": "2 uses per target\n3 uses per turn"
-  },
-  "Dislocation": {
-   "class": "Masqueraider",
-   "AP": "4",
-   "target": "st",
-   "range": "1-5",
-   "los": "y",
-   "effects": "Switches places\n\n{{gui|enemy}} {{gui|air}} Damage: 4-131",
-   "criteffects": "Switches places\n\n{{gui|enemy}} {{gui|air}} Damage: 5-1164",
-   "conditions": "Is not being carried\n2 uses per turn"
-  },
-  "Dance of Death": {
-   "class": "Masqueraider",
-   "AP": "2",
-   "range": "1-5",
-   "los": "y",
-   "effects": "Cast on KO'd {{gui|ally}}:\n{{gui|arrow}} Revives the {{gui|ally}} with 30% max HP\n{{gui|arrow}} {{gui|ally}} {{st|1144}} (Lvl 1), {{gui|ap}} 2 AP (1 turn)",
-   "conditions": "3-turn cooldown"
-  },
-  "Acrobatics": {
-   "class": "Masqueraider",
-   "AP": "3",
-   "range": "6",
-   "los": "n",
-   "effects": "Teleports the Masqueraider to a cell next to a fighter\n{{gui|caster}} {{gui|resistance}} 50 Elemental Resistance",
-   "conditions": "Is not being carried\n2-turn cooldown"
-  },
-  "Brutality Aura": {
-   "class": "Masqueraider",
-   "AP": "2",
-   "range": "0",
-   "los": "n",
-   "effects": "Brutality Aura\n{{gui|di}} 20% damage inflicted",
-   "conditions": "3-turn cooldown"
-  },
-  "Coward Mask": {
-   "class": "Masqueraider",
-   "range": "0",
-   "los": "y",
-   "effects": "{{gui|caster}} {{st|6612}} (2 turns)\nCasting a spell on an adjacent target '''pushes the target back 1 cell''' per AP/MP/WP of the spell used\n10% damage suffered in melee\n\nAllies at 4 Range or less:\n{{gui|arrow}} {{gui|range}} '''2 Range''' (2 turns)",
-   "conditions": "1 use per turn"
-  },
-  "Classic Mask": {
-   "class": "Masqueraider",
-   "range": "0",
-   "los": "y",
-   "effects": "{{gui|caster}} {{st|6613}} (2 turns)\n{{gui|hp%}} '''30% heals performed, 30% Armor given'''\n\nCannot lock, and cannot move away from an adjacent enemy\n\nAllies at 4 Range or less:\n{{gui|arrow}} {{gui|resistance}} '''50 Elemental Resistance''' (2 turns)",
-   "conditions": "1 use per turn"
-  },
-  "Clashing": {
-   "class": "Masqueraider",
-   "AP": "",
-   "range": "1-2",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{st|9246}} (Lvl 50)\n{{gui|resistance}} '''-50 Elemental Resistance'''\nIf the bearer is targeted by one of the {{gui|caster}} Masqueraider's movement spells:\n{{gui|arrow}} Triggers a collision with the bearer",
-   "conditions": "The target must be an enemy.\n2-turn cooldown"
   },
   "Animal Link": {
    "class": "Osamodas",
@@ -16940,22 +17147,22 @@
    "criteffects": "Cast on an empty cell:\n{{gui|arrow}} The summons is teleported to the cell (up to 2 cells)\n\n{{gui|air}} Damage: 4-104 {{gui|area square}} (except on {{gui|summon}})\n\n{{gui|dragon}} {{st|7123}} cast on {{gui|caster}} or {{gui|summon}}:\n{{gui|arrow}} {{gui|air}} Damage: 4-114 {{gui|area circlering}}",
    "conditions": "2 uses per turn"
   },
-  "Fang in the Works": {
-   "class": "Ouginak",
-   "AP": "2",
-   "target": "aoe",
-   "range": "1",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 2-65 and {{gui|mp}} -2 MP {{gui|area cross}}",
-   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 2-82 and {{gui|mp}} -2 MP {{gui|area cross}}",
-   "conditions": "2 uses per turn"
-  },
   "Gobgob": {
    "target": "st",
    "range": "1-3",
    "los": "y",
    "effects": "Cast on the Osamodas or their summons:\n{{gui|arrow}} Switches places",
    "conditions": "Is not being carried\n1 use per turn"
+  },
+  "Wallop": {
+   "class": "Iop",
+   "AP": "2",
+   "target": "st",
+   "range": "1-2",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|air}} Damage: 2-70\n\n{{gui|caster}} {{st|3442}} (+15 Lvl.)",
+   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-88\n\n{{gui|caster}} {{st|3442}} (+15 Lvl.)",
+   "conditions": "3 uses per turn"
   },
   "Incendiary Crow": {
    "class": "Osamodas",
@@ -17120,96 +17327,6 @@
    "effects": "On empty cell:\n{{gui|arrow}} Summons the selected creature (doubles not allowed)\n\nOn own summons:\n{{gui|arrow}} Kills the summons\n{{gui|arrow}} Regenerates 3 WP for each turn the summons spent on the field\n\nOn capturable creature:\n{{gui|arrow}} Captures the creature when the Osamodas kills it",
    "conditions": "(target)\nor The target must be an enemy.\nNumber of Capturing < 1\n2 uses per turn"
   },
-  "Flail": {
-   "class": "Ouginak",
-   "AP": "4",
-   "target": "aoe",
-   "range": "1-3",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|water}} Damage: 5-152 {{gui|area hline}}\n{{gui|arrow}} 40% health stolen",
-   "criteffects": "{{gui|water}} Damage: 7-190 {{gui|area hline}}\n{{gui|arrow}} 40% health stolen",
-   "conditions": "2 uses per turn"
-  },
-  "Brawl": {
-   "class": "Ouginak",
-   "AP": "3",
-   "target": "st",
-   "range": "1",
-   "los": "y",
-   "effects": "{{gui|earth}} Damage: 3-83\n{{st|7517}}\n\nIf the target is {{st|7516}}:\n{{gui|arrow}} {{gui|earth}} Damage: 9-251 instead",
-   "criteffects": "{{gui|earth}} Damage: 4-104\n{{st|7517}}\n\nIf the target is {{st|7516}}:\n{{gui|arrow}} {{gui|earth}} Damage: 9-341 instead",
-   "conditions": "2 uses per target\n4 uses per turn"
-  },
-  "Crosshatch": {
-   "class": "Ouginak",
-   "AP": "3",
-   "target": "aoe",
-   "range": "1-2",
-   "los": "y",
-   "effects": "{{gui|earth}} Damage: 3-83 {{gui|area hline}}\n{{st|7515}} (Lvl 1) {{gui|area hline}}",
-   "criteffects": "{{gui|earth}} Damage: 4-104 {{gui|area hline}}\n{{st|7515}} (Lvl 1) {{gui|area hline}}",
-   "conditions": "2 uses per turn"
-  },
-  "Fits and Starts": {
-   "class": "Ouginak",
-   "AP": "4",
-   "target": "st",
-   "range": "1-2",
-   "los": "y",
-   "effects": "If the target has Armor:\n{{gui|arrow}} {{gui|earth}} Damage: 2-65 (on armor)\n\n{{gui|earth}} Damage: 4-131\n\n{{gui|caster}} Armor gain: 5% of max HP",
-   "criteffects": "If the target has Armor:\n{{gui|arrow}} {{gui|earth}} Damage: 2-82 (on armor)\n\n{{gui|earth}} Damage: 5-164\n\n{{gui|caster}} Armor gain: 6.25% of max HP",
-   "conditions": "2 uses per turn"
-  },
-  "Contusion": {
-   "class": "Ouginak",
-   "AP": "3",
-   "target": "aoe",
-   "range": "2-3",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|enemy}} {{gui|air}} Damage: 3-91 {{gui|area cross}}\nPushes back 1 cell",
-   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 4-114 {{gui|area cross}}\nPushes back 1 cell",
-   "conditions": "3 uses per turn"
-  },
-  "Big Dog": {
-   "class": "Ouginak",
-   "AP": "3",
-   "target": "st",
-   "range": "3-5",
-   "los": "y",
-   "effects": "{{gui|air}} Damage: 4-121\nTeleports behind target",
-   "criteffects": "{{gui|air}} Damage: 5-151\nTeleports behind the target",
-   "conditions": "2 uses per turn"
-  },
-  "Bone Breaker": {
-   "class": "Ouginak",
-   "AP": "2",
-   "target": "st",
-   "range": "1-3",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|air}} Damage: 1-35\n{{gui|enemy}} {{st|7523}} (Lvl 2-70)",
-   "criteffects": "{{gui|air}} Damage: 1-44\n{{gui|enemy}} {{st|7523}} (Lvl 2-88)",
-   "conditions": "1 use per target\n3 uses per turn"
-  },
-  "Canine": {
-   "class": "Ouginak",
-   "AP": "3",
-   "range": "2-4",
-   "los": "n",
-   "mod": "y",
-   "effects": "Places the Canine\nAt start of turn:\n{{gui|arrow}} {{gui|mp}} -3 MP\n{{gui|arrow}} {{gui|light}} Damage: 3-76\n\nThe {{gui|glyph}} lasts 2 turns Glyph",
-   "conditions": "1 use per turn"
-  },
-  "Appeasement": {
-   "class": "Ouginak",
-   "AP": "2",
-   "range": "1-3",
-   "los": "y",
-   "effects": "{{gui|mp}} 2 MP max (1 turn)\n\nIf the Ouginak has 20 or more '''Fury:'''\n{{gui|arrow}} 1% of the {{gui|caster}}'s max HP in Armor per point of '''Fury'''\n{{gui|arrow}} Consumes all fury",
-   "conditions": "Is an obstacle(target)\n2 uses per turn"
-  },
   "Pursuit": {
    "class": "Ouginak",
    "AP": "3",
@@ -17239,6 +17356,16 @@
    "criteffects": "Cast on {{gui|ally}}:\n{{gui|arrow}} {{st|751}} (Lvl 7-190)\n{{gui|arrow}} Attracts aligned {{gui|target}} by 3 cells (max 4 cells)\n\nCast on {{gui|enemy}}:\n{{gui|arrow}} Damage: 7-220\n{{gui|arrow}} {{st|752}} (Lvl 4)",
    "conditions": "1 use per target\n2 uses per turn"
   },
+  "Capering": {
+   "class": "Masqueraider",
+   "AP": "6",
+   "target": "aoe",
+   "range": "3-5",
+   "los": "n",
+   "effects": "Along the path:\n{{gui|arrow}} {{gui|enemy}} {{gui|fire}} Damage: 6-153 (melee)\n{{gui|arrow}} {{gui|ally}} {{gui|armor}} 5-2,398 armor\n\nTeleports to the cell",
+   "criteffects": "Along the path:\n{{gui|arrow}} {{gui|enemy}} {{gui|fire}} Damage: 8-191 (melee)\n{{gui|arrow}} {{gui|ally}} {{gui|armor}} 7-2,997 armor\n\nTeleports to the cell",
+   "conditions": "Is not being carried\n1 use per turn"
+  },
   "Sign": {
    "class": "Masqueraider",
    "AP": "2",
@@ -17249,6 +17376,28 @@
    "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-70\n\n{{gui|ally}} {{gui|water}} Healing: 4-35",
    "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-88\n\n{{gui|ally}} {{gui|water}} Healing: 5-44",
    "conditions": "2 uses per target"
+  },
+  "Armature": {
+   "class": "Masqueraider",
+   "AP": "4",
+   "target": "st",
+   "range": "1-5",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|ally}} {{gui|lock}} {{se|base=1|scale=1}} Lock (1 turn)\n\n{{gui|ally}} {{gui|armor}} 4-2,038 Armor",
+   "criteffects": "{{gui|ally}} {{gui|lock}} {{se|base=1|scale=1.25}} Lock (1 turn)\n\n{{gui|ally}} {{gui|armor}} 6-2,548 Armor",
+   "conditions": "1 use per target\n2 uses per turn"
+  },
+  "Deliverance": {
+   "class": "Masqueraider",
+   "AP": "3",
+   "target": "aoe",
+   "range": "1-5",
+   "los": "y",
+   "mod": "y",
+   "effects": "In {{gui|area square|text=Size: 3}}:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 3-76\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 6-42\n{{gui|arrow}} {{gui|ally}} {{gui|dodge}} 15-88 Dodge",
+   "criteffects": "In {{gui|area square|text=Size: 3}}:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 4-95\n{{gui|arrow}} {{gui|ally}} {{gui|water}} Healing: 7-53\n{{gui|arrow}} {{gui|ally}} {{gui|dodge}} 19-110 Dodge",
+   "conditions": "2 uses per turn"
   },
   "Manhunt": {
    "class": "Masqueraider",
@@ -17281,6 +17430,26 @@
    "criteffects": "Attracts by 1 cell",
    "conditions": "Is not being carried\n2 uses per turn"
   },
+  "Cavalcade": {
+   "class": "Masqueraider",
+   "AP": "2",
+   "target": "st",
+   "range": "1",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|air}} Damage: 2-51\n\n{{gui|target}} {{st|3770}}",
+   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-63\n\n{{gui|target}} {{st|3770}}",
+   "conditions": "2 uses per target\n3 uses per turn"
+  },
+  "Dislocation": {
+   "class": "Masqueraider",
+   "AP": "4",
+   "target": "st",
+   "range": "1-5",
+   "los": "y",
+   "effects": "Switches places\n\n{{gui|enemy}} {{gui|air}} Damage: 4-131",
+   "criteffects": "Switches places\n\n{{gui|enemy}} {{gui|air}} Damage: 5-1164",
+   "conditions": "Is not being carried\n2 uses per turn"
+  },
   "Inspiring Dance": {
    "class": "Masqueraider",
    "AP": "3",
@@ -17289,6 +17458,30 @@
    "mod": "y",
    "effects": "{{st|6610}} (state lasts 2 turns)\n\nAt start of turn:\n{{gui|arrow}} {{gui|mp}} '''2 MP''' (1 turn)\n{{gui|arrow}} 4% of the target's max HP in '''Armor'''",
    "conditions": "4-turn cooldown"
+  },
+  "Dance of Death": {
+   "class": "Masqueraider",
+   "AP": "2",
+   "range": "1-5",
+   "los": "y",
+   "effects": "Cast on KO'd {{gui|ally}}:\n{{gui|arrow}} Revives the {{gui|ally}} with 30% max HP\n{{gui|arrow}} {{gui|ally}} {{st|1144}} (Lvl 1), {{gui|ap}} 2 AP (1 turn)",
+   "conditions": "3-turn cooldown"
+  },
+  "Acrobatics": {
+   "class": "Masqueraider",
+   "AP": "3",
+   "range": "6",
+   "los": "n",
+   "effects": "Teleports the Masqueraider to a cell next to a fighter\n{{gui|caster}} {{gui|resistance}} 50 Elemental Resistance",
+   "conditions": "Is not being carried\n2-turn cooldown"
+  },
+  "Brutality Aura": {
+   "class": "Masqueraider",
+   "AP": "2",
+   "range": "0",
+   "los": "n",
+   "effects": "Brutality Aura\n{{gui|di}} 20% damage inflicted",
+   "conditions": "3-turn cooldown"
   },
   "Solidity": {
    "class": "Masqueraider",
@@ -17299,12 +17492,34 @@
    "effects": "{{st|3434}} (1 turn)\n{{gui|armor}} Armor with 10% of the caster's max HP",
    "conditions": "2-turn cooldown"
   },
+  "Coward Mask": {
+   "class": "Masqueraider",
+   "range": "0",
+   "los": "y",
+   "effects": "{{gui|caster}} {{st|6612}} (2 turns)\nCasting a spell on an adjacent target '''pushes the target back 1 cell''' per AP/MP/WP of the spell used\n10% damage suffered in melee\n\nAllies at 4 Range or less:\n{{gui|arrow}} {{gui|range}} '''2 Range''' (2 turns)",
+   "conditions": "1 use per turn"
+  },
   "Psychopath Mask": {
    "class": "Masqueraider",
    "range": "0",
    "los": "y",
    "effects": "{{gui|caster}} {{st|6611}} (2 turns)\n{{gui|di}} '''35% damage inflicted'''\n10% ranged damage suffered\n\nAllies at 4 Range or less:\n{{gui|arrow}} {{gui|crit}} '''15% Critical Hit''' (2 turns)",
    "conditions": "1 use per turn"
+  },
+  "Classic Mask": {
+   "class": "Masqueraider",
+   "range": "0",
+   "los": "y",
+   "effects": "{{gui|caster}} {{st|6613}} (2 turns)\n{{gui|hp%}} '''30% heals performed, 30% Armor given'''\n\nCannot lock, and cannot move away from an adjacent enemy\n\nAllies at 4 Range or less:\n{{gui|arrow}} {{gui|resistance}} '''50 Elemental Resistance''' (2 turns)",
+   "conditions": "1 use per turn"
+  },
+  "Clashing": {
+   "class": "Masqueraider",
+   "AP": "",
+   "range": "1-2",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{st|9246}} (Lvl 50)\n{{gui|resistance}} '''-50 Elemental Resistance'''\nIf the bearer is targeted by one of the {{gui|caster}} Masqueraider's movement spells:\n{{gui|arrow}} Triggers a collision with the bearer",
+   "conditions": "The target must be an enemy.\n2-turn cooldown"
   },
   "Blisskrieg": {
    "class": "Pandawa",
@@ -17420,17 +17635,6 @@
    "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 4-104\n{{gui|ally}} {{gui|water}} Healing: 7-58\n\nCast on {{gui|barrel}}:\n{{gui|arrow}} The area of effect becomes {{gui|area square|text=Size: 3}}\n\nThe spell is replicated on the previous targets",
    "conditions": "2 uses per target\n3 uses per turn"
   },
-  "Boomerang Dagger": {
-   "class": "Rogue",
-   "AP": "3",
-   "target": "aoe",
-   "range": "1-5",
-   "los": "no",
-   "mod": "yes",
-   "effects": "{{gui|caster}} {{st|7917}}:\n{{gui|arrow}} {{gui|earth}} Damage: 3-91\n{{gui|arrow}} Applies an additional level of {{st|8041}}\n\n{{gui|caster}} {{st|7916}}:\n{{gui|arrow}} {{gui|earth}} Damage: 3-91 in a {{gui|area boomerang}} boomerang area of effect\n{{gui|arrow}} Applies 1 level of  {{st|8041}} {{gui|area boomerang}}\n{{gui|arrow}} Does not trigger  {{st|8041}}",
-   "criteffects": "{{gui|caster}} {{st|7917}}:\n{{gui|arrow}} {{gui|earth}} Damage: 4-114\n{{gui|arrow}} Applies an additional level of {{st|8041}}\n\n{{gui|caster}} {{st|7916}}:\n{{gui|arrow}} {{gui|earth}} Damage: 4-114 in a {{gui|area boomerang}} boomerang area of effect\n{{gui|arrow}} Applies 1 level of  {{st|8041}} {{gui|area boomerang}}\n{{gui|arrow}} Does not trigger  {{st|8041}}",
-   "conditions": "2 uses per target\n3 uses per turn"
-  },
   "Milk Wave": {
    "class": "Pandawa",
    "AP": "6",
@@ -17479,24 +17683,6 @@
    "effects": "Cast on {{gui|ally}}:\n{{gui|arrow}} {{st|3434}} (1 turn)\n{{gui|arrow}} Cannot be locked (1 turn)\n\nCast on {{gui|enemy}}:\n{{gui|arrow}} {{st|3434}} (1 turn)\n{{gui|arrow}} Cannot lock (1 turn)",
    "conditions": "2-turn cooldown"
   },
-  "Boombot": {
-   "AP": "1",
-   "range": "1-6",
-   "los": "n",
-   "effects": "Triggers the {{gui|bomb}}",
-   "conditions": "For use on: Paralyzing Bomb\nor For use on: Burning Bomb\nor For use on: Blinding Bomb\n2 uses per turn"
-  },
-  "Barbed Fire": {
-   "class": "Rogue",
-   "AP": "4",
-   "target": "aoe",
-   "range": "1-5",
-   "los": "yes",
-   "mod": "yes",
-   "effects": "{{gui|fire}} Damage: 4-121 {{gui|area cross|Size: 2}}\n\nCast on {{gui|bomb}}\n{{gui|arrow}} Attracts by 2 cells {{gui|area cross|text=Size: 3}}\n{{gui|arrow}} {{gui|enemy}} {{gui|fire}} Damage: 4-121 {{gui|area cross|text=Size: 3}}",
-   "criteffects": "{{gui|fire}} Damage: 5-152 {{gui|area cross|Size: 2}}\n\nCast on {{gui|bomb}}\n{{gui|arrow}} Attracts by 2 cells {{gui|area cross|text=Size: 3}}\n{{gui|arrow}} {{gui|enemy}} {{gui|fire}} Damage: 5-152 {{gui|area cross|text=Size: 3}}",
-   "conditions": "2 uses per turn"
-  },
   "Barrelhop": {
    "class": "Pandawa",
    "range": "1-5",
@@ -17524,6 +17710,16 @@
    "mod": "y",
    "effects": "If cast on oneself:\n{{gui|arrow}} {{gui|caster}} Neutral spells cost {{gui|ap}} 1 AP (1 turn)\n{{gui|arrow}} {{gui|caster}} Regains 2 AP\n\nIf cast on {{gui|barrel}}:\n{{gui|arrow}} {{gui|ally}} {{st|3367}} {{gui|area circle|text=Size: 2}} (1 turn):\n{{gui|ap}} 1 AP\n{{gui|di}} 20% damage inflicted",
    "conditions": "3-turn cooldown"
+  },
+  "Fang in the Works": {
+   "class": "Ouginak",
+   "AP": "2",
+   "target": "aoe",
+   "range": "1",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 2-65 and {{gui|mp}} -2 MP {{gui|area cross}}",
+   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 2-82 and {{gui|mp}} -2 MP {{gui|area cross}}",
+   "conditions": "2 uses per turn"
   },
   "Ruckus": {
    "class": "Ouginak",
@@ -17599,20 +17795,16 @@
    "effects": "{{st|9110}} (Lvl 1) (1 turn):\n{{gui|resistance}} -50 Elemental Resistance\n{{gui|crit}} -15% Critical Hit\n{{gui|block}} -15% Block",
    "conditions": "1 use per turn"
   },
-  "Boot": {
-   "class": "Rogue",
-   "AP": "1",
-   "range": "1-6",
-   "los": "no",
-   "effects": "Moves a '''bomb''' onto the targeted cell\n{{gui|arrow}} is the closest bomb\n{{gui|arrow}} must be '''on the same line as the Rogue and the targeted cell'''\n\nOn the Rogue {{gui|caster}} or a {{gui|bomb}}:\n{{gui|arrow}} Pushes back one cell {{gui|area cross}}",
+  "Flail": {
+   "class": "Ouginak",
+   "AP": "4",
+   "target": "aoe",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|water}} Damage: 5-152 {{gui|area hline}}\n{{gui|arrow}} 40% health stolen",
+   "criteffects": "{{gui|water}} Damage: 7-190 {{gui|area hline}}\n{{gui|arrow}} 40% health stolen",
    "conditions": "2 uses per turn"
-  },
-  "Claw": {
-   "class": "Rogue",
-   "range": "2-5",
-   "los": "yes",
-   "effects": "{{st|7916}}: {{gui|caster}} Comes right up to the target\n\n{{st|7917}}: {{gui|caster}} Pulls target into close combat, then goes behind the target",
-   "conditions": "Is not being carried\n2 uses per turn"
   },
   "Rupture": {
    "class": "Ouginak",
@@ -17634,6 +17826,16 @@
    "criteffects": "{{gui|water}} Damage: 4-123 {{gui|area vline}}\n\nIf the {{gui|caster}} has more than 80% of their max HP:\n{{gui|arrow}} {{gui|water}} Damage: 5-164 instead {{gui|area vline}}",
    "conditions": "3 uses per turn"
   },
+  "Brawl": {
+   "class": "Ouginak",
+   "AP": "3",
+   "target": "st",
+   "range": "1",
+   "los": "y",
+   "effects": "{{gui|earth}} Damage: 3-83\n{{st|7517}}\n\nIf the target is {{st|7516}}:\n{{gui|arrow}} {{gui|earth}} Damage: 9-251 instead",
+   "criteffects": "{{gui|earth}} Damage: 4-104\n{{st|7517}}\n\nIf the target is {{st|7516}}:\n{{gui|arrow}} {{gui|earth}} Damage: 9-341 instead",
+   "conditions": "2 uses per target\n4 uses per turn"
+  },
   "Watchdog": {
    "class": "Ouginak",
    "AP": "4",
@@ -17642,6 +17844,58 @@
    "los": "y",
    "effects": "For each enemy affected:\n{{gui|arrow}} {{gui|caster}} 1-467 armor\n{{gui|enemy}} {{gui|earth}} Damage: 4-121 {{gui|area cross}}",
    "criteffects": "For each enemy affected:\n{{gui|arrow}} {{gui|caster}} 1-467 armor\n{{gui|enemy}} {{gui|earth}} Damage: 5-152 {{gui|area cross}}"
+  },
+  "Crosshatch": {
+   "class": "Ouginak",
+   "AP": "3",
+   "target": "aoe",
+   "range": "1-2",
+   "los": "y",
+   "effects": "{{gui|earth}} Damage: 3-83 {{gui|area hline}}\n{{st|7515}} (Lvl 1) {{gui|area hline}}",
+   "criteffects": "{{gui|earth}} Damage: 4-104 {{gui|area hline}}\n{{st|7515}} (Lvl 1) {{gui|area hline}}",
+   "conditions": "2 uses per turn"
+  },
+  "Fits and Starts": {
+   "class": "Ouginak",
+   "AP": "4",
+   "target": "st",
+   "range": "1-2",
+   "los": "y",
+   "effects": "If the target has Armor:\n{{gui|arrow}} {{gui|earth}} Damage: 2-65 (on armor)\n\n{{gui|earth}} Damage: 4-131\n\n{{gui|caster}} Armor gain: 5% of max HP",
+   "criteffects": "If the target has Armor:\n{{gui|arrow}} {{gui|earth}} Damage: 2-82 (on armor)\n\n{{gui|earth}} Damage: 5-164\n\n{{gui|caster}} Armor gain: 6.25% of max HP",
+   "conditions": "2 uses per turn"
+  },
+  "Contusion": {
+   "class": "Ouginak",
+   "AP": "3",
+   "target": "aoe",
+   "range": "2-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|air}} Damage: 3-91 {{gui|area cross}}\nPushes back 1 cell",
+   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 4-114 {{gui|area cross}}\nPushes back 1 cell",
+   "conditions": "3 uses per turn"
+  },
+  "Big Dog": {
+   "class": "Ouginak",
+   "AP": "3",
+   "target": "st",
+   "range": "3-5",
+   "los": "y",
+   "effects": "{{gui|air}} Damage: 4-121\nTeleports behind target",
+   "criteffects": "{{gui|air}} Damage: 5-151\nTeleports behind the target",
+   "conditions": "2 uses per turn"
+  },
+  "Bone Breaker": {
+   "class": "Ouginak",
+   "AP": "2",
+   "target": "st",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|air}} Damage: 1-35\n{{gui|enemy}} {{st|7523}} (Lvl 2-70)",
+   "criteffects": "{{gui|air}} Damage: 1-44\n{{gui|enemy}} {{st|7523}} (Lvl 2-88)",
+   "conditions": "1 use per target\n3 uses per turn"
   },
   "Pugnacity": {
    "class": "Ouginak",
@@ -17653,6 +17907,23 @@
    "effects": "{{gui|enemy}} {{gui|air}} Damage: 5-152\n{{gui|enemy}} {{st|7522}} (Lvl 4-121) (2 turns)",
    "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 7-190\n{{gui|enemy}} {{st|7522}} (Lvl 5-152) (2 turns)",
    "conditions": "1 use per target\n2 uses per turn"
+  },
+  "Canine": {
+   "class": "Ouginak",
+   "AP": "3",
+   "range": "2-4",
+   "los": "n",
+   "mod": "y",
+   "effects": "Places the Canine\nAt start of turn:\n{{gui|arrow}} {{gui|mp}} -3 MP\n{{gui|arrow}} {{gui|light}} Damage: 3-76\n\nThe {{gui|glyph}} lasts 2 turns Glyph",
+   "conditions": "1 use per turn"
+  },
+  "Appeasement": {
+   "class": "Ouginak",
+   "AP": "2",
+   "range": "1-3",
+   "los": "y",
+   "effects": "{{gui|mp}} 2 MP max (1 turn)\n\nIf the Ouginak has 20 or more '''Fury:'''\n{{gui|arrow}} 1% of the {{gui|caster}}'s max HP in Armor per point of '''Fury'''\n{{gui|arrow}} Consumes all fury",
+   "conditions": "Is an obstacle(target)\n2 uses per turn"
   },
   "Pack": {
    "class": "Ouginak",
@@ -17683,76 +17954,6 @@
    "effects": "{{gui|target}} {{st|7524}} (Lvl 1)\n{{gui|caster}} Unbewitches the {{st|7524}} state\n{{gui|caster}} -5 '''Fury'''\n\nCast on {{st|7529}}, teleports it immediately",
    "conditions": "Fury >= 5\n3-turn cooldown"
   },
-  "Cheating": {
-   "class": "Rogue",
-   "AP": "3",
-   "target": "single",
-   "range": "1-4",
-   "los": "n",
-   "effects": "{{gui|air}} Damage: 3-83 and steals 100%\n\nCast on {{gui|bomb}}:\n{{gui|arrow}} {{gui|caster}} Switches places with it",
-   "criteffects": "{{gui|air}} Damage: 4-104 and steals 100%\n\nCast on {{gui|bomb}}:\n{{gui|arrow}} {{gui|caster}} Switches places with it",
-   "conditions": "2 uses per turn"
-  },
-  "Carbine": {
-   "class": "Rogue",
-   "AP": "4",
-   "target": "single",
-   "range": "1-6",
-   "los": "no",
-   "effects": "{{gui|enemy}} {{gui|air}} Damage: 4-102\n\n2 rebounds in {{gui|area circlering|text=Size: 1-3}}:\n{{gui|arrow}} 1st: {{gui|enemy}} {{gui|air}} Damage: 5-127\n{{gui|arrow}} 2nd: {{gui|enemy}} {{gui|air}} Damage: 6-153\n\nIf a '''bomb''' was used for a rebound:\n{{gui|arrow}} 10% extra damage",
-   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 5-127\n\n2 rebounds in {{gui|area circlering|text=Size: 1-3}}:\n{{gui|arrow}} 1st: {{gui|enemy}} {{gui|air}} Damage: 6-153\n{{gui|arrow}} 2nd: {{gui|enemy}} {{gui|air}} Damage: 7-178\n\nIf a '''bomb''' was used for a rebound:\n{{gui|arrow}} 10% extra damage",
-   "conditions": "2 uses per turn"
-  },
-  "Blunderbuss": {
-   "class": "Rogue",
-   "AP": "3",
-   "target": "single",
-   "range": "1-4",
-   "los": "yes",
-   "mod": "yes",
-   "effects": "{{gui|earth}} Damage: 3-91\nPushes back 2 cells\n\n{{gui|caster}} {{st|7916}}:\n{{gui|arrow}} Effects are applied in a {{gui|area cone|text=Size: 2}}",
-   "criteffects": "{{gui|earth}} Damage: 4-114\nPushes back 2 cells\n\n{{gui|caster}} {{st|7916}}:\n{{gui|arrow}} Effects are applied in a {{gui|area cone|text=Size: 2}}",
-   "conditions": "2 uses per turn"
-  },
-  "Encumbering Shot": {
-   "class": "Rogue",
-   "AP": "4",
-   "target": "single",
-   "range": "1-5",
-   "los": "yes",
-   "mod": "yes",
-   "effects": "{{gui|earth}} Damage: 4-131\n{{gui|mp}} -3 MP\n\nCast on {{gui|bomb}}:\n{{gui|arrow}} Effects are applied in a {{gui|area vline|text=Size: 3}}",
-   "criteffects": "{{gui|earth}} Damage: 5-164\n{{gui|mp}} -3 MP\n\nCast on {{gui|bomb}}:\n{{gui|arrow}} Effects are applied in a {{gui|area vline|text=Size: 3}}",
-   "conditions": "2 uses per turn"
-  },
-  "Crosswise": {
-   "class": "Rogue",
-   "AP": "2",
-   "target": "single",
-   "range": "2-10",
-   "los": "yes",
-   "mod": "yes",
-   "effects": "{{gui|fire}} Damage: 2-65\nAttracts by 5 cells the {{gui|bomb}} {{gui|area cross}}",
-   "criteffects": "{{gui|fire}} Damage: 2-82\nAttracts by 5 cells the {{gui|bomb}} {{gui|area cross}}",
-   "conditions": "2 uses per turn"
-  },
-  "Detonation": {
-   "class": "Rogue",
-   "AP": "1",
-   "range": "1-7",
-   "los": "no",
-   "mod": "yes",
-   "effects": "On {{gui|bomb}}: triggers the {{gui|bomb}} {{gui|area circle}} (2)\nOn {{gui|enemy}}: triggers the around the {{gui|bomb}} around the target {{gui|area circle}} (2)\n{{gui|arrow}} {{gui|bomb}} only explode on the target\n{{gui|arrow}} {{gui|bomb}} don't spread the explosion\n{{gui|arrow}} Damage from {{gui|bomb}} is increased by\n20%\n\n{{gui|caster}} {{gui|ap}} 1 AP",
-   "conditions": "Paralyzing Bomb Summons in play\nor Burning Bomb Summons in play\nor Blinding Bomb Summons in play\nThe target must be an enemy.\nNumber of Bomb (Range 3) > 0\nor Number of Bomb (Range 2) > 0\n2 uses per turn"
-  },
-  "Dynamite": {
-   "class": "Rogue",
-   "range": "1-5",
-   "los": "yes",
-   "mod": "y",
-   "effects": "Places a level-1 {{gui|bomb}}:\n{{gui|arrow}} The element depends on the {{gui|caster}}'s masteries\n{{gui|arrow}} Per level of {{st|9367}}, +1 level\n{{gui|arrow}} Consumes {{st|9367}}",
-   "conditions": "In the state \"Dynamite\"\nor In the state \"Powder\"\n1 use per turn"
-  },
   "Pandiniuras": {
    "class": "Pandawa",
    "AP": "2",
@@ -17761,17 +17962,6 @@
    "mod": "y",
    "effects": "{{gui|caster}} {{st|3300}}:\n{{gui|arrow}} {{gui|mp}} 3 MP (1 turn)\n\nOtherwise:\n{{gui|arrow}} {{gui|range}} 3 Range (1 turn)",
    "conditions": "2-turn cooldown"
-  },
-  "Spiritual Tempest": {
-   "class": "Sacrier",
-   "AP": "4",
-   "target": "aoe",
-   "range": "1-4",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|air}} Damage: 4-131\nFor each movement spell used during the turn:\n{{gui|arrow}} [[Spiritual Tempest]]  costs {{gui|ap}} 1 AP less\n{{gui|arrow}} {{gui|caster}} {{st|4840}}: 10% of map HP",
-   "criteffects": "{{gui|air}} Damage: 5-164\nFor each movement spell used during the turn:\n{{gui|arrow}} [[Spiritual Tempest]]  costs {{gui|ap}} 1 AP less\n{{gui|arrow}} {{gui|caster}} {{st|4840}}: 10% of map HP",
-   "conditions": "1 use per target\n2 uses per turn"
   },
   "Machine Gun": {
    "class": "Rogue",
@@ -17794,17 +17984,6 @@
    "criteffects": "Attracts targets around the targeted cell\n{{gui|fighter}} {{gui|earth}} Damage: 4-104 {{gui|area cross|text=Size: 3}}\n{{gui|caster}} {{gui|lock}} 0-122 Lock (1 turn)",
    "conditions": "2 uses per turn"
   },
-  "Gust": {
-   "class": "Sadida",
-   "AP": "2",
-   "target": "st",
-   "range": "2-4",
-   "los": "n",
-   "mod": "y",
-   "effects": "{{gui|enemy}} {{gui|air}} Damage: 2-51\n{{gui|ally}} {{gui|di}} 20% damage inflicted\nPushes back 1 cell {{gui|area circlering}}\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3598}}\n{{gui|arrow}} {{gui|doll}} {{st|8196}} (Lvl 1)",
-   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-63\n{{gui|ally}} {{gui|di}} 20% damage inflicted\nPushes back 1 cell {{gui|area circlering}}\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3598}}\n{{gui|arrow}} {{gui|doll}} {{st|8196}} (Lvl 1)",
-   "conditions": "2 uses per turn"
-  },
   "Sanguine Armor": {
    "class": "Sacrier",
    "AP": "2",
@@ -17812,15 +17991,6 @@
    "los": "y",
    "effects": "{{gui|ally}} {{gui|armor}} Armor with 20% of the target's max HP\n{{gui|ally}} {{gui|lock}} {{se|base=2|scale=2}} Lock (1 turn)\n{{gui|ally}} {{st|3434}} (1 turn)",
    "conditions": "3-turn cooldown"
-  },
-  "Transposition": {
-   "class": "Sacrier",
-   "AP": "1",
-   "range": "2-6",
-   "los": "n",
-   "mod": "y",
-   "effects": "Switches places\n{{gui|caster}} {{gui|eps}} Healing: 10% of HP lost of the caster {{gui|fixed}}",
-   "conditions": "Is not being carried\n2-turn cooldown"
   },
   "Cage of Blood": {
    "class": "Sacrier",
@@ -17832,14 +18002,6 @@
    "effects": "{{gui|fire}} Damage: 4-121\n{{gui|mp}} -3 MP\n{{st|9302}} (Lvl 15)\n{{gui|di}} -15% damage inflicted (1 turn)\n\nCast on an {{gui|ally}} ally:\n{{gui|arrow}} {{gui|armor}} 8-34 {{gui|fire}} Armor\n{{gui|arrow}} Barrier:\n{{gui|arrow}} -10-2450 Damage received (1 time)",
    "criteffects": "{{gui|fire}} Damage: 4-152\n{{gui|mp}} -3 MP\n{{st|9302}} (Lvl 15)\n{{gui|di}} -15% damage inflicted (1 turn)\n\nCast on an {{gui|ally}} ally:\n{{gui|arrow}} {{gui|armor}} 10-43 {{gui|fire}} Armor\n{{gui|arrow}} Barrier:\n{{gui|arrow}} -10-2450 Damage received (1 time)",
    "conditions": "1 use per target"
-  },
-  "Dolly Sacrifice": {
-   "class": "Sadida",
-   "AP": "2",
-   "range": "0",
-   "los": "y",
-   "effects": "{{gui|caster}} Sacrifices all their {{gui|doll}}\nPer level of {{st|3624}} of sacrificed {{gui|doll}}:\n{{gui|arrow}} {{gui|caster}} 1 map AP (1 turn)\n{{gui|arrow}} {{gui|caster}} Healing: 5% max HP",
-   "conditions": "2-turn cooldown"
   },
   "Sacrier's Fist": {
    "class": "Sacrier",
@@ -17871,26 +18033,16 @@
    "criteffects": "{{gui|caster}} Teleports to the cell\n\nIn a square {{gui|area square}} area of effect:\n{{gui|arrow}} {{gui|enemy}}\n{{gui|arrow}} {{gui|ally}} {{gui|earth}} Damage: 5-164\n\nPer target hit:\n{{gui|arrow}} {{gui|caster}} {{gui|earth}} Damage: 5-164\n{{gui|armor}} 1-25 {{gui|earth}} Armor {{gui|area squarering}}",
    "conditions": "2 uses per turn"
   },
-  "Bramble": {
-   "class": "Sadida",
+  "Boomerang Dagger": {
+   "class": "Rogue",
    "AP": "3",
-   "target": "st",
+   "target": "aoe",
    "range": "1-5",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 3-91\n{{gui|ally}} {{gui|armor}} 3-1,438 Armor\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3600}}\n{{gui|arrow}} {{gui|doll}} {{st|8193}} (Lvl 1)",
-   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 4-114\n{{gui|ally}} {{gui|armor}} 4-1,798 Armor\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3600}}\n{{gui|arrow}} {{gui|doll}} {{st|8193}} (Lvl 1)",
-   "conditions": "3 uses per target\n4 uses per turn"
-  },
-  "Fertilizer": {
-   "class": "Sadida",
-   "AP": "1",
-   "target": "st",
-   "range": "1-4",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|doll}} Skips turn\n{{gui|doll}} {{st|3624}} (+3 Lvl.) at end of turn\n{{gui|doll}} {{st|3434}}\n{{gui|ally}} 30% extra Heals received from {{gui|doll}}\n{{gui|enemy}} 30% extra Damage received from {{gui|doll}}",
-   "conditions": "1 use per target\n2 uses per turn"
+   "los": "no",
+   "mod": "yes",
+   "effects": "{{gui|caster}} {{st|7917}}:\n{{gui|arrow}} {{gui|earth}} Damage: 3-91\n{{gui|arrow}} Applies an additional level of {{st|8041}}\n\n{{gui|caster}} {{st|7916}}:\n{{gui|arrow}} {{gui|earth}} Damage: 3-91 in a {{gui|area boomerang}} boomerang area of effect\n{{gui|arrow}} Applies 1 level of  {{st|8041}} {{gui|area boomerang}}\n{{gui|arrow}} Does not trigger  {{st|8041}}",
+   "criteffects": "{{gui|caster}} {{st|7917}}:\n{{gui|arrow}} {{gui|earth}} Damage: 4-114\n{{gui|arrow}} Applies an additional level of {{st|8041}}\n\n{{gui|caster}} {{st|7916}}:\n{{gui|arrow}} {{gui|earth}} Damage: 4-114 in a {{gui|area boomerang}} boomerang area of effect\n{{gui|arrow}} Applies 1 level of  {{st|8041}} {{gui|area boomerang}}\n{{gui|arrow}} Does not trigger  {{st|8041}}",
+   "conditions": "2 uses per target\n3 uses per turn"
   },
   "Slap Shot": {
    "class": "Rogue",
@@ -17913,15 +18065,22 @@
    "criteffects": "{{gui|caster}} {{st|4840}}: {{st|7903}} (+5 Lvl.)\n{{gui|fire}} Damage: 4-141",
    "conditions": "4 uses per turn"
   },
-  "Drain": {
-   "class": "Sadida",
-   "AP": "5",
-   "target": "st",
-   "range": "1-4",
+  "Boombot": {
+   "AP": "1",
+   "range": "1-6",
    "los": "n",
-   "mod": "y",
-   "effects": "{{gui|water}} Damage: 6-182\n{{gui|ally}} {{gui|water}} Healing: 12-100 {{gui|area squarering}}",
-   "criteffects": "{{gui|water}} Damage: 8-228\n{{gui|ally}} {{gui|water}} Healing: 18-125 {{gui|area squarering}}",
+   "effects": "Triggers the {{gui|bomb}}",
+   "conditions": "For use on: Paralyzing Bomb\nor For use on: Burning Bomb\nor For use on: Blinding Bomb\n2 uses per turn"
+  },
+  "Barbed Fire": {
+   "class": "Rogue",
+   "AP": "4",
+   "target": "aoe",
+   "range": "1-5",
+   "los": "yes",
+   "mod": "yes",
+   "effects": "{{gui|fire}} Damage: 4-121 {{gui|area cross|Size: 2}}\n\nCast on {{gui|bomb}}\n{{gui|arrow}} Attracts by 2 cells {{gui|area cross|text=Size: 3}}\n{{gui|arrow}} {{gui|enemy}} {{gui|fire}} Damage: 4-121 {{gui|area cross|text=Size: 3}}",
+   "criteffects": "{{gui|fire}} Damage: 5-152 {{gui|area cross|Size: 2}}\n\nCast on {{gui|bomb}}\n{{gui|arrow}} Attracts by 2 cells {{gui|area cross|text=Size: 3}}\n{{gui|arrow}} {{gui|enemy}} {{gui|fire}} Damage: 5-152 {{gui|area cross|text=Size: 3}}",
    "conditions": "2 uses per turn"
   },
   "Pulsar": {
@@ -17955,16 +18114,6 @@
    "criteffects": "If the Sacrier has no Armor:\n{{gui|arrow}} {{gui|earth}} Damage: 4-114\n{{gui|arrow}} {{gui|caster}} {{gui|armor}} 7-35 {{gui|earth}} Armor\n\nIf the Sacrier has Armor:\n{{gui|arrow}} {{gui|earth}} Damage: 5-151\n{{gui|arrow}} {{gui|caster}} {{gui|armor}} -5% of max HP as Armor",
    "conditions": "3 uses per turn"
   },
-  "K'mir": {
-   "class": "Sadida",
-   "AP": "3",
-   "target": "st",
-   "range": "1-3",
-   "los": "y",
-   "effects": "Attracts by 2 cells\n{{st|3681}} (Lvl 1)\n{{gui|enemy}} {{gui|air}} Damage: 3-91\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3596}}\n{{gui|arrow}} {{gui|doll}} {{st|8190}} (Lvl 1)",
-   "criteffects": "Attracts by 2 cells\n{{st|3681}} (Lvl 1)\n{{gui|enemy}} {{gui|air}} Damage: 4-114\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3596}}\n{{gui|arrow}} {{gui|doll}} {{st|8190}} (Lvl 1)",
-   "conditions": ""
-  },
   "Coagulation": {
    "class": "Sacrier",
    "AP": "3",
@@ -17972,16 +18121,6 @@
    "los": "n",
    "effects": "{{gui|caster}} {{st|9320}} (2 turns):\nDoubles the Armor cap\nAt the end of turn, per Armor point:\n{{gui|arrow}} {{gui|caster}} {{gui|ally}} 0.5 {{gui|armor}} Armor {{gui|area circle|text=Size: 2}}",
    "conditions": "3-turn cooldown"
-  },
-  "Manifold Bramble": {
-   "class": "Sadida",
-   "AP": "5",
-   "target": "aoe",
-   "range": "2-5",
-   "los": "n",
-   "effects": "{{gui|mp}} -2 MP {{gui|area circle}}\n{{gui|earth}} Damage: 6-167",
-   "criteffects": "{{gui|mp}} -2 MP {{gui|area circle}}\n{{gui|earth}} Damage: 8-209",
-   "conditions": "2 uses per turn"
   },
   "Assault": {
    "class": "Sacrier",
@@ -18023,6 +18162,14 @@
    "criteffects": "If the Sacrier doesn't have 100 '''Fury:'''\n{{gui|arrow}} Sets the Sacrier's HP to 20%\n\n{{gui|fire}} Damage: 8-246",
    "conditions": "2-turn cooldown"
   },
+  "Boot": {
+   "class": "Rogue",
+   "AP": "1",
+   "range": "1-6",
+   "los": "no",
+   "effects": "Moves a '''bomb''' onto the targeted cell\n{{gui|arrow}} is the closest bomb\n{{gui|arrow}} must be '''on the same line as the Rogue and the targeted cell'''\n\nOn the Rogue {{gui|caster}} or a {{gui|bomb}}:\n{{gui|arrow}} Pushes back one cell {{gui|area cross}}",
+   "conditions": "2 uses per turn"
+  },
   "Smoke Bombs": {
    "class": "Rogue",
    "range": "1-3",
@@ -18030,6 +18177,13 @@
    "mod": "yes",
    "effects": "{{gui|ally}} {{st|5627}} (1 turn)\nReduces ranged damage suffered by 20%\nDoes not block lines of sight\nImmune to damage from allied {{gui|bomb}}\n\n{{gui|enemy}} {{st|5627}} (1 turn)\nReduces ranged damage inflicted by 20%\nDoes not block lines of sight",
    "conditions": "2-turn cooldown"
+  },
+  "Claw": {
+   "class": "Rogue",
+   "range": "2-5",
+   "los": "yes",
+   "effects": "{{st|7916}}: {{gui|caster}} Comes right up to the target\n\n{{st|7917}}: {{gui|caster}} Pulls target into close combat, then goes behind the target",
+   "conditions": "Is not being carried\n2 uses per turn"
   },
   "Evanescence": {
    "class": "Rogue",
@@ -18056,15 +18210,25 @@
    "effects": "Makes all {{gui|bomb}} explode\n\nFor each {{gui|bomb}} destroyed, for 2 turns:\n{{gui|arrow}} 10% damage inflicted on direct damage\n{{gui|arrow}} 1 MP\n\n{{gui|caster}} {{gui|ap}} 1 AP",
    "conditions": "Paralyzing Bomb Summons in play\nor Burning Bomb Summons in play\nor Blinding Bomb Summons in play\n3-turn cooldown"
   },
-  "Compost": {
-   "class": "Sadida",
+  "Cheating": {
+   "class": "Rogue",
+   "AP": "3",
+   "target": "single",
+   "range": "1-4",
+   "los": "n",
+   "effects": "{{gui|air}} Damage: 3-83 and steals 100%\n\nCast on {{gui|bomb}}:\n{{gui|arrow}} {{gui|caster}} Switches places with it",
+   "criteffects": "{{gui|air}} Damage: 4-104 and steals 100%\n\nCast on {{gui|bomb}}:\n{{gui|arrow}} {{gui|caster}} Switches places with it",
+   "conditions": "2 uses per turn"
+  },
+  "Carbine": {
+   "class": "Rogue",
    "AP": "4",
-   "target": "st",
-   "range": "1-3",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 4-131 and steals 1 MP\n{{gui|ally}} {{gui|armor}} 3-2,398 Armor\n{{gui|ally}} {{gui|mp}} 1 MP (3 if {{gui|doll}})\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3597}}\n{{gui|arrow}} {{gui|doll}} {{st|8192}} (Lvl 1)",
-   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 5-131 and steals 1 MP\n{{gui|ally}} {{gui|armor}} 7-2,997 Armor\n{{gui|ally}} {{gui|mp}} 1 MP (3 if {{gui|doll}})\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3597}}\n{{gui|arrow}} {{gui|doll}} {{st|8192}} (Lvl 1)",
-   "conditions": "2 uses per target\n3 uses per turn"
+   "target": "single",
+   "range": "1-6",
+   "los": "no",
+   "effects": "{{gui|enemy}} {{gui|air}} Damage: 4-102\n\n2 rebounds in {{gui|area circlering|text=Size: 1-3}}:\n{{gui|arrow}} 1st: {{gui|enemy}} {{gui|air}} Damage: 5-127\n{{gui|arrow}} 2nd: {{gui|enemy}} {{gui|air}} Damage: 6-153\n\nIf a '''bomb''' was used for a rebound:\n{{gui|arrow}} 10% extra damage",
+   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 5-127\n\n2 rebounds in {{gui|area circlering|text=Size: 1-3}}:\n{{gui|arrow}} 1st: {{gui|enemy}} {{gui|air}} Damage: 6-153\n{{gui|arrow}} 2nd: {{gui|enemy}} {{gui|air}} Damage: 7-178\n\nIf a '''bomb''' was used for a rebound:\n{{gui|arrow}} 10% extra damage",
+   "conditions": "2 uses per turn"
   },
   "Obliteration": {
    "class": "Rogue",
@@ -18077,6 +18241,28 @@
    "criteffects": "{{gui|air}} Damage: 5-139\n\nPer level of {{gui|bomb}} exploded since last use:\n{{gui|arrow}} 4% extra damage (max 200)",
    "conditions": "1 use per turn"
   },
+  "Blunderbuss": {
+   "class": "Rogue",
+   "AP": "3",
+   "target": "single",
+   "range": "1-4",
+   "los": "yes",
+   "mod": "yes",
+   "effects": "{{gui|earth}} Damage: 3-91\nPushes back 2 cells\n\n{{gui|caster}} {{st|7916}}:\n{{gui|arrow}} Effects are applied in a {{gui|area cone|text=Size: 2}}",
+   "criteffects": "{{gui|earth}} Damage: 4-114\nPushes back 2 cells\n\n{{gui|caster}} {{st|7916}}:\n{{gui|arrow}} Effects are applied in a {{gui|area cone|text=Size: 2}}",
+   "conditions": "2 uses per turn"
+  },
+  "Encumbering Shot": {
+   "class": "Rogue",
+   "AP": "4",
+   "target": "single",
+   "range": "1-5",
+   "los": "yes",
+   "mod": "yes",
+   "effects": "{{gui|earth}} Damage: 4-131\n{{gui|mp}} -3 MP\n\nCast on {{gui|bomb}}:\n{{gui|arrow}} Effects are applied in a {{gui|area vline|text=Size: 3}}",
+   "criteffects": "{{gui|earth}} Damage: 5-164\n{{gui|mp}} -3 MP\n\nCast on {{gui|bomb}}:\n{{gui|arrow}} Effects are applied in a {{gui|area vline|text=Size: 3}}",
+   "conditions": "2 uses per turn"
+  },
   "Sticky Bomb": {
    "class": "Rogue",
    "AP": "2",
@@ -18087,6 +18273,17 @@
    "effects": "{{gui|target}} {{st|6876}} (Lvl 4-111)\nIf the target dies or 3 turns go by:\n{{gui|arrow}} {{gui|fire}} Damage: 4-111\n\nCast on {{gui|bomb}}:\n{{gui|arrow}} {{st|862}}\n{{gui|arrow}} The {{gui|bomb}} explodes if it takes damage\n\nCannot place {{gui|bomb}}",
    "criteffects": "{{gui|target}} {{st|6876}} (Lvl 5-139)\nIf the target dies or 3 turns go by:\n{{gui|arrow}} {{gui|fire}} Damage: 5-139\n\nCast on {{gui|bomb}}:\n{{gui|arrow}} {{st|3434}}\n{{gui|arrow}} The {{gui|bomb}} explodes if it takes damage\n\nCannot place {{gui|bomb}}",
    "conditions": "1 use per turn"
+  },
+  "Crosswise": {
+   "class": "Rogue",
+   "AP": "2",
+   "target": "single",
+   "range": "2-10",
+   "los": "yes",
+   "mod": "yes",
+   "effects": "{{gui|fire}} Damage: 2-65\nAttracts by 5 cells the {{gui|bomb}} {{gui|area cross}}",
+   "criteffects": "{{gui|fire}} Damage: 2-82\nAttracts by 5 cells the {{gui|bomb}} {{gui|area cross}}",
+   "conditions": "2 uses per turn"
   },
   "Perforation": {
    "class": "Rogue",
@@ -18099,13 +18296,22 @@
    "criteffects": "If the target has Armor:\n{{gui|arrow}} {{gui|fire}} Damage: 4-123 (on Armor)\n{{gui|enemy}} {{gui|fire}} Damage: 8-246\n{{gui|arrow}} {{st|7916}}: Damage is always ''''ranged'''\n{{gui|arrow}}  {{st|7917}}: Damage is always '''melee'''\n\nThe effect is spread behind each target hit {{gui|area vline}}",
    "conditions": "1 use per turn"
   },
-  "Force of Nature": {
-   "class": "Sadida",
-   "AP": "2",
-   "range": "0",
-   "los": "y",
-   "effects": "{{gui|caster}} Must have Armor\n{{gui|caster}} {{st|8224}} (Lvl 1):\n{{gui|mp}} 2 MP\n{{gui|range}} 2 Range\n{{gui|di}} 30% damage inflicted (Transferred to {{gui|doll}})\n{{gui|hp%}} 30% heals performed (Transferred to {{gui|doll}})\nCancels Armor gains\n\nState is lost if the {{gui|caster}} loses their Armor",
-   "conditions": "Does not have the \"Force of Nature\" state\n4-turn cooldown"
+  "Detonation": {
+   "class": "Rogue",
+   "AP": "1",
+   "range": "1-7",
+   "los": "no",
+   "mod": "yes",
+   "effects": "On {{gui|bomb}}: triggers the {{gui|bomb}} {{gui|area circle}} (2)\nOn {{gui|enemy}}: triggers the around the {{gui|bomb}} around the target {{gui|area circle}} (2)\n{{gui|arrow}} {{gui|bomb}} only explode on the target\n{{gui|arrow}} {{gui|bomb}} don't spread the explosion\n{{gui|arrow}} Damage from {{gui|bomb}} is increased by\n20%\n\n{{gui|caster}} {{gui|ap}} 1 AP",
+   "conditions": "Paralyzing Bomb Summons in play\nor Burning Bomb Summons in play\nor Blinding Bomb Summons in play\nThe target must be an enemy.\nNumber of Bomb (Range 3) > 0\nor Number of Bomb (Range 2) > 0\n2 uses per turn"
+  },
+  "Dynamite": {
+   "class": "Rogue",
+   "range": "1-5",
+   "los": "yes",
+   "mod": "y",
+   "effects": "Places a level-1 {{gui|bomb}}:\n{{gui|arrow}} The element depends on the {{gui|caster}}'s masteries\n{{gui|arrow}} Per level of {{st|9367}}, +1 level\n{{gui|arrow}} Consumes {{st|9367}}",
+   "conditions": "In the state \"Dynamite\"\nor In the state \"Powder\"\n1 use per turn"
   },
   "Ruse": {
    "class": "Rogue",
@@ -18178,14 +18384,6 @@
    "effects": "Consumes all {{st|9312}}\n\n{{st|9323}} (Fury lvl. consumed)\n{{st|9322|level=3}} (Lvl. 3)\n\nIn the {{st|9323}} state, the Sacrier's spells are replaced by:\n{{gui|arrow}} [[Vital Punishment]]\n{{gui|arrow}} [[Lethal Punishment]]\n{{gui|arrow}} [[Final Punishment]]",
    "conditions": "In the state \"Punishment\"\n2-turn cooldown"
   },
-  "Vital Punishment": {
-   "class": "Sacrier",
-   "range": "1-6",
-   "los": "y",
-   "effects": "Switches places\n{{gui|enemy}} {{gui|light}} Damage: 2-60\n{{gui|arrow}} Health Steal: 100%\n\nConsumes 1 {{st|9322}}",
-   "criteffects": "Switches places\n{{gui|enemy}} {{gui|light}} Damage: 2-76\n{{gui|arrow}} Health Steal: 100%\n\nConsumes 1 {{st|9322}}",
-   "conditions": "2 uses per turn"
-  },
   "Lethal Punishment": {
    "class": "Sacrier",
    "range": "1-3",
@@ -18237,6 +18435,17 @@
    "effects": "Pushes the target in front of the Sram Double to the targeted cell.",
    "conditions": "2 uses per turn"
   },
+  "Spiritual Tempest": {
+   "class": "Sacrier",
+   "AP": "4",
+   "target": "aoe",
+   "range": "1-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|air}} Damage: 4-131\nFor each movement spell used during the turn:\n{{gui|arrow}} [[Spiritual Tempest]]  costs {{gui|ap}} 1 AP less\n{{gui|arrow}} {{gui|caster}} {{st|4840}}: 10% of map HP",
+   "criteffects": "{{gui|air}} Damage: 5-164\nFor each movement spell used during the turn:\n{{gui|arrow}} [[Spiritual Tempest]]  costs {{gui|ap}} 1 AP less\n{{gui|arrow}} {{gui|caster}} {{st|4840}}: 10% of map HP",
+   "conditions": "1 use per target\n2 uses per turn"
+  },
   "Fear": {
    "class": "Sram",
    "AP": "2",
@@ -18257,13 +18466,16 @@
    "criteffects": "{{gui|air}} Damage: 4-114\n{{gui|enemy}} {{st|3837}} (+3-95 Lvl.) (2 turns)\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3598}}\n{{gui|arrow}} {{gui|doll}} {{st|8195}} (Lvl 1)",
    "conditions": "3 uses per turn"
   },
-  "Devotion": {
-   "class": "Xelor",
-   "range": "1-3",
-   "los": "y",
+  "Gust": {
+   "class": "Sadida",
+   "AP": "2",
+   "target": "st",
+   "range": "2-4",
+   "los": "n",
    "mod": "y",
-   "effects": "At start of turn:\n{{gui|arrow}} {{gui|ap}} '''3 max AP''' (1 turn)",
-   "conditions": "1 use per turn"
+   "effects": "{{gui|enemy}} {{gui|air}} Damage: 2-51\n{{gui|ally}} {{gui|di}} 20% damage inflicted\nPushes back 1 cell {{gui|area circlering}}\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3598}}\n{{gui|arrow}} {{gui|doll}} {{st|8196}} (Lvl 1)",
+   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-63\n{{gui|ally}} {{gui|di}} 20% damage inflicted\nPushes back 1 cell {{gui|area circlering}}\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3598}}\n{{gui|arrow}} {{gui|doll}} {{st|8196}} (Lvl 1)",
+   "conditions": "2 uses per turn"
   },
   "Sudden Chill": {
    "class": "Sadida",
@@ -18275,6 +18487,15 @@
    "effects": "{{st|3591}} (+50 Lvl.):\n{{gui|arrow}} -50 Elemental Resistance\n{{gui|air}} Damage: 4-111\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3599}}\n{{gui|arrow}} {{gui|doll}} {{st|8188}} (Lvl 1)",
    "criteffects": "{{st|3591}} (+50 Lvl.):\n{{gui|arrow}} -50 Elemental Resistance\n{{gui|air}} Damage: 5-139\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3599}}\n{{gui|arrow}} {{gui|doll}} {{st|8188}} (Lvl 1)",
    "conditions": "2 uses per target"
+  },
+  "Transposition": {
+   "class": "Sacrier",
+   "AP": "1",
+   "range": "2-6",
+   "los": "n",
+   "mod": "y",
+   "effects": "Switches places\n{{gui|caster}} {{gui|eps}} Healing: 10% of HP lost of the caster {{gui|fixed}}",
+   "conditions": "Is not being carried\n2-turn cooldown"
   },
   "Bled Dry": {
    "class": "Sram",
@@ -18317,24 +18538,13 @@
    "criteffects": "{{gui|air}} Damage: 5-176\nDamage is always '''melee'''\n\nEvery 50 {{st|3114}}:\n{{gui|arrow}} {{gui|air}} Damage: 1-44 extra\n{{gui|arrow}} {{gui|enemy}} {{st|3125}} (+10 Lvl.)\n{{gui|arrow}} {{gui|caster}} regains {{gui|ap}} 1 AP, {{gui|mp}} 1 MP, {{gui|wp}} 1 WP\n{{gui|arrow}} {{gui|caster}} consumes the {{st|3114}} used",
    "conditions": "2 uses per turn"
   },
-  "Clock": {
-   "class": "Xelor",
-   "AP": "5",
-   "target": "st",
-   "range": "1-3",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|water}} Damage: 6-182 at end of the target's turn\n\nEvery 12 '''WP''' regained:\n{{gui|arrow}} The spell's effects are doubled",
-   "criteffects": "{{gui|water}} Damage: 8-228 at end of the target's turn\n\nEvery 12 '''WP''' regained:\n{{gui|arrow}} The spell's effects are doubled",
-   "conditions": "1 use per target\n2 uses per turn"
-  },
-  "Dial": {
-   "class": "Xelor",
+  "Dolly Sacrifice": {
+   "class": "Sadida",
    "AP": "2",
-   "range": "1-3",
-   "los": "n",
-   "effects": "Places a '''Dial:'''\n{{gui|arrow}} Has 40% of the Xelor's HP\n{{gui|arrow}} Only one Dial at a time\n{{gui|arrow}} Max 2 Dials per team\n\nThe Xelor can move from Hour to Hour fro a single WP\n\nThe {{st|6759}} gives the Xelor 50% damage inflicted, and moves forward for each WP used",
-   "conditions": "1 use per turn"
+   "range": "0",
+   "los": "y",
+   "effects": "{{gui|caster}} Sacrifices all their {{gui|doll}}\nPer level of {{st|3624}} of sacrificed {{gui|doll}}:\n{{gui|arrow}} {{gui|caster}} 1 map AP (1 turn)\n{{gui|arrow}} {{gui|caster}} Healing: 5% max HP",
+   "conditions": "2-turn cooldown"
   },
   "Mudoll": {
    "class": "Sadida",
@@ -18347,6 +18557,17 @@
    "criteffects": "{{gui|enemy}} {{gui|mp}} -1 MP\n{{gui|enemy}} {{gui|water}} Damage: 4-104\n{{gui|ally}} {{gui|water}} Healing: 7-62\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3596}}\n{{gui|arrow}} {{gui|doll}} {{st|8189}} (Lvl 1)",
    "conditions": "2 uses per target\n3 uses per turn"
   },
+  "Bramble": {
+   "class": "Sadida",
+   "AP": "3",
+   "target": "st",
+   "range": "1-5",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 3-91\n{{gui|ally}} {{gui|armor}} 3-1,438 Armor\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3600}}\n{{gui|arrow}} {{gui|doll}} {{st|8193}} (Lvl 1)",
+   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 4-114\n{{gui|ally}} {{gui|armor}} 4-1,798 Armor\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3600}}\n{{gui|arrow}} {{gui|doll}} {{st|8193}} (Lvl 1)",
+   "conditions": "3 uses per target\n4 uses per turn"
+  },
   "Stabber": {
    "class": "Sram",
    "AP": "2",
@@ -18355,15 +18576,15 @@
    "effects": "At start of next turn:\n{{gui|arrow}} {{gui|di}} 20% damage inflicted from behind\n{{gui|arrow}} {{gui|di}} 20% damage inflicted on critical hit\n{{gui|arrow}} Stabilized (current turn)",
    "conditions": "2-turn cooldown"
   },
-  "Wily": {
-   "class": "Sram",
-   "AP": "3",
+  "Fertilizer": {
+   "class": "Sadida",
+   "AP": "1",
    "target": "st",
    "range": "1-4",
-   "los": "n",
-   "effects": "Teleports to behind target\n\n{{gui|enemy}} {{gui|air}} Damage: 3-105\n\n{{gui|caster}} {{st|3114}} (+15 Lvl.)",
-   "criteffects": "Teleports to behind target\n\n{{gui|enemy}} {{gui|air}} Damage: 4-132\n\n{{gui|caster}} {{st|3114}} (+15 Lvl.)",
-   "conditions": "Is not being carried\n1 use per target\n3 uses per turn"
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|doll}} Skips turn\n{{gui|doll}} {{st|3624}} (+3 Lvl.) at end of turn\n{{gui|doll}} {{st|3434}}\n{{gui|ally}} 30% extra Heals received from {{gui|doll}}\n{{gui|enemy}} 30% extra Damage received from {{gui|doll}}",
+   "conditions": "1 use per target\n2 uses per turn"
   },
   "Kleptosram": {
    "class": "Sram",
@@ -18385,6 +18606,17 @@
    "effects": "{{gui|enemy}} {{gui|water}} Damage: 2-65\n{{gui|doll}} or '''Tree''' {{st|3587}} (Lvl 1)\n{{gui|doll}} At end of turn: {{st|3624}} (+1 Lvl.)\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3599}}",
    "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 2-82\n{{gui|doll}} or '''Tree''' {{st|3587}} (Lvl 1)\n{{gui|doll}} At end of turn: {{st|3624}} (+1 Lvl.)\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3599}}",
    "conditions": "3 uses per target"
+  },
+  "Drain": {
+   "class": "Sadida",
+   "AP": "5",
+   "target": "st",
+   "range": "1-4",
+   "los": "n",
+   "mod": "y",
+   "effects": "{{gui|water}} Damage: 6-182\n{{gui|ally}} {{gui|water}} Healing: 12-100 {{gui|area squarering}}",
+   "criteffects": "{{gui|water}} Damage: 8-228\n{{gui|ally}} {{gui|water}} Healing: 18-125 {{gui|area squarering}}",
+   "conditions": "2 uses per turn"
   },
   "Cold Blood": {
    "class": "Sram",
@@ -18418,6 +18650,16 @@
    "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 5-127\n{{gui|ally}} {{gui|water}} Healing: 10-71 {{gui|area cross}}",
    "conditions": "3 uses per turn"
   },
+  "K'mir": {
+   "class": "Sadida",
+   "AP": "3",
+   "target": "st",
+   "range": "1-3",
+   "los": "y",
+   "effects": "Attracts by 2 cells\n{{st|3681}} (Lvl 1)\n{{gui|enemy}} {{gui|air}} Damage: 3-91\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3596}}\n{{gui|arrow}} {{gui|doll}} {{st|8190}} (Lvl 1)",
+   "criteffects": "Attracts by 2 cells\n{{st|3681}} (Lvl 1)\n{{gui|enemy}} {{gui|air}} Damage: 4-114\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3596}}\n{{gui|arrow}} {{gui|doll}} {{st|8190}} (Lvl 1)",
+   "conditions": ""
+  },
   "Perfidious Attack": {
    "class": "Sram",
    "AP": "3",
@@ -18428,16 +18670,6 @@
    "criteffects": "{{gui|water}} Damage: 5-152, penetrates Armor\n{{gui|arrow}} 40% of damage inflicted is converted into {{gui|armor}}\nArmor on the target {{gui|target}}\n\n{{gui|caster}} {{st|3114}} (+15 Lvl.)",
    "conditions": "2 uses per target\n3 uses per turn"
   },
-  "Tricky Blow": {
-   "class": "Sram",
-   "AP": "3",
-   "target": "st",
-   "range": "1",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{gui|air}} Damage: 3-105\n{{gui|caster}} Move away 2 cells\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats the damage on the previous enemies (melee damage)\n{{gui|arrow}} {{gui|caster}} {{st|3114}} (+5 Lvl.) for each additional enemy hit\n\n{{gui|caster}} {{st|3114}} (+15 Lvl.)",
-   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 4-132\n{{gui|caster}} Move away 2 cells\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats the damage on the previous enemies (melee damage)\n{{gui|arrow}} {{gui|caster}} {{st|3114}} (+15 Lvl.) for each additional enemy hit\n\n{{gui|caster}} {{st|3114}} (+15 Lvl.)",
-   "conditions": "1 use per target\n4 uses per turn"
-  },
   "Invisibility": {
    "class": "Sram",
    "range": "1-4",
@@ -18445,6 +18677,16 @@
    "mod": "y",
    "effects": "The target becomes {{st|3129}} (2 turns)\nApplies {{st|3136}} (3 turn)\n{{gui|mp}} 2 MP\n{{gui|caster}} When the Sram becomes invisible, on the next turn:\n{{gui|arrow}} {{st|1711}}: 100% damage inflicted on the next direct damage spell",
    "conditions": "Does not have the \"Apparent\" state(target)\n1-turn cooldown"
+  },
+  "Manifold Bramble": {
+   "class": "Sadida",
+   "AP": "5",
+   "target": "aoe",
+   "range": "2-5",
+   "los": "n",
+   "effects": "{{gui|mp}} -2 MP {{gui|area circle}}\n{{gui|earth}} Damage: 6-167",
+   "criteffects": "{{gui|mp}} -2 MP {{gui|area circle}}\n{{gui|earth}} Damage: 8-209",
+   "conditions": "2 uses per turn"
   },
   "Scram": {
    "class": "Sram",
@@ -18454,73 +18696,15 @@
    "effects": "{{gui|mp}} 3 max MP (1 turn)\n{{gui|dodge}} {{se|base=4|scale=4}} Dodge (1 turn)",
    "conditions": "The target must not be an enemy.\n2-turn cooldown"
   },
-  "Disruption": {
-   "class": "Xelor",
-   "AP": "3",
-   "target": "aoe",
-   "range": "2-3",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|fire}} Damage: 3-83 {{gui|area hline}}\n\nIf the current hour is odd:\n{{gui|arrow}} {{gui|fire}} Damage: 3-83 {{gui|area vline}} instead",
-   "criteffects": "{{gui|fire}} Damage: 4-104 {{gui|area hline}}\n\nIf the current hour is odd:\n{{gui|arrow}} {{gui|fire}} Damage: 4-104 {{gui|area vline}} instead",
-   "conditions": "3 uses per turn"
-  },
-  "Dark Bolt": {
-   "class": "Xelor",
-   "AP": "5",
-   "target": "aoe",
-   "range": "3-4",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|fire}} Damage: 3-97\n\n'''Rebounds''' on an enemy (1 to 2 cells)\n{{gui|arrow}} '''Rebound''': {{gui|fire}} Damage: 7-181",
-   "criteffects": "{{gui|fire}} Damage: 4-122\n\n'''Rebounds''' on an enemy (1 to 2 cells)\n{{gui|arrow}} '''Rebound''': {{gui|fire}} Damage: 9-227",
-   "conditions": "2 uses per target\n3 uses per turn"
-  },
-  "Hammhour": {
-   "class": "Xelor",
-   "AP": "3",
-   "target": "st",
-   "range": "1-4",
-   "los": "y",
-   "mod": "y",
-   "effects": "{{gui|water}} Damage: 3-83\n{{gui|ap}} '''-1 AP'''\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats its effects on the previous targets",
-   "criteffects": "{{gui|water}} Damage: 4-104\n{{gui|ap}} '''-1 AP'''\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats its effects on the previous targets",
-   "conditions": "2 uses per target\n4 uses per turn"
-  },
-  "Desynchronization": {
-   "class": "Xelor",
+  "Compost": {
+   "class": "Sadida",
    "AP": "4",
-   "target": "aoe",
-   "range": "3-6",
-   "los": "y",
-   "effects": "{{gui|enemy}} {{gui|water}} Damage: 4-102 {{gui|area cross}}\n{{gui|ap}} '''-3 AP''' {{gui|area cross}}\n\nCast on the '''Dial''' (1 time per turn):\n{{gui|arrow}} The current hour advances by 6\n{{gui|arrow}} {{gui|caster}} regains 2 AP",
-   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 5-127 {{gui|area cross}}\n{{gui|ap}} '''-3 AP''' {{gui|area cross}}\n\nCast on the '''Dial''' (1 time per turn):\n{{gui|arrow}} The current hour advances by 6\n{{gui|arrow}} {{gui|caster}} regains 2 AP",
-   "conditions": "2 uses per turnn"
-  },
-  "Against the Clock": {
-   "class": "Xelor",
-   "AP": "2",
+   "target": "st",
    "range": "1-3",
    "los": "y",
-   "mod": "y",
-   "effects": "{{gui|fighter}} Applies {{st|3774}} (Lvl 1)\nAt end of the target's turn:\n{{gui|arrow}} Teleports the target to its start-of-turn position\n\nIf the target is the Xelor or one of their summons:\n{{gui|arrow}} Teleports to the position when the spell was cast\n\ncan no longer be targeted by the spell for 4 turn",
-   "conditions": "Does not have the \"Against the Clock\" state(target)\n1 use per turn"
-  },
-  "Cog": {
-   "class": "Xelor",
-   "AP": "2",
-   "range": "1-3",
-   "los": "n",
-   "mod": "y",
-   "effects": "Summons a '''Cog''' (max 1 per Xelor)\n\nAt end of the Xelor's turn, per level of {{st|7787}}:\n{{gui|arrow}} {{gui|light}} Damage: 1-20 around the Cog",
-   "conditions": "1 use per turn"
-  },
-  "Distortion": {
-   "class": "Xelor",
-   "range": "0",
-   "los": "n",
-   "effects": "At the end of each spell:\n{{gui|arrow}} Additional {{gui|light}} damage: 1 per AP or WP\n{{gui|arrow}} Direct damage\n\nWhen the current hour goes full circle:\n100% extra damage on the next Distortion (400% max)\n{{gui|arrow}}  The spell costs {{gui|wp}} 1 extra WP",
-   "conditions": "1 use per turn"
+   "effects": "{{gui|enemy}} {{gui|earth}} Damage: 4-131 and steals 1 MP\n{{gui|ally}} {{gui|armor}} 3-2,398 Armor\n{{gui|ally}} {{gui|mp}} 1 MP (3 if {{gui|doll}})\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3597}}\n{{gui|arrow}} {{gui|doll}} {{st|8192}} (Lvl 1)",
+   "criteffects": "{{gui|enemy}} {{gui|earth}} Damage: 5-131 and steals 1 MP\n{{gui|ally}} {{gui|armor}} 7-2,997 Armor\n{{gui|ally}} {{gui|mp}} 1 MP (3 if {{gui|doll}})\n\nOn {{st|8202}}:\n{{gui|arrow}} Summons {{st|3597}}\n{{gui|arrow}} {{gui|doll}} {{st|8192}} (Lvl 1)",
+   "conditions": "2 uses per target\n3 uses per turn"
   },
   "Sylvan Awakening": {
    "class": "Sadida",
@@ -18530,6 +18714,14 @@
    "mod": "y",
    "effects": "Gives 15% of the Sadida's max HP as Armor\n{{gui|arrow}} {{st|6505}} (1 turn)\n\nOn a KO'd target:\n{{gui|arrow}} The target comes back to life (25% of max HP)\n{{gui|arrow}} {{st|1144}} (Lvl 1)",
    "conditions": "1 use per turn"
+  },
+  "Force of Nature": {
+   "class": "Sadida",
+   "AP": "2",
+   "range": "0",
+   "los": "y",
+   "effects": "{{gui|caster}} Must have Armor\n{{gui|caster}} {{st|8224}} (Lvl 1):\n{{gui|mp}} 2 MP\n{{gui|range}} 2 Range\n{{gui|di}} 30% damage inflicted (Transferred to {{gui|doll}})\n{{gui|hp%}} 30% heals performed (Transferred to {{gui|doll}})\nCancels Armor gains\n\nState is lost if the {{gui|caster}} loses their Armor",
+   "conditions": "Does not have the \"Force of Nature\" state\n4-turn cooldown"
   },
   "Toxines": {
    "class": "Sadida",
@@ -18637,6 +18829,14 @@
    "effects": "Places the {{ar|780}} (2 max)\n\nWhen triggered:\n{{gui|arrow}} Teleports target onto the other {{ar|780}} (6 cells max)\n{{gui|arrow}} {{gui|caster}} regains 1 AP if the trap is triggered during the current turn",
    "conditions": "2 uses per turn"
   },
+  "Vital Punishment": {
+   "class": "Sacrier",
+   "range": "1-6",
+   "los": "y",
+   "effects": "Switches places\n{{gui|enemy}} {{gui|light}} Damage: 2-60\n{{gui|arrow}} Health Steal: 100%\n\nConsumes 1 {{st|9322}}",
+   "criteffects": "Switches places\n{{gui|enemy}} {{gui|light}} Damage: 2-76\n{{gui|arrow}} Health Steal: 100%\n\nConsumes 1 {{st|9322}}",
+   "conditions": "2 uses per turn"
+  },
   "Hand": {
    "class": "Xelor",
    "AP": "4",
@@ -18648,6 +18848,25 @@
    "criteffects": "{{gui|fire}} Damage: 5-139\n\nIf this spell kills a fighter, {{gui|caster}} the spell cost is reimbursed",
    "conditions": "2 uses per turn"
   },
+  "Devotion": {
+   "class": "Xelor",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "At start of turn:\n{{gui|arrow}} {{gui|ap}} '''3 max AP''' (1 turn)",
+   "conditions": "1 use per turn"
+  },
+  "Clock": {
+   "class": "Xelor",
+   "AP": "5",
+   "target": "st",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|water}} Damage: 6-182 at end of the target's turn\n\nEvery 12 '''WP''' regained:\n{{gui|arrow}} The spell's effects are doubled",
+   "criteffects": "{{gui|water}} Damage: 8-228 at end of the target's turn\n\nEvery 12 '''WP''' regained:\n{{gui|arrow}} The spell's effects are doubled",
+   "conditions": "1 use per target\n2 uses per turn"
+  },
   "Sinistro": {
    "class": "Xelor",
    "AP": "2",
@@ -18655,6 +18874,24 @@
    "los": "y",
    "effects": "Summons a '''Sinistro''' (max 1 per Xelor)\n\nAt end of the Xelor's turn, {{gui|area cross|text=Size: 2}} allies receive:\n{{gui|arrow}} {{gui|ally}} Healing: 2% of missing HP per {{st|7786}}\n{{gui|arrow}} {{gui|ally}} {{gui|ap}} 1 AP for 5 {{st|7786}}",
    "conditions": "1 use per turn"
+  },
+  "Dial": {
+   "class": "Xelor",
+   "AP": "2",
+   "range": "1-3",
+   "los": "n",
+   "effects": "Places a '''Dial:'''\n{{gui|arrow}} Has 40% of the Xelor's HP\n{{gui|arrow}} Only one Dial at a time\n{{gui|arrow}} Max 2 Dials per team\n\nThe Xelor can move from Hour to Hour fro a single WP\n\nThe {{st|6759}} gives the Xelor 50% damage inflicted, and moves forward for each WP used",
+   "conditions": "1 use per turn"
+  },
+  "Wily": {
+   "class": "Sram",
+   "AP": "3",
+   "target": "st",
+   "range": "1-4",
+   "los": "n",
+   "effects": "Teleports to behind target\n\n{{gui|enemy}} {{gui|air}} Damage: 3-105\n\n{{gui|caster}} {{st|3114}} (+15 Lvl.)",
+   "criteffects": "Teleports to behind target\n\n{{gui|enemy}} {{gui|air}} Damage: 4-132\n\n{{gui|caster}} {{st|3114}} (+15 Lvl.)",
+   "conditions": "Is not being carried\n1 use per target\n3 uses per turn"
   },
   "Time Theft": {
    "class": "Xelor",
@@ -18685,6 +18922,16 @@
    "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 4-95\nThe target is teleported to the current hour (6 cells max)\n\nCast on the '''Dial:'''\n{{gui|arrow}} The Dial is moved to the Current Hour\n{{gui|arrow}} {{gui|caster}} regains {{gui|ap}} 2 AP",
    "conditions": "2 uses per target\n3 uses per turn"
   },
+  "Tricky Blow": {
+   "class": "Sram",
+   "AP": "3",
+   "target": "st",
+   "range": "1",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|air}} Damage: 3-105\n{{gui|caster}} Move away 2 cells\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats the damage on the previous enemies (melee damage)\n{{gui|arrow}} {{gui|caster}} {{st|3114}} (+5 Lvl.) for each additional enemy hit\n\n{{gui|caster}} {{st|3114}} (+15 Lvl.)",
+   "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 4-132\n{{gui|caster}} Move away 2 cells\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats the damage on the previous enemies (melee damage)\n{{gui|arrow}} {{gui|caster}} {{st|3114}} (+15 Lvl.) for each additional enemy hit\n\n{{gui|caster}} {{st|3114}} (+15 Lvl.)",
+   "conditions": "1 use per target\n4 uses per turn"
+  },
   "Underhand": {
    "class": "Xelor",
    "AP": "2",
@@ -18695,6 +18942,17 @@
    "effects": "{{gui|enemy}} {{gui|air}} Damage: 2-60\n\nTeleports the target 2 cells farther\nSwitches places if the cell is occupied\n{{gui|arrow}} {{gui|caster}} regains 1 AP if the switch is successful",
    "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 2-76\n\nTeleports the target 2 cells farther\nSwitches places if the cell is occupied\n{{gui|arrow}} {{gui|caster}} regains 1 AP if the switch is successful",
    "conditions": "1 use per target\n2 uses per turn"
+  },
+  "Disruption": {
+   "class": "Xelor",
+   "AP": "3",
+   "target": "aoe",
+   "range": "2-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|fire}} Damage: 3-83 {{gui|area hline}}\n\nIf the current hour is odd:\n{{gui|arrow}} {{gui|fire}} Damage: 3-83 {{gui|area vline}} instead",
+   "criteffects": "{{gui|fire}} Damage: 4-104 {{gui|area hline}}\n\nIf the current hour is odd:\n{{gui|arrow}} {{gui|fire}} Damage: 4-104 {{gui|area vline}} instead",
+   "conditions": "3 uses per turn"
   },
   "Suspension": {
    "class": "Xelor",
@@ -18707,6 +18965,28 @@
    "criteffects": "{{gui|caster}} Stabilized until the end of the current turn\n{{gui|fire}} Damage: 5-164\n\nCast on the '''Dial:'''\n{{gui|arrow}} The current hour stops advancing\n{{gui|arrow}} {{gui|caster}} {{st|9245}} (+2 Lvl.)\n{{gui|arrow}} {{gui|caster}} regains 2 AP\n{{gui|arrow}} {{gui|caster}} For each WP spent {{st|9245}} (+1 Lvl.)\n\nNext time it is cast on the '''Dial:'''\n{{gui|arrow}} Consumes the {{st|9245}} to move the current hour forward\n{{gui|arrow}} {{gui|caster}} regains {{gui|ap}} 2 AP",
    "conditions": "2 uses per turn"
   },
+  "Dark Bolt": {
+   "class": "Xelor",
+   "AP": "5",
+   "target": "aoe",
+   "range": "3-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|fire}} Damage: 3-97\n\n'''Rebounds''' on an enemy (1 to 2 cells)\n{{gui|arrow}} '''Rebound''': {{gui|fire}} Damage: 7-181",
+   "criteffects": "{{gui|fire}} Damage: 4-122\n\n'''Rebounds''' on an enemy (1 to 2 cells)\n{{gui|arrow}} '''Rebound''': {{gui|fire}} Damage: 9-227",
+   "conditions": "2 uses per target\n3 uses per turn"
+  },
+  "Hammhour": {
+   "class": "Xelor",
+   "AP": "3",
+   "target": "st",
+   "range": "1-4",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|water}} Damage: 3-83\n{{gui|ap}} '''-1 AP'''\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats its effects on the previous targets",
+   "criteffects": "{{gui|water}} Damage: 4-104\n{{gui|ap}} '''-1 AP'''\n\nEach time the spell is cast:\n{{gui|arrow}} Repeats its effects on the previous targets",
+   "conditions": "2 uses per target\n4 uses per turn"
+  },
   "Sandglass": {
    "class": "Xelor",
    "AP": "3",
@@ -18717,6 +18997,16 @@
    "effects": "{{gui|target}} applies {{st|6745}}:\nAt start of the state bearer's turn:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 4-121 {{gui|area cross}}\n{{gui|arrow}} Triggers the other {{st|6745}} {{gui|area cross}}",
    "criteffects": "{{gui|target}} applies {{st|6745}}:\nAt start of the state bearer's turn:\n{{gui|arrow}} {{gui|enemy}} {{gui|water}} Damage: 5-152 {{gui|area cross}}\n{{gui|arrow}} Triggers the other {{st|6745}} {{gui|area cross}}",
    "conditions": "1 use per target\n4 uses per turn"
+  },
+  "Desynchronization": {
+   "class": "Xelor",
+   "AP": "4",
+   "target": "aoe",
+   "range": "3-6",
+   "los": "y",
+   "effects": "{{gui|enemy}} {{gui|water}} Damage: 4-102 {{gui|area cross}}\n{{gui|ap}} '''-3 AP''' {{gui|area cross}}\n\nCast on the '''Dial''' (1 time per turn):\n{{gui|arrow}} The current hour advances by 6\n{{gui|arrow}} {{gui|caster}} regains 2 AP",
+   "criteffects": "{{gui|enemy}} {{gui|water}} Damage: 5-127 {{gui|area cross}}\n{{gui|ap}} '''-3 AP''' {{gui|area cross}}\n\nCast on the '''Dial''' (1 time per turn):\n{{gui|arrow}} The current hour advances by 6\n{{gui|arrow}} {{gui|caster}} regains 2 AP",
+   "conditions": "2 uses per turnn"
   },
   "Paradox": {
    "class": "Xelor",
@@ -18750,6 +19040,24 @@
    "criteffects": "{{gui|enemy}} {{gui|air}} Damage: 4-123\n\nThe last movement not using MP during the Xelor's turn is canceled",
    "conditions": "2 uses per target\n3 uses per turn"
   },
+  "Against the Clock": {
+   "class": "Xelor",
+   "AP": "2",
+   "range": "1-3",
+   "los": "y",
+   "mod": "y",
+   "effects": "{{gui|fighter}} Applies {{st|3774}} (Lvl 1)\nAt end of the target's turn:\n{{gui|arrow}} Teleports the target to its start-of-turn position\n\nIf the target is the Xelor or one of their summons:\n{{gui|arrow}} Teleports to the position when the spell was cast\n\ncan no longer be targeted by the spell for 4 turn",
+   "conditions": "Does not have the \"Against the Clock\" state(target)\n1 use per turn"
+  },
+  "Cog": {
+   "class": "Xelor",
+   "AP": "2",
+   "range": "1-3",
+   "los": "n",
+   "mod": "y",
+   "effects": "Summons a '''Cog''' (max 1 per Xelor)\n\nAt end of the Xelor's turn, per level of {{st|7787}}:\n{{gui|arrow}} {{gui|light}} Damage: 1-20 around the Cog",
+   "conditions": "1 use per turn"
+  },
   "Premonition": {
    "class": "Xelor",
    "AP": "3",
@@ -18764,6 +19072,13 @@
    "range": "1-2",
    "los": "n",
    "effects": "Summons a '''Regulator''' (max 1 per Xelor)\n\nCatches direct damage suffered by the other summons of the Xelor (Dial, Sinistro, or Cog)",
+   "conditions": "1 use per turn"
+  },
+  "Distortion": {
+   "class": "Xelor",
+   "range": "0",
+   "los": "n",
+   "effects": "At the end of each spell:\n{{gui|arrow}} Additional {{gui|light}} damage: 1 per AP or WP\n{{gui|arrow}} Direct damage\n\nWhen the current hour goes full circle:\n100% extra damage on the next Distortion (400% max)\n{{gui|arrow}}  The spell costs {{gui|wp}} 1 extra WP",
    "conditions": "1 use per turn"
   },
   "Tree (spell)": {
@@ -20374,7 +20689,7 @@
    "minLevel": "8",
    "maxLevel": "18",
    "page": "Blue Larva",
-   "infobox": "{{Infobox monster\n|fam=Larvae\n|tier=Coarse\n|typ=Monster\n|minlevel=8\n|maxlevel=18\n|HP=70 to 150\n|AP=6\n|MP=3\n|WP=0\n|ini=8 to 28\n|fow=0\n|lock=4 to 24\n|dodge=16 to 36\n|block=15\n|crit=15\n|wm=100 to 190\n|wr=0\n|em=0\n|er=0\n|am=0\n|ar=0\n|fm=0\n|fr=-100\n|swift=2 Range\n}}"
+   "infobox": "{{Infobox monster\n| fam = Larvae\n| tier = Coarse\n| typ = Monster\n| minlevel = 8\n| maxlevel = 18\n| HP = 70 to 150\n| AP = 6\n| MP = 3\n| WP = 0\n| ini = 8 to 28\n| fow = 0\n| lock = 4 to 24\n| dodge = 16 to 36\n| block = 15\n| crit = 15\n| wm = 100 to 190\n| wr = 0\n| em = 0\n| er = 0\n| am = 0\n| ar = 0\n| fm = 0\n| fr = -100\n| swift = 2 Range\n| name_fr = Larve Bleue\n| name_es = Larva azul\n| name_pt = Larva azul\n}}"
   },
   {
    "name": "Blue Ontet",
@@ -20842,7 +21157,7 @@
    "minLevel": "",
    "maxLevel": "",
    "page": "Cap'n Atcha",
-   "infobox": "{{Infobox monster\n|fam=\n|typ=Monster\n|HP=10000\n|AP=0\n|MP=0\n|WP=0\n|ini=10000\n|fow=0\n|lock=0\n|dodge=0\n|block=4\n|crit=0\n|wm=0\n|wr=0\n|em=0\n|er=0\n|am=0\n|ar=0\n|fm=0\n|fr=0\n}}"
+   "infobox": "{{Infobox monster\n| fam = \n| typ = Monster\n| HP = 10000\n| AP = 0\n| MP = 0\n| WP = 0\n| ini = 10000\n| fow = 0\n| lock = 0\n| dodge = 0\n| block = 4\n| crit = 0\n| wm = 0\n| wr = 0\n| em = 0\n| er = 0\n| am = 0\n| ar = 0\n| fm = 0\n| fr = 0\n| name_es = Capitán Miau\n}}"
   },
   {
    "name": "Cap'n Crablock",
@@ -22300,7 +22615,7 @@
    "minLevel": "18",
    "maxLevel": "23",
    "page": "Dominant Larva",
-   "infobox": "{{Infobox monster\n|fam=Larvae\n|tier=Coarse\n|typ=Dominant\n|minlevel=18\n|maxlevel=23\n|HP=200 to 220\n|AP=8\n|MP=3\n|WP=0\n|ini=14 to 24\n|fow=0\n|lock=8 to 18\n|dodge=22 to 32\n|block=20\n|crit=20\n|wm=0\n|wr=0\n|em=0\n|er=-100\n|am=220 to 320\n|ar=0\n|fm=0\n|fr=0\n|swift=50% Critical Hit\n}}"
+   "infobox": "{{Infobox monster\n| fam = Larvae\n| tier = Coarse\n| typ = Dominant\n| minlevel = 18\n| maxlevel = 23\n| HP = 200 to 220\n| AP = 8\n| MP = 3\n| WP = 0\n| ini = 14 to 24\n| fow = 0\n| lock = 8 to 18\n| dodge = 22 to 32\n| block = 20\n| crit = 20\n| wm = 0\n| wr = 0\n| em = 0\n| er = -100\n| am = 220 to 320\n| ar = 0\n| fm = 0\n| fr = 0\n| swift = 50% Critical Hit\n| name_fr = Larve Dominante\n| name_es = Larva dominante\n| name_pt = Larva Dominante\n}}"
   },
   {
    "name": "Dominant Magik Riktus",
@@ -23101,7 +23416,7 @@
    "minLevel": "23",
    "maxLevel": "28",
    "page": "Explosive Larvawork",
-   "infobox": "{{Infobox monster\n|fam=Larvae\n|tier=Coarse\n|typ=Archmonster\n|minlevel=23\n|maxlevel=28\n|HP=444 to 614\n|AP=10\n|MP=3\n|WP=0\n|ini=24 to 39\n|fow=0\n|lock=30 to 45\n|dodge=18 to 33\n|block=25\n|crit=25\n|wm=330 to 425\n|wr=100\n|em=0\n|er=50\n|am=330 to 425\n|ar=300\n|fm=330 to 425\n|fr=200\n|swift=Healing: 20% of HP max of the target\n}}"
+   "infobox": "{{Infobox monster\n| fam = Larvae\n| tier = Coarse\n| typ = Archmonster\n| minlevel = 23\n| maxlevel = 28\n| HP = 444 to 614\n| AP = 10\n| MP = 3\n| WP = 0\n| ini = 24 to 39\n| fow = 0\n| lock = 30 to 45\n| dodge = 18 to 33\n| block = 25\n| crit = 25\n| wm = 330 to 425\n| wr = 100\n| em = 0\n| er = 50\n| am = 330 to 425\n| ar = 300\n| fm = 330 to 425\n| fr = 200\n| swift = Healing: 20% of HP max of the target\n| name_fr = Lartifice l'Explosive\n| name_es = Lartificia la Explosiva\n| name_pt = Dartificia, a Explosiva\n}}"
   },
   {
    "name": "Eyeliner the Badgerager",
@@ -23506,7 +23821,7 @@
    "minLevel": "132",
    "maxLevel": "138",
    "page": "Fungus-Eating Blue Larva",
-   "infobox": "{{Infobox monster\n|tier=Refined\n|typ=Monster\n|minlevel=132\n|maxlevel=138\n|HP=4160 to 4616\n|AP=8\n|MP=5\n|WP=0\n|ini=148 to 166\n|fow=9 to 12\n|lock=144 to 162\n|dodge=156 to 174\n|block=15\n|crit=15\n|wm=982 to 1072\n|wr=322 to 340\n|em=0\n|er=240 to 258\n|am=0\n|ar=240 to 258\n|fm=0\n|fr=158 to 176\n}}"
+   "infobox": "{{Infobox monster\n| tier = Refined\n| typ = Monster\n| minlevel = 132\n| maxlevel = 138\n| HP = 4160 to 4616\n| AP = 8\n| MP = 5\n| WP = 0\n| ini = 148 to 166\n| fow = 9 to 12\n| lock = 144 to 162\n| dodge = 156 to 174\n| block = 15\n| crit = 15\n| wm = 982 to 1072\n| wr = 322 to 340\n| em = 0\n| er = 240 to 258\n| am = 0\n| ar = 240 to 258\n| fm = 0\n| fr = 158 to 176\n| name_fr = Larve Bleue Mycophage\n| name_es = Larva azul micófaga\n| name_pt = Larva Azul Fungívora\n}}"
   },
   {
    "name": "Fungus-Eating Green Larva",
@@ -23515,7 +23830,7 @@
    "minLevel": "132",
    "maxLevel": "138",
    "page": "Fungus-Eating Green Larva",
-   "infobox": "{{Infobox monster\n|tier=Refined\n|typ=Monster\n|minlevel=132\n|maxlevel=138\n|HP=4160 to 4616\n|AP=8\n|MP=6\n|WP=0\n|ini=148 to 160\n|fow=9 to 12\n|lock=152 to 164\n|dodge=146 to 158\n|block=15\n|crit=15\n|wm=0\n|wr=240 to 258\n|em=982 to 1072\n|er=322 to 340\n|am=0\n|ar=158 to 176\n|fm=0\n|fr=240 to 258\n}}"
+   "infobox": "{{Infobox monster\n| tier = Refined\n| typ = Monster\n| minlevel = 132\n| maxlevel = 138\n| HP = 4160 to 4616\n| AP = 8\n| MP = 6\n| WP = 0\n| ini = 148 to 160\n| fow = 9 to 12\n| lock = 152 to 164\n| dodge = 146 to 158\n| block = 15\n| crit = 15\n| wm = 0\n| wr = 240 to 258\n| em = 982 to 1072\n| er = 322 to 340\n| am = 0\n| ar = 158 to 176\n| fm = 0\n| fr = 240 to 258\n| name_fr = Larve Verte Mycophage\n| name_es = Larva verde micófaga\n| name_pt = Larva Verde Fungívora\n}}"
   },
   {
    "name": "Fungus-Eating Orange Larva",
@@ -23524,7 +23839,7 @@
    "minLevel": "132",
    "maxLevel": "138",
    "page": "Fungus-Eating Orange Larva",
-   "infobox": "{{Infobox monster\n|tier=Refined\n|typ=Monster\n|minlevel=132\n|maxlevel=138\n|HP=4160 to 4616\n|AP=8\n|MP=6\n|WP=0\n|ini=148 to 166\n|fow=9 to 12\n|lock=152 to 170\n|dodge=146 to 164\n|block=15\n|crit=15\n|wm=0\n|wr=158 to 176\n|em=0\n|er=240 to 258\n|am=0\n|ar=240 to 258\n|fm=982 to 1072\n|fr=322 to 340\n}}"
+   "infobox": "{{Infobox monster\n| tier = Refined\n| typ = Monster\n| minlevel = 132\n| maxlevel = 138\n| HP = 4160 to 4616\n| AP = 8\n| MP = 6\n| WP = 0\n| ini = 148 to 166\n| fow = 9 to 12\n| lock = 152 to 170\n| dodge = 146 to 164\n| block = 15\n| crit = 15\n| wm = 0\n| wr = 158 to 176\n| em = 0\n| er = 240 to 258\n| am = 0\n| ar = 240 to 258\n| fm = 982 to 1072\n| fr = 322 to 340\n| name_fr = Larve Orange Mycophage\n| name_es = Larva naranja micófaga\n| name_pt = Larva Laranja Fungívora\n}}"
   },
   {
    "name": "Fungus-Eating Purple Larva",
@@ -23533,7 +23848,7 @@
    "minLevel": "8",
    "maxLevel": "18",
    "page": "Fungus-Eating Purple Larva",
-   "infobox": "{{Infobox monster\n|tier=Coarse\n|typ=Monster\n|minlevel=8\n|maxlevel=18\n|HP=4160 to 4920\n|AP=8\n|MP=5\n|WP=0\n|ini=148 to 168\n|fow=9 to 14\n|lock=144 to 164\n|dodge=156 to 176\n|block=15\n|crit=15\n|wm=0\n|wr=240 to 270\n|em=0\n|er=158 to 188\n|am=982 to 1132\n|ar=322 to 352\n|fm=0\n|fr=240 to 270\n}}"
+   "infobox": "{{Infobox monster\n| tier = Coarse\n| typ = Monster\n| minlevel = 8\n| maxlevel = 18\n| HP = 4160 to 4920\n| AP = 8\n| MP = 5\n| WP = 0\n| ini = 148 to 168\n| fow = 9 to 14\n| lock = 144 to 164\n| dodge = 156 to 176\n| block = 15\n| crit = 15\n| wm = 0\n| wr = 240 to 270\n| em = 0\n| er = 158 to 188\n| am = 982 to 1132\n| ar = 322 to 352\n| fm = 0\n| fr = 240 to 270\n| name_fr = Larve Violette Mycophage\n| name_es = Larva violeta micófaga\n| name_pt = Larva Violeta Fungívora\n}}"
   },
   {
    "name": "Gankr",
@@ -24001,7 +24316,7 @@
    "minLevel": "8",
    "maxLevel": "18",
    "page": "Green Larva",
-   "infobox": "{{Infobox monster\n|fam=Larvae\n|tier=Coarse\n|typ=Monster\n|minlevel=8\n|maxlevel=18\n|HP=50 to 130\n|AP=6\n|MP=4\n|WP=0\n|ini=8 to 28\n|fow=0\n|lock=12 to 32\n|dodge=6 to 26\n|block=15\n|crit=15\n|wm=0\n|wr=0\n|em=100 to 190\n|er=0\n|am=0\n|ar=-100\n|fm=0\n|fr=0\n|swift=100 Elemental Resistance\n}}"
+   "infobox": "{{Infobox monster\n| fam = Larvae\n| tier = Coarse\n| typ = Monster\n| minlevel = 8\n| maxlevel = 18\n| HP = 50 to 130\n| AP = 6\n| MP = 4\n| WP = 0\n| ini = 8 to 28\n| fow = 0\n| lock = 12 to 32\n| dodge = 6 to 26\n| block = 15\n| crit = 15\n| wm = 0\n| wr = 0\n| em = 100 to 190\n| er = 0\n| am = 0\n| ar = -100\n| fm = 0\n| fr = 0\n| swift = 100 Elemental Resistance\n| name_fr = Larve Verte\n| name_es = Larva verde\n| name_pt = Larva verde\n}}"
   },
   {
    "name": "Green Piwi",
@@ -26377,7 +26692,7 @@
    "minLevel": "5",
    "maxLevel": "5",
    "page": "Nanny Larva",
-   "infobox": "{{Infobox monster\n|fam=Larvae\n|tier=Coarse\n|typ=Monster\n|minlevel=5\n|maxlevel=5\n|HP=100\n|AP=6\n|MP=3\n|WP=4\n|ini=-10\n|fow=0\n|lock=-50\n|dodge=-45\n|block=0\n|crit=0\n|wm=0\n|wr=9\n|em=0\n|er=0\n|am=17\n|ar=40\n|fm=0\n|fr=9\n|swift=100% damage inflicted\n}}"
+   "infobox": "{{Infobox monster\n| fam = Larvae\n| tier = Coarse\n| typ = Monster\n| minlevel = 5\n| maxlevel = 5\n| HP = 100\n| AP = 6\n| MP = 3\n| WP = 4\n| ini = -10\n| fow = 0\n| lock = -50\n| dodge = -45\n| block = 0\n| crit = 0\n| wm = 0\n| wr = 9\n| em = 0\n| er = 0\n| am = 17\n| ar = 40\n| fm = 0\n| fr = 9\n| swift = 100% damage inflicted\n| name_fr = Larve Nourricière\n| name_es = Larva nutricia\n| name_pt = Larva Babá\n}}"
   },
   {
    "name": "Nasty Meristenmity",
@@ -26998,7 +27313,7 @@
    "minLevel": "8",
    "maxLevel": "18",
    "page": "Orange Larva",
-   "infobox": "{{Infobox monster\n|fam=Larvae\n|tier=Coarse\n|typ=Monster\n|minlevel=8\n|maxlevel=18\n|HP=70 to 150\n|AP=6\n|MP=4\n|WP=0\n|ini=8 to 28\n|fow=0\n|lock=12 to 32\n|dodge=6 to 26\n|block=15\n|crit=15\n|wm=0\n|wr=-100\n|em=0\n|er=0\n|am=0\n|ar=0\n|fm=100 to 190\n|fr=0\n|swift=100% damage inflicted\n}}"
+   "infobox": "{{Infobox monster\n| fam = Larvae\n| tier = Coarse\n| typ = Monster\n| minlevel = 8\n| maxlevel = 18\n| HP = 70 to 150\n| AP = 6\n| MP = 4\n| WP = 0\n| ini = 8 to 28\n| fow = 0\n| lock = 12 to 32\n| dodge = 6 to 26\n| block = 15\n| crit = 15\n| wm = 0\n| wr = -100\n| em = 0\n| er = 0\n| am = 0\n| ar = 0\n| fm = 100 to 190\n| fr = 0\n| swift = 100% damage inflicted\n| name_fr = Larve Orange\n| name_es = Larva naranja\n| name_pt = Larva laranja\n}}"
   },
   {
    "name": "Orda Gova",
@@ -27691,7 +28006,7 @@
    "minLevel": "8",
    "maxLevel": "18",
    "page": "Purple Larva",
-   "infobox": "{{Infobox monster\n|fam=Larvae\n|tier=Coarse\n|typ=Monster\n|minlevel=8\n|maxlevel=18\n|HP=70 to 150\n|AP=6\n|MP=3\n|WP=0\n|ini=8 to 28\n|fow=0\n|lock=4 to 24\n|dodge=16 to 36\n|block=15\n|crit=15\n|wm=0\n|wr=0\n|em=0\n|er=-100\n|am=100 to 190\n|ar=0\n|fm=0\n|fr=0\n|swift=50% Critical Hit\n}}"
+   "infobox": "{{Infobox monster\n| fam = Larvae\n| tier = Coarse\n| typ = Monster\n| minlevel = 8\n| maxlevel = 18\n| HP = 70 to 150\n| AP = 6\n| MP = 3\n| WP = 0\n| ini = 8 to 28\n| fow = 0\n| lock = 4 to 24\n| dodge = 16 to 36\n| block = 15\n| crit = 15\n| wm = 0\n| wr = 0\n| em = 0\n| er = -100\n| am = 100 to 190\n| ar = 0\n| fm = 0\n| fr = 0\n| swift = 50% Critical Hit\n| name_fr = Larve Violette\n| name_es = Larva violeta\n| name_pt = Larva violeta\n}}"
   },
   {
    "name": "Purple Piwi",
@@ -28690,7 +29005,7 @@
    "minLevel": "23",
    "maxLevel": "28",
    "page": "Shin Larva",
-   "infobox": "{{Infobox monster\n|fam=Larvae\n|tier=Basic\n|typ=Boss\n|minlevel=23\n|maxlevel=28\n|HP=444 to 614\n|AP=10\n|MP=3\n|WP=0\n|ini=24 to 39\n|fow=0\n|lock=30 to 45\n|dodge=18 to 33\n|block=25\n|crit=25\n|wm=330 to 425\n|wr=100\n|em=0\n|er=50\n|am=330 to 425\n|ar=300\n|fm=330 to 425\n|fr=200\n}}"
+   "infobox": "{{Infobox monster\n| fam = Larvae\n| tier = Basic\n| typ = Boss\n| minlevel = 23\n| maxlevel = 28\n| HP = 444 to 614\n| AP = 10\n| MP = 3\n| WP = 0\n| ini = 24 to 39\n| fow = 0\n| lock = 30 to 45\n| dodge = 18 to 33\n| block = 25\n| crit = 25\n| wm = 330 to 425\n| wr = 100\n| em = 0\n| er = 50\n| am = 330 to 425\n| ar = 300\n| fm = 330 to 425\n| fr = 200\n| name_fr = Shin Larva\n| name_es = Shin Larva\n| name_pt = Shin Larva\n}}"
   },
   {
    "name": "Shipwrecked Chafer Archer",
@@ -30148,7 +30463,7 @@
    "minLevel": "53",
    "maxLevel": "58",
    "page": "Unearthed Agony",
-   "infobox": "{{Infobox monster\n|fam=Mineral Tower: 36-50\n|tier=Fragile\n|typ=Boss\n|minlevel=53\n|maxlevel=58\n|HP=2998 to 3298\n|AP=8\n|MP=5\n|WP=0\n|ini=660 to 665\n|fow=20\n|lock=60 to 65\n|dodge=74 to 79\n|block=15\n|crit=25\n|wm=430 to 455\n|wr=60\n|em=430 to 455\n|er=60\n|am=430 to 455\n|ar=60\n|fm=430 to 455\n|fr=60\n}}"
+   "infobox": "{{Infobox monster\n| fam = Mineral Tower: 36-50\n| tier = Imperfect\n| typ = Boss\n| minlevel = 53\n| maxlevel = 58\n| HP = 2998 to 3298\n| AP = 8\n| MP = 5\n| WP = 0\n| ini = 660 to 665\n| fow = 20\n| lock = 60 to 65\n| dodge = 74 to 79\n| block = 15\n| crit = 25\n| wm = 430 to 455\n| wr = 60\n| em = 430 to 455\n| er = 60\n| am = 430 to 455\n| ar = 60\n| fm = 430 to 455\n| fr = 60\n}}"
   },
   {
    "name": "Unfathomable Snapper",
@@ -30841,7 +31156,7 @@
    "minLevel": "8",
    "maxLevel": "18",
    "page": "White Larva",
-   "infobox": "{{Infobox monster\n|fam=Larvae\n|tier=Coarse\n|typ=Monster\n|minlevel=8\n|maxlevel=18\n|HP=20\n|AP=3\n|MP=2\n|WP=0\n|ini=4 to 24\n|fow=0\n|lock=0\n|dodge=0\n|block=15\n|crit=15\n|wm=0\n|wr=0\n|em=70 to 220\n|er=0\n|am=0\n|ar=0\n|fm=0\n|fr=0\n|swift=1 MP\n}}"
+   "infobox": "{{Infobox monster\n| fam = Larvae\n| tier = Coarse\n| typ = Monster\n| minlevel = 8\n| maxlevel = 18\n| HP = 20\n| AP = 3\n| MP = 2\n| WP = 0\n| ini = 4 to 24\n| fow = 0\n| lock = 0\n| dodge = 0\n| block = 15\n| crit = 15\n| wm = 0\n| wr = 0\n| em = 70 to 220\n| er = 0\n| am = 0\n| ar = 0\n| fm = 0\n| fr = 0\n| swift = 1 MP\n| name_fr = Larve Blanche\n| name_es = Larva blanca\n| name_pt = Larva branca\n}}"
   },
   {
    "name": "Wild Baby Tofu",

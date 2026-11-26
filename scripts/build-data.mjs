@@ -577,6 +577,9 @@ const spellId = (key) => {
 // Texto de la wiki a líneas planas (sin iconos ni marcado).
 const spellText = (wikitext) => String(wikitext ?? '')
   .replace(/<span[^>]*>([^<]*)<\/span>/g, '$1')
+  // Estado sin texto en la wiki (p. ej. los nuevos del Bellaphone): marcador "!content.8.9456!" y su categoría.
+  .replace(/!content\.\d+\.\d+!/g, 'Unnamed state')
+  .replace(/\[\[Category:[^\]]*\]\]/g, '')
   .replace(/\[\[File:[^\]|]*\|link=\|(Ally|Enemy|Caster|Target)\]\]/g, '')
   .replace(/\[\[File:[^\]]*\]\]/g, '')
   .replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1')

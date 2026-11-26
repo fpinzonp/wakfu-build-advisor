@@ -53,7 +53,7 @@ const finite = (row: StepRow) => [row.value, ...(row.raw ? [row.raw] : [])]
 
 describe.each([['nivel 245', 245], ['nivel 1', 1]])('todos los hechizos activos (%s)', (_, level) => {
   it('hay hechizos de todas las clases', () => {
-    expect(groups).toHaveLength(19);
+    expect(groups).toHaveLength(20);
     expect(actives.length).toBeGreaterThan(450);
   });
 
@@ -101,8 +101,9 @@ describe('hechizos centrados en el lanzador', () => {
 
   it('todo hechizo de zona con alcance 0 trae su zona', () => {
     const centred = actives.filter(({ spell }) => spell.cast && isCasterCentred(spell.cast));
-    expect(centred.map(({ spell }) => spell.cast!.key).sort()).toEqual(['Burning Blood', 'Dice Roulette', "Iop's Wrath", 'Unhinging']);
-    expect(centred.every(({ spell }) => spell.cast!.zone)).toBe(true);
+    expect(centred.map(({ spell }) => spell.cast!.key).sort()).toEqual(['Burning Blood', 'Dice Roulette', 'Hydrolysis', "Iop's Wrath", 'Unhinging']);
+    // Hydrolysis (Bellaphone, 1.94) actúa sobre la Bellaura y la wiki aún no le da zona: todo su efecto es condicional.
+    expect(centred.filter(({ spell }) => spell.cast!.key !== 'Hydrolysis').every(({ spell }) => spell.cast!.zone)).toBe(true);
   });
 });
 
